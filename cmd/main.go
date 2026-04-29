@@ -12,25 +12,35 @@ import (
 
 func main() {
 	// creating params
-	p := internal.NewParams()
+	p, err := internal.NewParams()
+	if err != nil {
+		panic(err)
+	}
 
 	// creating services
-	storeService := store.NewPGStore(store.Params{
-		DSN:         p.DatabaseDSN,
-		AutoMigrate: p.DatabaseAutomigrate,
-	})
+	// store
+	var storeService store.Service
+	if p.UseStaticStore {
+		storeService = store.NewStaticStore()
+	} else {
+		storeService = store.NewPGStore(store.Params{
+			DSN:         p.DatabaseDSN,
+			AutoMigrate: p.DatabaseAutomigrate,
+		})
+	}
+	// payment
 	paymentService := payment.New(payment.Params{
 		Domain:        p.ServerURL,
 		Key:           p.StripeKey,
 		WebhookSecret: p.StripeSecret,
 	})
+	// api
 	v1Service := v1.New(storeService, paymentService, v1.Params{})
 
-	// creating server
+	// creating server and starting
 	sv := server.New(v1Service, server.Params{
 		AuthSecret: p.StripeSecret,
 	})
-
-	err := sv.Run(p.Port)
+	err = sv.Run(p.Port)
 	fmt.Println(err)
 }

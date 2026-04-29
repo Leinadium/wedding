@@ -1,25 +1,20 @@
 package internal
 
-import "os"
+import "github.com/caarlos0/env/v11"
 
 type Params struct {
-	ServerURL           string
-	StripeKey           string
-	StripeSecret        string
-	AuthSecret          string
-	DatabaseDSN         string
-	DatabaseAutomigrate bool
-	Port                int
+	ServerURL           string `env:"SERVER_URL" envDefault:"http://localhost:8080"`
+	StripeKey           string `env:"STRIPE_KEY,notEmpty"`
+	StripeSecret        string `env:"STRIPE_SECRET,notEmpty"`
+	AuthSecret          string `env:"AUTH_SECRET" envDefault:"changeMe!"`
+	DatabaseDSN         string `env:"DATABASE_DSN"`
+	DatabaseAutomigrate bool   `env:"DATABASE_AUTOMIGRATE" envDefault:"true"`
+	Port                int    `env:"PORT" envDefault:"8080"`
+
+	UseStaticStore bool `env:"USE_STATIC_STORE" envDefault:"false"`
 }
 
-func NewParams() Params {
-	return Params{
-		ServerURL:           os.Getenv("SERVER_URL"),
-		StripeKey:           os.Getenv("STRIPE_KEY"),
-		StripeSecret:        os.Getenv("STRIPE_SECRET"),
-		AuthSecret:          os.Getenv("AUTH_SECRET"),
-		DatabaseDSN:         os.Getenv("DATABASE_DSN"),
-		DatabaseAutomigrate: os.Getenv("DATABASE_AUTOMIGRATE") == "true",
-		Port:                8080,
-	}
+func NewParams() (p Params, err error) {
+	err = env.Parse(&p)
+	return
 }

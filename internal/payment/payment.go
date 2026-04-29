@@ -48,7 +48,7 @@ func (s *Service) CreateSession(ctx context.Context, product models.Product) (Se
 		},
 		Mode:       stripe.String(string(stripe.CheckoutSessionModePayment)),
 		SuccessURL: stripe.String(s.successURL),
-		// PaymentMethodTypes: {}
+		//PaymentMethodTypes: []*string{stripe.String("card"), stripe.String("pix")},
 	}
 
 	session, err := s.client.V1CheckoutSessions.Create(ctx, params)

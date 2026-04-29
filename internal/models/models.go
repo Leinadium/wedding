@@ -5,27 +5,27 @@ import "time"
 type Guest struct {
 	Name      string    `json:"name"`
 	Phone     string    `json:"phone"`
-	CreatedAt time.Time `json:"created_at"`
+	CreatedAt time.Time `json:"createdAt"`
 }
 
 type ProductID string
 type Product struct {
-	StripeID  ProductID `json:"stripe_id" gorm:"primary_key"`
+	StripeID  ProductID `json:"id" gorm:"primary_key"`
 	Name      string    `json:"name"`
-	ImageURL  string    `json:"image_url"`
-	PriceBRL  int64     `json:"price_brl"`
+	ImageURL  string    `json:"imageUrl"`
+	PriceBRL  int64     `json:"priceBrl"`
 	Purchased bool      `json:"purchased"`
 }
 
 type Purchase struct {
 	ID          string `json:"id"`
 	Email       string `json:"email"`
-	ProductID   string `json:"product_id"`
-	ProductName string `json:"product_name"`
+	ProductID   string `json:"productId"`
+	ProductName string `json:"productName"`
 	Price       int64  `json:"price"`
 }
 
 // do not store in table
 type Payment struct {
-	URL string
+	URL string `json:"url"`
 }

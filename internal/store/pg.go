@@ -18,7 +18,6 @@ type PGStore struct {
 }
 
 func NewPGStore(p Params) Service {
-	// dsn := "host=localhost user=gorm password=gorm dbname=gorm port=9920 sslmode=disable TimeZone=Asia/Shanghai"
 	dsn := p.DSN
 	if dsn == "" {
 		panic("dsn is required")
