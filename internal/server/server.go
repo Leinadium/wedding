@@ -13,6 +13,7 @@ import (
 
 type Params struct {
 	AuthSecret string
+	StaticDir  string
 }
 
 type Server struct {
@@ -45,6 +46,10 @@ func New(svc *v1.Service, p Params) *Server {
 	api.GET("/product/:id/payment", server.getProductPayment)
 	api.GET("/purchase", server.getPurchases)
 	api.POST("/purchase", server.postPurchase)
+
+	if p.StaticDir != "" {
+		engine.Static("/", p.StaticDir)
+	}
 
 	return server
 }

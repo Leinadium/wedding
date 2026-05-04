@@ -11,7 +11,8 @@ type Params struct {
 	DatabaseAutomigrate bool   `env:"DATABASE_AUTOMIGRATE" envDefault:"true"`
 	Port                int    `env:"PORT" envDefault:"8080"`
 
-	UseStaticStore bool `env:"USE_STATIC_STORE" envDefault:"false"`
+	UseStaticStore bool   `env:"USE_STATIC_STORE" envDefault:"false"`
+	StaticDir      string `env:"STATIC_DIR"`
 }
 
 func NewParams() (p Params, err error) {
