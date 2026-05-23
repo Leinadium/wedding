@@ -64,7 +64,7 @@ func (s *Service) GetPurchases(ctx context.Context) ([]models.Purchase, error) {
 func (s *Service) CreatePurchase(ctx context.Context, body []byte, signature string) error {
 	// body <- req body
 	// header <- req.Header.Get("Stripe-Signature")
-	sessions, err := s.payment.GetSessions(body, signature)
+	sessions, err := s.payment.Sessions(body, signature)
 	if err != nil {
 		return fmt.Errorf("could not get session: %v", err)
 	}
@@ -74,7 +74,7 @@ func (s *Service) CreatePurchase(ctx context.Context, body []byte, signature str
 	}
 
 	session := sessions[0]
-	purchase, err := s.payment.GetPurchase(ctx, session)
+	purchase, err := s.payment.Purchase(ctx, session)
 	if err != nil {
 		return fmt.Errorf("could not get purchase: %v", err)
 	}

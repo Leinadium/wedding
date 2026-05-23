@@ -7,6 +7,7 @@ import (
 	"leinadium.dev/wedding/internal/payment"
 	"leinadium.dev/wedding/internal/server"
 	"leinadium.dev/wedding/internal/store"
+	"leinadium.dev/wedding/internal/sync"
 	v1 "leinadium.dev/wedding/internal/v1"
 )
 
@@ -37,10 +38,23 @@ func main() {
 	// api
 	v1Service := v1.New(storeService, paymentService, v1.Params{})
 
+	// sync
+	var syncService *sync.Service
+	if p.UseSync {
+		syncService = sync.New(paymentService, storeService)
+		paymentService.AddSyncTrigger(syncService)
+		syncService.Start()
+	}
+
 	// creating server and starting
 	sv := server.New(v1Service, server.Params{
 		AuthSecret: p.StripeSecret,
 	})
+
 	err = sv.Run(p.Port)
+
+	if p.UseSync {
+		syncService.Stop()
+	}
 	fmt.Println(err)
 }

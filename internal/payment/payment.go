@@ -7,6 +7,7 @@ import (
 
 	"github.com/stripe/stripe-go/v85"
 	"leinadium.dev/wedding/internal/models"
+	"leinadium.dev/wedding/internal/sync"
 )
 
 var (
@@ -23,6 +24,7 @@ type Service struct {
 	client        *stripe.Client
 	successURL    string
 	webhookSecret string
+	trigger       sync.Trigger
 }
 
 func New(p Params) *Service {
@@ -31,6 +33,10 @@ func New(p Params) *Service {
 		successURL:    fmt.Sprintf("%s/success?session_id={CHECKOUT_SESSION_ID}", p.Domain),
 		webhookSecret: p.WebhookSecret,
 	}
+}
+
+func (s *Service) AddSyncTrigger(trigger sync.Trigger) {
+	s.trigger = trigger
 }
 
 func (s *Service) CreateSession(ctx context.Context, product models.Product) (Session, error) {
@@ -59,7 +65,7 @@ func (s *Service) CreateSession(ctx context.Context, product models.Product) (Se
 	return Session{URL: session.URL}, nil
 }
 
-func (s *Service) GetSessions(body []byte, signature string) ([]Session, error) {
+func (s *Service) Sessions(body []byte, signature string) ([]Session, error) {
 	// Pass the request body and Stripe-Signature header to ConstructEvent, along with the webhook signing key
 	// Use the secret provided by Stripe CLI for local testing
 	// or your webhook endpoint's secret.
@@ -87,7 +93,43 @@ func (s *Service) GetSessions(body []byte, signature string) ([]Session, error) 
 	return sessions, nil
 }
 
-func (s *Service) GetPurchase(ctx context.Context, session Session) (models.Purchase, error) {
+func (s *Service) Products(ctx context.Context, inactive bool) ([]models.Product, error) {
+	products := []models.Product{}
+
+	params := &stripe.ProductListParams{
+		Active: stripe.Bool(!inactive),
+		Expand: []*string{
+			stripe.String("data.default_price"),
+		},
+	}
+
+	req := s.client.V1Products.List(ctx, params)
+	for p, err := range req.All(ctx) {
+		if err != nil {
+			return nil, fmt.Errorf("could not list products: %v", err)
+		}
+		if p == nil {
+			continue
+		}
+
+		var price int64
+		if p.DefaultPrice != nil {
+			price = int64(p.DefaultPrice.UnitAmount)
+		}
+
+		products = append(products, models.Product{
+			StripeID:  models.ProductID(p.ID),
+			Name:      p.Name,
+			ImageURL:  firstOrZero(p.Images),
+			PriceBRL:  price,
+			Purchased: !p.Active,
+		})
+	}
+
+	return products, nil
+}
+
+func (s *Service) Purchase(ctx context.Context, session Session) (models.Purchase, error) {
 	// TODO: Make this function safe to run multiple times,
 	// even concurrently, with the same session ID
 
@@ -117,10 +159,22 @@ func (s *Service) GetPurchase(ctx context.Context, session Session) (models.Purc
 			}
 		}
 	}
+
+	if s.trigger != nil {
+		go s.trigger.Trigger()
+	}
+
 	return purchase, nil
 }
 
 type Session struct {
 	ID  string
 	URL string
+}
+
+func firstOrZero(slice []string) string {
+	if len(slice) == 0 {
+		return ""
+	}
+	return slice[0]
 }

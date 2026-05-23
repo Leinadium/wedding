@@ -12,6 +12,7 @@ type Params struct {
 	Port                int    `env:"PORT" envDefault:"8080"`
 
 	UseStaticStore bool   `env:"USE_STATIC_STORE" envDefault:"false"`
+	UseSync        bool   `env:"USE_SYNC" envDefault:"false"`
 	StaticDir      string `env:"STATIC_DIR"`
 }
 

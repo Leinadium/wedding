@@ -21,7 +21,7 @@ COPY internal ./internal
 RUN go build -o server ./cmd
 
 # final image
-FROM scratch
+FROM gcr.io/distroless/static-debian13
 WORKDIR /app
 COPY --from=frontend /app/dist ./static
 COPY --from=backend /app/server .

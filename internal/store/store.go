@@ -12,4 +12,6 @@ type Service interface {
 	CreateGuest(ctx context.Context, guest models.Guest) error
 	CreatePurchase(ctx context.Context, purchase models.Purchase) error
 	GetPurchases(ctx context.Context) ([]models.Purchase, error)
+
+	Sync(ctx context.Context, active, inactive []models.Product) error
 }

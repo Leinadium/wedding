@@ -3,9 +3,11 @@ package store
 import (
 	"context"
 	"fmt"
+	"slices"
 
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
+	"gorm.io/gorm/clause"
 	"leinadium.dev/wedding/internal/models"
 )
 
@@ -45,7 +47,7 @@ func (p *PGStore) GetProducts(ctx context.Context) ([]models.Product, error) {
 }
 
 func (p *PGStore) GetProduct(ctx context.Context, pid models.ProductID) (models.Product, error) {
-	return gorm.G[models.Product](p.db).Where("id = ?", pid).First(ctx)
+	return gorm.G[models.Product](p.db).Where("stripe_id = ?", pid).First(ctx)
 }
 
 func (p *PGStore) CreateGuest(ctx context.Context, guest models.Guest) error {
@@ -58,4 +60,12 @@ func (p *PGStore) CreatePurchase(ctx context.Context, purchase models.Purchase) 
 
 func (p *PGStore) GetPurchases(ctx context.Context) ([]models.Purchase, error) {
 	return gorm.G[models.Purchase](p.db).Find(ctx)
+}
+
+func (p *PGStore) Sync(ctx context.Context, active, inactive []models.Product) error {
+	final := slices.Concat(active, inactive)
+
+	return p.db.Clauses(clause.OnConflict{
+		UpdateAll: true,
+	}).Create(&final).Error
 }

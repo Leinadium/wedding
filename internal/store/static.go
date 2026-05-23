@@ -53,10 +53,14 @@ func (s *StaticStore) GetPurchases(_ context.Context) ([]models.Purchase, error)
 	return purchases, nil
 }
 
+func (s *StaticStore) Sync(_ context.Context, active, inactive []models.Product) error {
+	return nil
+}
+
 var (
 	products = []models.Product{
 		{
-			StripeID:  "prod_UQBVBP0Ut7tHXd",
+			StripeID:  "prod_UZ7qFL3mYeEotv",
 			Name:      "First product",
 			ImageURL:  "1.png",
 			PriceBRL:  1234,
