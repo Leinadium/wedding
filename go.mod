@@ -6,6 +6,7 @@ require (
 	github.com/caarlos0/env/v11 v11.4.0
 	github.com/gin-contrib/cors v1.7.7
 	github.com/gin-gonic/gin v1.12.0
+	github.com/google/uuid v1.6.0
 	github.com/stripe/stripe-go/v85 v85.1.0
 	gorm.io/driver/postgres v1.6.0
 	gorm.io/gorm v1.31.1

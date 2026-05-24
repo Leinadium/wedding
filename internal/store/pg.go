@@ -32,7 +32,6 @@ func NewPGStore(p Params) Service {
 	}
 
 	if p.AutoMigrate {
-		_ = db.AutoMigrate(&models.Guest{})
 		_ = db.AutoMigrate(&models.Product{})
 		_ = db.AutoMigrate(&models.Purchase{})
 	}
@@ -42,23 +41,19 @@ func NewPGStore(p Params) Service {
 	}
 }
 
-func (p *PGStore) GetProducts(ctx context.Context) ([]models.Product, error) {
+func (p *PGStore) Products(ctx context.Context) ([]models.Product, error) {
 	return gorm.G[models.Product](p.db).Find(ctx)
 }
 
-func (p *PGStore) GetProduct(ctx context.Context, pid models.ProductID) (models.Product, error) {
+func (p *PGStore) Product(ctx context.Context, pid models.ProductID) (models.Product, error) {
 	return gorm.G[models.Product](p.db).Where("stripe_id = ?", pid).First(ctx)
 }
 
-func (p *PGStore) CreateGuest(ctx context.Context, guest models.Guest) error {
-	return gorm.G[models.Guest](p.db).Create(ctx, &guest)
-}
-
-func (p *PGStore) CreatePurchase(ctx context.Context, purchase models.Purchase) error {
+func (p *PGStore) NewPurchase(ctx context.Context, purchase models.Purchase) error {
 	return gorm.G[models.Purchase](p.db).Create(ctx, &purchase)
 }
 
-func (p *PGStore) GetPurchases(ctx context.Context) ([]models.Purchase, error) {
+func (p *PGStore) Purchases(ctx context.Context) ([]models.Purchase, error) {
 	return gorm.G[models.Purchase](p.db).Find(ctx)
 }
 
@@ -68,4 +63,12 @@ func (p *PGStore) Sync(ctx context.Context, active, inactive []models.Product) e
 	return p.db.Clauses(clause.OnConflict{
 		UpdateAll: true,
 	}).Create(&final).Error
+}
+
+func (p *PGStore) NewConfirmations(ctx context.Context, confirmations []models.Confirmation) error {
+	return gorm.G[models.Confirmation](p.db).CreateInBatches(ctx, &confirmations, 5)
+}
+
+func (p *PGStore) NewRejection(ctx context.Context, rejection models.Rejection) error {
+	return gorm.G[models.Rejection](p.db).Create(ctx, &rejection)
 }

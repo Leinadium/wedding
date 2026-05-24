@@ -24,15 +24,8 @@ func New(store store.Service, payment *payment.Service, params Params) *Service 
 	}
 }
 
-func (s *Service) CreateGuest(ctx context.Context, guest models.Guest) error {
-	if err := s.store.CreateGuest(ctx, guest); err != nil {
-		return fmt.Errorf("could not create guest: %v", err)
-	}
-	return nil
-}
-
-func (s *Service) GetProducts(ctx context.Context) ([]models.Product, error) {
-	products, err := s.store.GetProducts(ctx)
+func (s *Service) Products(ctx context.Context) ([]models.Product, error) {
+	products, err := s.store.Products(ctx)
 	if err != nil {
 		return nil, fmt.Errorf("could not obtain products: %v", err)
 	}
@@ -40,8 +33,8 @@ func (s *Service) GetProducts(ctx context.Context) ([]models.Product, error) {
 	return products, nil
 }
 
-func (s *Service) GetPayment(ctx context.Context, pid models.ProductID) (models.Payment, error) {
-	product, err := s.store.GetProduct(ctx, pid)
+func (s *Service) Payment(ctx context.Context, pid models.ProductID) (models.Payment, error) {
+	product, err := s.store.Product(ctx, pid)
 	if err != nil {
 		return models.Payment{}, fmt.Errorf("could not get product: %v", err)
 	}
@@ -53,17 +46,23 @@ func (s *Service) GetPayment(ctx context.Context, pid models.ProductID) (models.
 	return models.Payment{URL: session.URL}, nil
 }
 
-func (s *Service) GetPurchases(ctx context.Context) ([]models.Purchase, error) {
-	purchases, err := s.store.GetPurchases(ctx)
+func (s *Service) Purchases(ctx context.Context) ([]models.Purchase, error) {
+	purchases, err := s.store.Purchases(ctx)
 	if err != nil {
 		return nil, fmt.Errorf("could not get purchases: %v", err)
 	}
 	return purchases, nil
 }
 
-func (s *Service) CreatePurchase(ctx context.Context, body []byte, signature string) error {
+func (s *Service) NewPurchase(ctx context.Context, body []byte, signature string) error {
 	// body <- req body
 	// header <- req.Header.Get("Stripe-Signature")
+	//
+	// flux:
+	// get session from signature header
+	// get purchase from session
+	// store purchase
+	// notify purchase
 	sessions, err := s.payment.Sessions(body, signature)
 	if err != nil {
 		return fmt.Errorf("could not get session: %v", err)
@@ -79,5 +78,13 @@ func (s *Service) CreatePurchase(ctx context.Context, body []byte, signature str
 		return fmt.Errorf("could not get purchase: %v", err)
 	}
 
-	return s.store.CreatePurchase(ctx, purchase)
+	return s.store.NewPurchase(ctx, purchase)
+}
+
+func (s *Service) NewConfirmations(ctx context.Context, confirmations []models.Confirmation) error {
+	return s.store.NewConfirmations(ctx, confirmations)
+}
+
+func (s *Service) NewRejection(ctx context.Context, rejection models.Rejection) error {
+	return s.store.NewRejection(ctx, rejection)
 }

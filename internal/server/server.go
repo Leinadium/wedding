@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"time"
 
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
@@ -41,11 +42,12 @@ func New(svc *v1.Service, p Params) *Server {
 	}
 
 	api := engine.Group("/v1")
-	api.POST("/guest", server.postGuest)
 	api.GET("/product", server.getProducts)
 	api.GET("/product/:id/payment", server.getProductPayment)
 	api.GET("/purchase", server.getPurchases)
 	api.POST("/purchase", server.postPurchase)
+	api.POST("/confirmation", server.postConfirmations)
+	api.POST("/rejection", server.postRejection)
 
 	if p.StaticDir != "" {
 		engine.Static("/", p.StaticDir)
@@ -73,37 +75,17 @@ func (s *Server) checkAuth(c *gin.Context) bool {
 	return true
 }
 
-func (s *Server) postGuest(c *gin.Context) {
-	var guest models.Guest
-	if c.Bind(&guest) != nil {
-		return
-	}
-
-	if err := s.svc.CreateGuest(c.Request.Context(), guest); err != nil {
-		s.error(c, http.StatusInternalServerError, err)
-		return
-	}
-	c.JSON(http.StatusCreated, gin.H{})
-}
-
 func (s *Server) getProducts(c *gin.Context) {
-	products, err := s.svc.GetProducts(c.Request.Context())
+	products, err := s.svc.Products(c.Request.Context())
 	if err != nil {
 		s.error(c, http.StatusInternalServerError, err)
 	}
 	c.JSON(http.StatusOK, gin.H{"products": products})
 }
 
-func (s *Server) postProduct(c *gin.Context) {
-	if !s.checkAuth(c) {
-		return
-	}
-	c.JSON(http.StatusNotImplemented, gin.H{"error": "not implemented"})
-}
-
 func (s *Server) getProductPayment(c *gin.Context) {
 	pid := c.Param("id")
-	payment, err := s.svc.GetPayment(c.Request.Context(), models.ProductID(pid))
+	payment, err := s.svc.Payment(c.Request.Context(), models.ProductID(pid))
 	if err != nil {
 		s.error(c, http.StatusInternalServerError, err)
 		return
@@ -117,7 +99,7 @@ func (s *Server) getPurchases(c *gin.Context) {
 		return
 	}
 
-	purchases, err := s.svc.GetPurchases(c.Request.Context())
+	purchases, err := s.svc.Purchases(c.Request.Context())
 	if err != nil {
 		s.error(c, http.StatusInternalServerError, err)
 		return
@@ -136,8 +118,41 @@ func (s *Server) postPurchase(c *gin.Context) {
 	}
 	defer c.Request.Body.Close()
 
-	if err := s.svc.CreatePurchase(c.Request.Context(), body, signature); err != nil {
+	if err := s.svc.NewPurchase(c.Request.Context(), body, signature); err != nil {
 		s.error(c, http.StatusInternalServerError, err)
 	}
+	c.JSON(http.StatusCreated, gin.H{})
+}
+
+func (s *Server) postConfirmations(c *gin.Context) {
+	var confirmations []models.Confirmation
+	if err := c.BindJSON(&confirmations); err != nil {
+		s.error(c, http.StatusBadRequest, err)
+		return
+	}
+
+	for i, _ := range confirmations {
+		confirmations[i].CreatedAt = time.Now()
+	}
+
+	if err := s.svc.NewConfirmations(c.Request.Context(), confirmations); err != nil {
+		s.error(c, http.StatusInternalServerError, err)
+		return
+	}
+	c.JSON(http.StatusCreated, gin.H{})
+}
+
+func (s *Server) postRejection(c *gin.Context) {
+	var rejection models.Rejection
+	if err := c.BindJSON(&rejection); err != nil {
+		s.error(c, http.StatusBadRequest, err)
+		return
+	}
+
+	if err := s.svc.NewRejection(c.Request.Context(), rejection); err != nil {
+		s.error(c, http.StatusBadRequest, err)
+		return
+	}
+
 	c.JSON(http.StatusCreated, gin.H{})
 }

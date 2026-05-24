@@ -16,13 +16,13 @@ func NewStaticStore() *StaticStore {
 	return &StaticStore{}
 }
 
-func (s *StaticStore) GetProducts(_ context.Context) ([]models.Product, error) {
+func (s *StaticStore) Products(_ context.Context) ([]models.Product, error) {
 	s.lock.RLock()
 	defer s.lock.RUnlock()
 	return products, nil
 }
 
-func (s *StaticStore) GetProduct(_ context.Context, pid models.ProductID) (models.Product, error) {
+func (s *StaticStore) Product(_ context.Context, pid models.ProductID) (models.Product, error) {
 	s.lock.RLock()
 	defer s.lock.RUnlock()
 
@@ -34,11 +34,7 @@ func (s *StaticStore) GetProduct(_ context.Context, pid models.ProductID) (model
 	return models.Product{}, errors.New("product not found")
 }
 
-func (s *StaticStore) CreateGuest(_ context.Context, guest models.Guest) error {
-	return nil
-}
-
-func (s *StaticStore) CreatePurchase(_ context.Context, purchase models.Purchase) error {
+func (s *StaticStore) NewPurchase(_ context.Context, purchase models.Purchase) error {
 	s.lock.Lock()
 	defer s.lock.Unlock()
 
@@ -47,13 +43,20 @@ func (s *StaticStore) CreatePurchase(_ context.Context, purchase models.Purchase
 
 }
 
-func (s *StaticStore) GetPurchases(_ context.Context) ([]models.Purchase, error) {
+func (s *StaticStore) Purchases(_ context.Context) ([]models.Purchase, error) {
 	s.lock.RLock()
 	defer s.lock.RUnlock()
 	return purchases, nil
 }
 
 func (s *StaticStore) Sync(_ context.Context, active, inactive []models.Product) error {
+	return nil
+}
+
+func (s *StaticStore) NewConfirmations(ctx context.Context, confirmations []models.Confirmation) error {
+	return nil
+}
+func (s *StaticStore) NewRejection(ctx context.Context, rejection models.Rejection) error {
 	return nil
 }
 

@@ -1,11 +1,25 @@
 package models
 
-import "time"
+import (
+	"time"
 
-type Guest struct {
+	"github.com/google/uuid"
+)
+
+type Confirmation struct {
+	ID        uuid.UUID `gorm:"type:uuid;default:gen_random_uuid()"`
 	Name      string    `json:"name"`
 	Phone     string    `json:"phone"`
-	CreatedAt time.Time `json:"createdAt"`
+	IsChild   bool      `json:"isChild"`
+	CreatedAt time.Time
+}
+
+type Rejection struct {
+	ID          uuid.UUID `gorm:"type:uuid;default:gen_random_uuid()"`
+	Name        string    `json:"name"`
+	Phone       string    `json:"phone"`
+	OtherGuests string    `json:"otherGuests"`
+	CreatedAt   time.Time `json:"createdAt"`
 }
 
 type ProductID string
