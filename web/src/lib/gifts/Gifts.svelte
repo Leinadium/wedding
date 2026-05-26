@@ -1,6 +1,6 @@
 <script lang="ts">
   import { fade } from "svelte/transition";
-  import { api, type Product } from "./api";
+  import { api, type Product } from "../api";
 
   // State for products and the selected product for the popup
   let products = $state<Product[]>([]);

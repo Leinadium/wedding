@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { api } from "./api";
+  import { api } from "../api";
 
   let name = $state("");
   let phone = $state("");

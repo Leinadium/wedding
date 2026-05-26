@@ -1,25 +1,28 @@
 package models
 
 import (
+	"database/sql"
 	"time"
 
 	"github.com/google/uuid"
 )
 
-type Confirmation struct {
-	ID        uuid.UUID `gorm:"type:uuid;default:gen_random_uuid()"`
-	Name      string    `json:"name"`
-	Phone     string    `json:"phone"`
-	IsChild   bool      `json:"isChild"`
-	CreatedAt time.Time
+type InviteID string
+type Invite struct {
+	ID     InviteID `gorm:"primary_key"`
+	Phone  string   `json:"phone"`
+	Number int      `json:"number"`
+	Names  string   `json:"names"`
+	Note   string   `json:"note"`
 }
 
-type Rejection struct {
-	ID          uuid.UUID `gorm:"type:uuid;default:gen_random_uuid()"`
-	Name        string    `json:"name"`
-	Phone       string    `json:"phone"`
-	OtherGuests string    `json:"otherGuests"`
-	CreatedAt   time.Time `json:"createdAt"`
+type Attendee struct {
+	ID        uuid.UUID    `gorm:"type:uuid;default:gen_random_uuid()"`
+	InviteID  InviteID     `json:"inviteId"`
+	Name      string       `json:"name"`
+	IsChild   bool         `json:"isChild"`
+	Confirmed sql.NullBool `json:"confirmed"`
+	UpdatedAt time.Time    `json:"updatedAt"`
 }
 
 type ProductID string

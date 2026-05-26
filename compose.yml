@@ -26,3 +26,10 @@ services:
     depends_on:
       db:
         condition: service_healthy
+
+  # web:
+  #   build:
+  #     dockerfile: web.Dockerfile
+  #     context: .
+  #   ports:
+  #     - "2020:22"

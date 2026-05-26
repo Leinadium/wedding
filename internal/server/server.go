@@ -4,10 +4,10 @@ import (
 	"fmt"
 	"io"
 	"net/http"
-	"time"
 
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
+	"github.com/google/uuid"
 	"leinadium.dev/wedding/internal/models"
 	v1 "leinadium.dev/wedding/internal/v1"
 )
@@ -46,8 +46,11 @@ func New(svc *v1.Service, p Params) *Server {
 	api.GET("/product/:id/payment", server.getProductPayment)
 	api.GET("/purchase", server.getPurchases)
 	api.POST("/purchase", server.postPurchase)
-	api.POST("/confirmation", server.postConfirmations)
-	api.POST("/rejection", server.postRejection)
+	api.POST("/invite", server.postInvite)
+	api.GET("/invite/:id", server.getInvite)
+	api.PATCH("/invite/:id", server.patchInvite)
+	api.GET("/attendee", server.getAttendes)
+	api.PATCH("/attendee/:id", server.patchAttendee)
 
 	if p.StaticDir != "" {
 		engine.Static("/", p.StaticDir)
@@ -124,35 +127,95 @@ func (s *Server) postPurchase(c *gin.Context) {
 	c.JSON(http.StatusCreated, gin.H{})
 }
 
-func (s *Server) postConfirmations(c *gin.Context) {
-	var confirmations []models.Confirmation
-	if err := c.BindJSON(&confirmations); err != nil {
+func (s *Server) postInvite(c *gin.Context) {
+	if !s.checkAuth(c) {
+		return
+	}
+
+	var invite models.Invite
+	if err := c.BindJSON(&invite); err != nil {
 		s.error(c, http.StatusBadRequest, err)
 		return
 	}
 
-	for i, _ := range confirmations {
-		confirmations[i].CreatedAt = time.Now()
-	}
-
-	if err := s.svc.NewConfirmations(c.Request.Context(), confirmations); err != nil {
+	id, err := s.svc.NewInvite(c.Request.Context(), invite)
+	if err != nil {
 		s.error(c, http.StatusInternalServerError, err)
 		return
 	}
-	c.JSON(http.StatusCreated, gin.H{})
+	c.JSON(http.StatusCreated, gin.H{"id": id})
 }
 
-func (s *Server) postRejection(c *gin.Context) {
-	var rejection models.Rejection
-	if err := c.BindJSON(&rejection); err != nil {
+func (s *Server) getInvite(c *gin.Context) {
+	id := c.Param("id")
+	if id == "" {
+		s.error(c, http.StatusBadRequest, fmt.Errorf("id is required"))
+		return
+	}
+
+	invite, err := s.svc.Invite(c.Request.Context(), models.InviteID(id))
+	if err != nil {
+		s.error(c, http.StatusInternalServerError, err)
+		return
+	}
+	c.JSON(http.StatusOK, invite)
+}
+
+func (s *Server) patchInvite(c *gin.Context) {
+	id := c.Param("id")
+	if id == "" {
+		s.error(c, http.StatusBadRequest, fmt.Errorf("id is required"))
+		return
+	}
+
+	var req struct {
+		Note string `json:"note"`
+	}
+	if err := c.BindJSON(&req); err != nil {
 		s.error(c, http.StatusBadRequest, err)
 		return
 	}
 
-	if err := s.svc.NewRejection(c.Request.Context(), rejection); err != nil {
+	if err := s.svc.UpdateInviteNote(c.Request.Context(), models.InviteID(id), req.Note); err != nil {
+		s.error(c, http.StatusInternalServerError, err)
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{})
+}
+
+func (s *Server) getAttendees(c *gin.Context) {
+	if !s.checkAuth(c) {
+		return
+	}
+
+	attendees, err := s.svc.Attendees(c.Request.Context())
+	if err != nil {
+		s.error(c, http.StatusInternalServerError, err)
+		return
+	}
+	c.JSON(http.StatusOK, attendees)
+}
+
+func (s *Server) patchAttendee(c *gin.Context) {
+	id := c.Param("id")
+	if id == "" {
+		s.error(c, http.StatusBadRequest, fmt.Errorf("id is required"))
+		return
+	}
+
+	var req struct {
+		IsChild   bool  `json:"isChild"`
+		Confirmed *bool `json:"confirmed"`
+	}
+
+	if err := c.BindJSON(&req); err != nil {
 		s.error(c, http.StatusBadRequest, err)
 		return
 	}
 
-	c.JSON(http.StatusCreated, gin.H{})
+	if err := s.svc.UpsertAttendee(c.Request.Context(), uuid.MustParse(id), req.IsChild, req.Confirmed); err != nil {
+		s.error(c, http.StatusInternalServerError, err)
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{})
 }

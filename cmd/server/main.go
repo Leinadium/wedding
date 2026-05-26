@@ -48,7 +48,8 @@ func main() {
 
 	// creating server and starting
 	sv := server.New(v1Service, server.Params{
-		AuthSecret: p.StripeSecret,
+		AuthSecret: p.AuthSecret,
+		StaticDir:  p.StaticDir,
 	})
 
 	err = sv.Run(p.Port)

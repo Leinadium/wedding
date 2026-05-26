@@ -3,8 +3,10 @@ package store
 import (
 	"context"
 	"fmt"
+	"math/rand"
 	"slices"
 
+	"github.com/google/uuid"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
@@ -32,6 +34,8 @@ func NewPGStore(p Params) Service {
 	}
 
 	if p.AutoMigrate {
+		_ = db.AutoMigrate(&models.Invite{})
+		_ = db.AutoMigrate(&models.Attendee{})
 		_ = db.AutoMigrate(&models.Product{})
 		_ = db.AutoMigrate(&models.Purchase{})
 	}
@@ -65,10 +69,61 @@ func (p *PGStore) Sync(ctx context.Context, active, inactive []models.Product) e
 	}).Create(&final).Error
 }
 
-func (p *PGStore) NewConfirmations(ctx context.Context, confirmations []models.Confirmation) error {
-	return gorm.G[models.Confirmation](p.db).CreateInBatches(ctx, &confirmations, 5)
+func (p *PGStore) NewInvite(ctx context.Context, invite models.Invite) (models.InviteID, error) {
+	inviteID := generateInviteID()
+	var success bool
+
+	for range 3 {
+		invite.ID = inviteID
+		if err := gorm.G[models.Invite](p.db).Create(ctx, &invite); err == nil {
+			success = true
+			break
+		}
+		inviteID = generateInviteID()
+	}
+	if !success {
+		return "", fmt.Errorf("could not generate invite ID")
+	}
+
+	return inviteID, nil
 }
 
-func (p *PGStore) NewRejection(ctx context.Context, rejection models.Rejection) error {
-	return gorm.G[models.Rejection](p.db).Create(ctx, &rejection)
+func (p *PGStore) Invite(ctx context.Context, inviteID models.InviteID) (models.Invite, error) {
+	invite, err := gorm.G[models.Invite](p.db).Where("id = ?", inviteID).First(ctx)
+	if err != nil {
+		return models.Invite{}, err
+	}
+	return invite, nil
 }
+
+func (p *PGStore) UpsertNoteInvite(ctx context.Context, inviteID models.InviteID, note string) error {
+	_, err := gorm.G[models.Invite](p.db).Where("id = ?", inviteID).Update(ctx, "note", note)
+	return err
+}
+
+func (s *PGStore) NewAttendee(ctx context.Context, inviteID models.InviteID, attendee models.Attendee) error {
+	attendee.InviteID = inviteID
+	return gorm.G[models.Attendee](s.db).Create(ctx, &attendee)
+}
+
+func (p *PGStore) Attendee(ctx context.Context, attendeeID uuid.UUID) (models.Attendee, error) {
+	return gorm.G[models.Attendee](p.db).Where("id = ?", attendeeID).First(ctx)
+}
+
+func (p *PGStore) Attendees(ctx context.Context) ([]models.Attendee, error) {
+	return gorm.G[models.Attendee](p.db).Find(ctx)
+}
+
+func (p *PGStore) UpsertAttendee(ctx context.Context, attendee models.Attendee) error {
+	return gorm.G[models.Attendee](p.db).Create(ctx, &attendee)
+}
+
+func generateInviteID() models.InviteID {
+	id := make([]byte, 6)
+	for i := range id {
+		id[i] = idCharset[rand.Intn(len(idCharset))]
+	}
+	return models.InviteID(id)
+}
+
+const idCharset = "23456789ABCDEFGHJKMNPQRSTUVWXYZ"

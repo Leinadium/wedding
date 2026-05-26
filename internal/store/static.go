@@ -5,6 +5,7 @@ import (
 	"errors"
 	"sync"
 
+	"github.com/google/uuid"
 	"leinadium.dev/wedding/internal/models"
 )
 
@@ -53,10 +54,32 @@ func (s *StaticStore) Sync(_ context.Context, active, inactive []models.Product)
 	return nil
 }
 
-func (s *StaticStore) NewConfirmations(ctx context.Context, confirmations []models.Confirmation) error {
+func (s *StaticStore) NewInvite(ctx context.Context, invite models.Invite) (models.InviteID, error) {
+	return models.InviteID("AAABBB"), nil
+}
+
+func (s *StaticStore) Invite(_ context.Context, inviteID models.InviteID) (models.Invite, error) {
+	return models.Invite{}, nil
+}
+
+func (s *StaticStore) NewAttendee(ctx context.Context, inviteID models.InviteID, attendee models.Attendee) error {
 	return nil
 }
-func (s *StaticStore) NewRejection(ctx context.Context, rejection models.Rejection) error {
+
+func (s *StaticStore) Attendee(_ context.Context, attendeeID uuid.UUID) (models.Attendee, error) {
+	return models.Attendee{}, nil
+}
+
+func (s *StaticStore) Attendees(ctx context.Context) ([]models.Attendee, error) {
+	return nil, nil
+
+}
+
+func (s *StaticStore) UpsertAttendee(ctx context.Context, attendee models.Attendee) error {
+	return nil
+}
+
+func (s *StaticStore) UpsertNoteInvite(ctx context.Context, inviteID models.InviteID, note string) error {
 	return nil
 }
 

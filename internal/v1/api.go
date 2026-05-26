@@ -2,8 +2,10 @@ package v1
 
 import (
 	"context"
+	"database/sql"
 	"fmt"
 
+	"github.com/google/uuid"
 	"leinadium.dev/wedding/internal/models"
 	"leinadium.dev/wedding/internal/payment"
 	"leinadium.dev/wedding/internal/store"
@@ -81,10 +83,48 @@ func (s *Service) NewPurchase(ctx context.Context, body []byte, signature string
 	return s.store.NewPurchase(ctx, purchase)
 }
 
-func (s *Service) NewConfirmations(ctx context.Context, confirmations []models.Confirmation) error {
-	return s.store.NewConfirmations(ctx, confirmations)
+func (s *Service) NewInvite(ctx context.Context, invite models.Invite) (models.InviteID, error) {
+	inviteID, err := s.store.NewInvite(ctx, invite)
+	if err != nil {
+		return "", fmt.Errorf("could not create invite: %v", err)
+	}
+	return inviteID, nil
 }
 
-func (s *Service) NewRejection(ctx context.Context, rejection models.Rejection) error {
-	return s.store.NewRejection(ctx, rejection)
+func (s *Service) Invite(ctx context.Context, inviteID models.InviteID) (models.Invite, error) {
+	invite, err := s.store.Invite(ctx, inviteID)
+	if err != nil {
+		return models.Invite{}, fmt.Errorf("could not get invite: %v", err)
+	}
+	return invite, nil
+}
+
+func (s *Service) UpdateInviteNote(ctx context.Context, inviteID models.InviteID, note string) error {
+	if err := s.store.UpsertNoteInvite(ctx, inviteID, note); err != nil {
+		return fmt.Errorf("could not update invite note: %v", err)
+	}
+	return nil
+}
+
+func (s *Service) Attendees(ctx context.Context) ([]models.Attendee, error) {
+	attendees, err := s.store.Attendees(ctx)
+	if err != nil {
+		return nil, fmt.Errorf("could not get attendees: %v", err)
+	}
+	return attendees, nil
+}
+
+func (s *Service) UpsertAttendee(ctx context.Context, attendeeID uuid.UUID, isChild bool, confirmed *bool) error {
+	attendee, err := s.store.Attendee(ctx, attendeeID)
+	if err != nil {
+		return fmt.Errorf("could not get attendee: %v", err)
+	}
+
+	attendee.IsChild = isChild
+	attendee.Confirmed = sql.NullBool{Bool: confirmed != nil && *confirmed, Valid: confirmed != nil}
+
+	if err := s.store.UpsertAttendee(ctx, attendee); err != nil {
+		return fmt.Errorf("could not upsert attendee: %v", err)
+	}
+	return nil
 }
