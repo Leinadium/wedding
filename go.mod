@@ -3,10 +3,11 @@ module leinadium.dev/wedding
 go 1.25.6
 
 require (
-	github.com/caarlos0/env/v11 v11.4.0
+	github.com/caarlos0/env/v11 v11.4.1
 	github.com/gin-contrib/cors v1.7.7
 	github.com/gin-gonic/gin v1.12.0
 	github.com/google/uuid v1.6.0
+	github.com/joho/godotenv v1.5.1
 	github.com/spf13/cobra v1.10.2
 	github.com/stripe/stripe-go/v85 v85.1.0
 	golang.org/x/term v0.43.0
