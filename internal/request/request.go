@@ -111,3 +111,12 @@ func Patch[Req any, Res any](c *APIClient, ctx context.Context, path string, hea
 	}
 	return &res, nil
 }
+
+// Delete performs an HTTP DELETE request.
+func Delete(c *APIClient, ctx context.Context, path string, headers map[string]string) error {
+	err := c.doRequest(ctx, http.MethodDelete, path, headers, nil, nil)
+	if err != nil {
+		return err
+	}
+	return nil
+}

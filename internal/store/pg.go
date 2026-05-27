@@ -89,7 +89,7 @@ func (p *PGStore) NewInvite(ctx context.Context, invite models.Invite) (models.I
 }
 
 func (p *PGStore) Invite(ctx context.Context, inviteID models.InviteID) (models.Invite, error) {
-	invite, err := gorm.G[models.Invite](p.db).Where("id = ?", inviteID).First(ctx)
+	invite, err := gorm.G[models.Invite](p.db).Preload("Attendee", nil).Where("id = ?", inviteID).First(ctx)
 	if err != nil {
 		return models.Invite{}, err
 	}
@@ -98,6 +98,11 @@ func (p *PGStore) Invite(ctx context.Context, inviteID models.InviteID) (models.
 
 func (p *PGStore) UpsertNoteInvite(ctx context.Context, inviteID models.InviteID, note string) error {
 	_, err := gorm.G[models.Invite](p.db).Where("id = ?", inviteID).Update(ctx, "note", note)
+	return err
+}
+
+func (p *PGStore) DeleteInvite(ctx context.Context, inviteID models.InviteID) error {
+	_, err := gorm.G[models.Invite](p.db).Where("id = ?", inviteID).Delete(ctx)
 	return err
 }
 
@@ -116,6 +121,11 @@ func (p *PGStore) Attendees(ctx context.Context) ([]models.Attendee, error) {
 
 func (p *PGStore) UpsertAttendee(ctx context.Context, attendee models.Attendee) error {
 	return gorm.G[models.Attendee](p.db).Create(ctx, &attendee)
+}
+
+func (p *PGStore) DeleteAttendee(ctx context.Context, attendeeID uuid.UUID) error {
+	_, err := gorm.G[models.Attendee](p.db).Where("id = ?", attendeeID).Delete(ctx)
+	return err
 }
 
 func generateInviteID() models.InviteID {

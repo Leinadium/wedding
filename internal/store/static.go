@@ -72,7 +72,10 @@ func (s *StaticStore) Attendee(_ context.Context, attendeeID uuid.UUID) (models.
 
 func (s *StaticStore) Attendees(ctx context.Context) ([]models.Attendee, error) {
 	return nil, nil
+}
 
+func (s *StaticStore) DeleteAttendee(_ context.Context, attendeeID uuid.UUID) error {
+	return nil
 }
 
 func (s *StaticStore) UpsertAttendee(ctx context.Context, attendee models.Attendee) error {
@@ -80,6 +83,10 @@ func (s *StaticStore) UpsertAttendee(ctx context.Context, attendee models.Attend
 }
 
 func (s *StaticStore) UpsertNoteInvite(ctx context.Context, inviteID models.InviteID, note string) error {
+	return nil
+}
+
+func (s *StaticStore) DeleteInvite(_ context.Context, inviteID models.InviteID) error {
 	return nil
 }
 

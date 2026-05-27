@@ -19,9 +19,11 @@ type Service interface {
 	NewInvite(ctx context.Context, invite models.Invite) (models.InviteID, error)
 	Invite(ctx context.Context, inviteID models.InviteID) (models.Invite, error)
 	UpsertNoteInvite(ctx context.Context, inviteID models.InviteID, note string) error
+	DeleteInvite(ctx context.Context, inviteID models.InviteID) error
 
 	NewAttendee(ctx context.Context, inviteID models.InviteID, attendee models.Attendee) error
 	Attendees(ctx context.Context) ([]models.Attendee, error)
 	Attendee(ctx context.Context, attendeeID uuid.UUID) (models.Attendee, error)
 	UpsertAttendee(ctx context.Context, attendee models.Attendee) error
+	DeleteAttendee(ctx context.Context, attendeeID uuid.UUID) error
 }

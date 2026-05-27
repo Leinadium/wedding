@@ -49,8 +49,10 @@ func New(svc *v1.Service, p Params) *Server {
 	api.POST("/invite", server.postInvite)
 	api.GET("/invite/:id", server.getInvite)
 	api.PATCH("/invite/:id", server.patchInvite)
-	api.GET("/attendee", server.getAttendes)
+	api.DELETE("/invite/:id", server.deleteInvite)
+	api.GET("/attendee", server.getAttendees)
 	api.PATCH("/attendee/:id", server.patchAttendee)
+	api.DELETE("/attendee/:id", server.deleteAttendee)
 
 	if p.StaticDir != "" {
 		engine.Static("/", p.StaticDir)
@@ -183,6 +185,24 @@ func (s *Server) patchInvite(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{})
 }
 
+func (s *Server) deleteInvite(c *gin.Context) {
+	if !s.checkAuth(c) {
+		return
+	}
+
+	id := c.Param("id")
+	if id == "" {
+		s.error(c, http.StatusBadRequest, fmt.Errorf("id is required"))
+		return
+	}
+
+	if err := s.svc.DeleteInvite(c.Request.Context(), models.InviteID(id)); err != nil {
+		s.error(c, http.StatusInternalServerError, err)
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{})
+}
+
 func (s *Server) getAttendees(c *gin.Context) {
 	if !s.checkAuth(c) {
 		return
@@ -193,7 +213,7 @@ func (s *Server) getAttendees(c *gin.Context) {
 		s.error(c, http.StatusInternalServerError, err)
 		return
 	}
-	c.JSON(http.StatusOK, attendees)
+	c.JSON(http.StatusOK, gin.H{"attendees": attendees})
 }
 
 func (s *Server) patchAttendee(c *gin.Context) {
@@ -214,6 +234,24 @@ func (s *Server) patchAttendee(c *gin.Context) {
 	}
 
 	if err := s.svc.UpsertAttendee(c.Request.Context(), uuid.MustParse(id), req.IsChild, req.Confirmed); err != nil {
+		s.error(c, http.StatusInternalServerError, err)
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{})
+}
+
+func (s *Server) deleteAttendee(c *gin.Context) {
+	if !s.checkAuth(c) {
+		return
+	}
+
+	id := c.Param("id")
+	if id == "" {
+		s.error(c, http.StatusBadRequest, fmt.Errorf("id is required"))
+		return
+	}
+
+	if err := s.svc.DeleteAttendee(c.Request.Context(), uuid.MustParse(id)); err != nil {
 		s.error(c, http.StatusInternalServerError, err)
 		return
 	}

@@ -15,7 +15,10 @@ type CLIClient interface {
 	Products() ([]models.Product, error)
 	Purchases() ([]models.Purchase, error)
 	CreateInvite(models.Invite) (models.InviteID, error)
+	DeleteInvite(models.InviteID) error
+
 	Attendees() ([]models.Attendee, error)
+	DeleteAttendee(models.AttendeeID) error
 }
 
 type client struct {
@@ -71,13 +74,21 @@ func (c *client) CreateInvite(invite models.Invite) (models.InviteID, error) {
 	}
 
 	type Res struct {
-		InviteID models.InviteID `json:"invite_id"`
+		InviteID models.InviteID `json:"inviteId"`
 	}
-	res, err := request.Post[models.Invite, Res](c.api, c.ctx, "/invites", headers, invite)
+	res, err := request.Post[models.Invite, Res](c.api, c.ctx, "/invite", headers, invite)
 	if err != nil {
 		return "", err
 	}
 	return res.InviteID, nil
+}
+
+func (c *client) DeleteInvite(inviteID models.InviteID) error {
+	headers, err := c.authReq()
+	if err != nil {
+		return err
+	}
+	return request.Delete(c.api, c.ctx, "/invite/"+string(inviteID), headers)
 }
 
 func (c *client) Attendees() ([]models.Attendee, error) {
@@ -89,11 +100,19 @@ func (c *client) Attendees() ([]models.Attendee, error) {
 	type Res struct {
 		Attendees []models.Attendee `json:"attendees"`
 	}
-	res, err := request.Get[Res](c.api, c.ctx, "/attendees", headers)
+	res, err := request.Get[Res](c.api, c.ctx, "/attendee", headers)
 	if err != nil {
 		return nil, err
 	}
 	return res.Attendees, nil
+}
+
+func (c *client) DeleteAttendee(attendeeID models.AttendeeID) error {
+	headers, err := c.authReq()
+	if err != nil {
+		return err
+	}
+	return request.Delete(c.api, c.ctx, "/attendee/"+string(attendeeID), headers)
 }
 
 func (c *client) authReq() (map[string]string, error) {

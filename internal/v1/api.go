@@ -99,6 +99,13 @@ func (s *Service) Invite(ctx context.Context, inviteID models.InviteID) (models.
 	return invite, nil
 }
 
+func (s *Service) DeleteInvite(ctx context.Context, inviteID models.InviteID) error {
+	if err := s.store.DeleteInvite(ctx, inviteID); err != nil {
+		return fmt.Errorf("could not delete invite: %v", err)
+	}
+	return nil
+}
+
 func (s *Service) UpdateInviteNote(ctx context.Context, inviteID models.InviteID, note string) error {
 	if err := s.store.UpsertNoteInvite(ctx, inviteID, note); err != nil {
 		return fmt.Errorf("could not update invite note: %v", err)
@@ -125,6 +132,13 @@ func (s *Service) UpsertAttendee(ctx context.Context, attendeeID uuid.UUID, isCh
 
 	if err := s.store.UpsertAttendee(ctx, attendee); err != nil {
 		return fmt.Errorf("could not upsert attendee: %v", err)
+	}
+	return nil
+}
+
+func (s *Service) DeleteAttendee(ctx context.Context, attendeeID uuid.UUID) error {
+	if err := s.store.DeleteAttendee(ctx, attendeeID); err != nil {
+		return fmt.Errorf("could not delete attendee: %v", err)
 	}
 	return nil
 }
