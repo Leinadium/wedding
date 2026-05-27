@@ -18,6 +18,7 @@ type Service interface {
 
 	NewInvite(ctx context.Context, invite models.Invite) (models.InviteID, error)
 	Invite(ctx context.Context, inviteID models.InviteID) (models.Invite, error)
+	Invites(ctx context.Context) ([]models.Invite, error)
 	UpsertNoteInvite(ctx context.Context, inviteID models.InviteID, note string) error
 	DeleteInvite(ctx context.Context, inviteID models.InviteID) error
 

@@ -47,6 +47,7 @@ func New(svc *v1.Service, p Params) *Server {
 	api.GET("/purchase", server.getPurchases)
 	api.POST("/purchase", server.postPurchase)
 	api.POST("/invite", server.postInvite)
+	api.GET("/invite", server.getInvites)
 	api.GET("/invite/:id", server.getInvite)
 	api.PATCH("/invite/:id", server.patchInvite)
 	api.DELETE("/invite/:id", server.deleteInvite)
@@ -161,6 +162,19 @@ func (s *Server) getInvite(c *gin.Context) {
 		return
 	}
 	c.JSON(http.StatusOK, invite)
+}
+
+func (s *Server) getInvites(c *gin.Context) {
+	if !s.checkAuth(c) {
+		return
+	}
+
+	invites, err := s.svc.Invites(c.Request.Context())
+	if err != nil {
+		s.error(c, http.StatusInternalServerError, err)
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{"invites": invites})
 }
 
 func (s *Server) patchInvite(c *gin.Context) {

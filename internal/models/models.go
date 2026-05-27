@@ -3,6 +3,8 @@ package models
 import (
 	"database/sql"
 	"time"
+
+	"github.com/google/uuid"
 )
 
 type InviteID string
@@ -13,9 +15,9 @@ type Invite struct {
 	Attendees []Attendee `json:"attendees" gorm:"foreignKey:InviteID"`
 }
 
-type AttendeeID string
+type AttendeeID = uuid.UUID
 type Attendee struct {
-	ID        AttendeeID   `gorm:"primary_key"`
+	ID        *AttendeeID  `gorm:"primary_key;type:uuid;default:gen_random_uuid()"`
 	InviteID  InviteID     `json:"inviteId"`
 	Name      string       `json:"name"`
 	IsChild   bool         `json:"isChild"`

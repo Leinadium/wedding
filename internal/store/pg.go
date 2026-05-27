@@ -89,11 +89,19 @@ func (p *PGStore) NewInvite(ctx context.Context, invite models.Invite) (models.I
 }
 
 func (p *PGStore) Invite(ctx context.Context, inviteID models.InviteID) (models.Invite, error) {
-	invite, err := gorm.G[models.Invite](p.db).Preload("Attendee", nil).Where("id = ?", inviteID).First(ctx)
+	invite, err := gorm.G[models.Invite](p.db).Preload("Attendees", nil).Where("id = ?", inviteID).First(ctx)
 	if err != nil {
 		return models.Invite{}, err
 	}
 	return invite, nil
+}
+
+func (p *PGStore) Invites(ctx context.Context) ([]models.Invite, error) {
+	invites, err := gorm.G[models.Invite](p.db).Preload("Attendees", nil).Find(ctx)
+	if err != nil {
+		return nil, err
+	}
+	return invites, nil
 }
 
 func (p *PGStore) UpsertNoteInvite(ctx context.Context, inviteID models.InviteID, note string) error {

@@ -4,8 +4,10 @@ import (
 	"errors"
 	"fmt"
 	"os"
+	"strings"
 	"syscall"
 
+	"github.com/google/uuid"
 	"github.com/spf13/cobra"
 	"golang.org/x/term"
 	"leinadium.dev/wedding/internal/client"
@@ -111,7 +113,9 @@ var attendeesDeleteCmd = &cobra.Command{
 	RunE: func(cmd *cobra.Command, args []string) error {
 		cli := client.New(url)
 		cli.SetAuth(getAuth())
-		if err := cli.DeleteAttendee(models.AttendeeID(attendeesDeleteFlag.ID)); err != nil {
+		id := uuid.MustParse(attendeesDeleteFlag.ID)
+
+		if err := cli.DeleteAttendee(id); err != nil {
 			return err
 		}
 		fmt.Println("Attendee deleted successfully")
@@ -122,6 +126,32 @@ var attendeesDeleteCmd = &cobra.Command{
 var inviteCmd = &cobra.Command{
 	Use:   "invite",
 	Short: "Invite management commands",
+}
+
+var inviteListCmd = &cobra.Command{
+	Use:   "list",
+	Short: "List all invites",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		cli := client.New(url)
+		cli.SetAuth(getAuth())
+		invites, err := cli.Invites()
+		if err != nil {
+			return err
+		}
+		for _, invite := range invites {
+			var names strings.Builder
+			for _, attendee := range invite.Attendees {
+				names.WriteString(attendee.Name)
+				names.WriteString(", ")
+			}
+
+			fmt.Println("---------")
+			fmt.Println("ID:", invite.ID)
+			fmt.Println("Phone:", invite.Phone)
+			fmt.Println("Names:", names.String())
+		}
+		return nil
+	},
 }
 
 var inviteCreateFlag struct {
@@ -187,6 +217,7 @@ func init() {
 	inviteDeleteCmd.Flags().StringVar(&inviteDeleteFlag.ID, "id", "", "invite ID to delete")
 	inviteCmd.AddCommand(inviteCreateCmd)
 	inviteCmd.AddCommand(inviteDeleteCmd)
+	inviteCmd.AddCommand(inviteListCmd)
 	rootCmd.AddCommand(inviteCmd)
 
 	attendeesDeleteCmd.Flags().StringVar(&attendeesDeleteFlag.ID, "id", "", "attendee ID to delete")

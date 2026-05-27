@@ -99,6 +99,14 @@ func (s *Service) Invite(ctx context.Context, inviteID models.InviteID) (models.
 	return invite, nil
 }
 
+func (s *Service) Invites(ctx context.Context) ([]models.Invite, error) {
+	invites, err := s.store.Invites(ctx)
+	if err != nil {
+		return nil, fmt.Errorf("could not get invites: %v", err)
+	}
+	return invites, nil
+}
+
 func (s *Service) DeleteInvite(ctx context.Context, inviteID models.InviteID) error {
 	if err := s.store.DeleteInvite(ctx, inviteID); err != nil {
 		return fmt.Errorf("could not delete invite: %v", err)

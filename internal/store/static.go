@@ -62,6 +62,10 @@ func (s *StaticStore) Invite(_ context.Context, inviteID models.InviteID) (model
 	return models.Invite{}, nil
 }
 
+func (s *StaticStore) Invites(_ context.Context) ([]models.Invite, error) {
+	return nil, nil
+}
+
 func (s *StaticStore) NewAttendee(ctx context.Context, inviteID models.InviteID, attendee models.Attendee) error {
 	return nil
 }
