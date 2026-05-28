@@ -1,7 +1,6 @@
 <script lang="ts">
-  import RSVP from "./lib/guests/RSVP.svelte";
+  import Invite from "./lib/guests/Invite.svelte";
   import Gifts from "./lib/gifts/Gifts.svelte";
-  import RSVPForm from "./lib/guests/RSVPForm.svelte";
   // 1. Logic for collapsible sections
   let rsvpOpen = $state(false);
   let giftsOpen = $state(false);
@@ -39,7 +38,7 @@
       </button>
 
       {#if rsvpOpen}
-        <RSVPForm />
+        <Invite />
       {/if}
     </div>
 
@@ -147,14 +146,5 @@
       opacity: 1;
       transform: translateY(0);
     }
-  }
-
-  input {
-    width: 100%;
-    padding: 0.8rem;
-    margin: 0.5rem 0;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    box-sizing: border-box;
   }
 </style>

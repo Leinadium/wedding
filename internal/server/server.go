@@ -30,7 +30,7 @@ func New(svc *v1.Service, p Params) *Server {
 
 	engine.Use(cors.New(cors.Config{
 		AllowOrigins:     []string{"http://localhost:5173"},
-		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
+		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"},
 		AllowHeaders:     []string{"Content-Type"},
 		AllowCredentials: true,
 	}))
@@ -49,7 +49,7 @@ func New(svc *v1.Service, p Params) *Server {
 	api.POST("/invite", server.postInvite)
 	api.GET("/invite", server.getInvites)
 	api.GET("/invite/:id", server.getInvite)
-	api.PATCH("/invite/:id", server.patchInvite)
+	api.PUT("/invite/:id/note", server.putNote)
 	api.DELETE("/invite/:id", server.deleteInvite)
 	api.GET("/attendee", server.getAttendees)
 	api.PATCH("/attendee/:id", server.patchAttendee)
@@ -177,7 +177,7 @@ func (s *Server) getInvites(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"invites": invites})
 }
 
-func (s *Server) patchInvite(c *gin.Context) {
+func (s *Server) putNote(c *gin.Context) {
 	id := c.Param("id")
 	if id == "" {
 		s.error(c, http.StatusBadRequest, fmt.Errorf("id is required"))

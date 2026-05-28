@@ -128,7 +128,7 @@ func (p *PGStore) Attendees(ctx context.Context) ([]models.Attendee, error) {
 }
 
 func (p *PGStore) UpsertAttendee(ctx context.Context, attendee models.Attendee) error {
-	return gorm.G[models.Attendee](p.db).Create(ctx, &attendee)
+	return p.db.Save(&attendee).Error
 }
 
 func (p *PGStore) DeleteAttendee(ctx context.Context, attendeeID uuid.UUID) error {

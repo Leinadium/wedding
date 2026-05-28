@@ -1,15 +1,15 @@
 package models
 
 import (
-	"database/sql"
 	"time"
 
 	"github.com/google/uuid"
+	"github.com/guregu/null/v6"
 )
 
 type InviteID string
 type Invite struct {
-	ID        InviteID   `gorm:"primary_key"`
+	ID        InviteID   `gorm:"primary_key" json:"id"`
 	Phone     string     `json:"phone"`
 	Note      string     `json:"note"`
 	Attendees []Attendee `json:"attendees" gorm:"foreignKey:InviteID"`
@@ -17,12 +17,12 @@ type Invite struct {
 
 type AttendeeID = uuid.UUID
 type Attendee struct {
-	ID        *AttendeeID  `gorm:"primary_key;type:uuid;default:gen_random_uuid()"`
-	InviteID  InviteID     `json:"inviteId"`
-	Name      string       `json:"name"`
-	IsChild   bool         `json:"isChild"`
-	Confirmed sql.NullBool `json:"confirmed"`
-	UpdatedAt time.Time    `json:"updatedAt"`
+	ID        *AttendeeID `gorm:"primary_key;type:uuid;default:gen_random_uuid()" json:"id"`
+	InviteID  InviteID    `json:"inviteId"`
+	Name      string      `json:"name"`
+	IsChild   bool        `json:"isChild"`
+	Confirmed null.Bool   `json:"confirmed"`
+	UpdatedAt time.Time   `json:"updatedAt"`
 }
 
 type ProductID string

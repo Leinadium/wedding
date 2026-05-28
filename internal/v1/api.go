@@ -2,10 +2,10 @@ package v1
 
 import (
 	"context"
-	"database/sql"
 	"fmt"
 
 	"github.com/google/uuid"
+	"github.com/guregu/null/v6"
 	"leinadium.dev/wedding/internal/models"
 	"leinadium.dev/wedding/internal/payment"
 	"leinadium.dev/wedding/internal/store"
@@ -136,7 +136,7 @@ func (s *Service) UpsertAttendee(ctx context.Context, attendeeID uuid.UUID, isCh
 	}
 
 	attendee.IsChild = isChild
-	attendee.Confirmed = sql.NullBool{Bool: confirmed != nil && *confirmed, Valid: confirmed != nil}
+	attendee.Confirmed = null.BoolFromPtr(confirmed)
 
 	if err := s.store.UpsertAttendee(ctx, attendee); err != nil {
 		return fmt.Errorf("could not upsert attendee: %v", err)

@@ -27,6 +27,20 @@ export interface PaymentResponse {
   payment: Payment;
 }
 
+export interface Attendee {
+  id: string;
+  name: string;
+  isChild: boolean;
+  confirmed: boolean | null;
+}
+
+export interface InviteResponse {
+  id: string;
+  phone: string;
+  note: string;
+  attendees: Attendee[];
+}
+
 export interface ApiError {
   error: string;
 }
@@ -51,15 +65,6 @@ async function handleResponse<T>(response: Response): Promise<T> {
 // --- API Functions ---
 
 export const api = {
-  async registerGuest(guest: Guest): Promise<void> {
-    const res = await fetch(`${API_URL}/v1/guest/`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(guest),
-    });
-    return handleResponse<void>(res);
-  },
-
   async getProducts(): Promise<ProductListResponse> {
     const res = await fetch(`${API_URL}/v1/product`);
     return handleResponse<ProductListResponse>(res);
@@ -68,5 +73,31 @@ export const api = {
   async getPaymentUrl(productId: string): Promise<PaymentResponse> {
     const res = await fetch(`${API_URL}/v1/product/${productId}/payment`);
     return handleResponse<PaymentResponse>(res);
+  },
+
+  async getInvite(inviteCode: string): Promise<InviteResponse> {
+    const res = await fetch(`${API_URL}/v1/invite/${inviteCode}`);
+    return handleResponse<InviteResponse>(res);
+  },
+
+  async saveInviteNote(code: string, note: string): Promise<void> {
+    const res = await fetch(`${API_URL}/v1/invite/${code}/note`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ note: note }),
+    });
+    return handleResponse<void>(res);
+  },
+
+  async saveAttendee(attendee: Attendee): Promise<void> {
+    const res = await fetch(`${API_URL}/v1/attendee/${attendee.id}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        isChild: attendee.isChild,
+        confirmed: attendee.confirmed,
+      }),
+    });
+    return handleResponse<void>(res);
   },
 };
