@@ -102,7 +102,7 @@
   .content {
     z-index: 1;
     width: 100%;
-    max-width: 500px;
+    max-width: 700px;
     text-align: center;
   }
 

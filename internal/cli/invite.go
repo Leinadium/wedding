@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/guregu/null/v6"
 	"github.com/spf13/cobra"
 	"leinadium.dev/wedding/internal/client"
 	"leinadium.dev/wedding/internal/models"
@@ -56,7 +57,11 @@ var inviteCreateCmd = &cobra.Command{
 			Attendees: make([]models.Attendee, 0, len(inviteCreateFlag.Attendee)),
 		}
 		for _, name := range inviteCreateFlag.Attendee {
-			invite.Attendees = append(invite.Attendees, models.Attendee{Name: name})
+			invite.Attendees = append(invite.Attendees, models.Attendee{
+				Name:      name,
+				IsChild:   false,
+				Confirmed: null.BoolFromPtr(nil),
+			})
 		}
 		id, err := cli.CreateInvite(invite)
 		if err != nil {

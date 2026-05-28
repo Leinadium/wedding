@@ -43,6 +43,7 @@
   });
 
   function formatPrice(price: number): string {
+    if (isNaN(price) || price === 0) return "--";
     return `R$ ${Math.trunc(price / 100)},${price % 100}`;
   }
 
