@@ -1,6 +1,8 @@
 <script lang="ts">
   import Invite from "./lib/guests/Invite.svelte";
   import Gifts from "./lib/gifts/Gifts.svelte";
+  import Header from "./lib/screen/Header.svelte";
+  import Footer from "./lib/screen/Footer.svelte";
   // 1. Logic for collapsible sections
   let rsvpOpen = $state(false);
   let giftsOpen = $state(false);
@@ -18,11 +20,7 @@
 </script>
 
 <main>
-  <div class="decorations" aria-hidden="true"></div>
-
-  <header>
-    <p class="names">Daniel & Gabi</p>
-  </header>
+  <Header />
 
   <div class="content">
     <h1 class="title">Our Big Day</h1>
@@ -32,6 +30,7 @@
       <p>Join us on January 17th, 2027.</p>
     </section>
 
+    <!-- RSVP wrapper -->
     <div class="collapsible-wrapper">
       <button onclick={toggleRSVP} class="toggle-btn" aria-expanded={rsvpOpen}>
         RSVP {rsvpOpen ? "-" : "+"}
@@ -42,6 +41,7 @@
       {/if}
     </div>
 
+    <!-- Gifts wrapper -->
     <div class="collapsible-wrapper">
       <button
         onclick={toggleGifts}
@@ -56,6 +56,8 @@
       {/if}
     </div>
   </div>
+
+  <Footer />
 </main>
 
 <style>
@@ -74,29 +76,6 @@
     align-items: center;
     padding: 2rem 1rem;
     overflow-x: hidden;
-  }
-
-  .decorations {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    pointer-events: none;
-    z-index: 0;
-  }
-
-  header {
-    z-index: 1;
-    text-align: center;
-    margin-bottom: 2rem;
-  }
-
-  .names {
-    text-transform: uppercase;
-    letter-spacing: 3px;
-    font-size: 0.9rem;
-    color: #8a7b6e;
   }
 
   .content {
@@ -129,22 +108,5 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-  }
-
-  .collapsible-content {
-    text-align: left;
-    padding-bottom: 2rem;
-    animation: slideDown 0.3s ease-out;
-  }
-
-  @keyframes slideDown {
-    from {
-      opacity: 0;
-      transform: translateY(-10px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
   }
 </style>

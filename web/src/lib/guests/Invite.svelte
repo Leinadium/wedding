@@ -1,12 +1,21 @@
 <script lang="ts">
+  import { onMount } from "svelte";
   import { api, type InviteResponse } from "../api";
   import Attendee from "./Attendee.svelte";
+  import { loadStoredInvite, saveStoredInvite } from "./state";
 
   let inviteCode: string = $state("");
   let isLoading: boolean = $state(false);
 
   let invite: InviteResponse | undefined = $state(undefined);
   let currentNote: string = $state("");
+
+  onMount(() => {
+    let invite = loadStoredInvite();
+    if (invite) {
+      inviteCode = invite;
+    }
+  });
 
   $effect(() => {
     if (inviteCode.length != 6) {
@@ -19,6 +28,7 @@
       .then((data) => {
         invite = data;
         currentNote = invite.note;
+        saveStoredInvite(inviteCode);
         isLoading = false;
       })
       .catch((e) => {
