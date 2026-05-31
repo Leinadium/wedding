@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"leinadium.dev/wedding/internal"
+	"leinadium.dev/wedding/internal/notification"
 	"leinadium.dev/wedding/internal/payment"
 	"leinadium.dev/wedding/internal/server"
 	"leinadium.dev/wedding/internal/store"
@@ -35,8 +36,29 @@ func main() {
 		Key:           p.StripeKey,
 		WebhookSecret: p.StripeSecret,
 	})
+
+	// notificator
+	var notificator notification.Notificator
+	if p.TelegramChatID != "" && p.TelegramToken != "" {
+		notificator, err = notification.NewTelegramNotificator(notification.Params{
+			ChatID: p.TelegramChatID,
+			Token:  p.TelegramToken,
+		})
+		if err != nil {
+			fmt.Printf("could not start telegram bot: %v\n", err)
+		}
+	}
+	if notificator == nil {
+		notificator = notification.NewNoopNotificator()
+	}
+
 	// api
-	v1Service := v1.New(storeService, paymentService, v1.Params{})
+	v1Service := v1.New(
+		storeService,
+		paymentService,
+		notificator,
+		v1.Params{},
+	)
 
 	// sync
 	var syncService *sync.Service

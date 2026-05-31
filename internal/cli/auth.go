@@ -23,7 +23,7 @@ func Auth() string {
 	if myEnv.AuthSecret != "" {
 		return authFromEnv()
 	}
-	fmt.Println("Auth secret found in environment")
+	fmt.Println("Auth secret not found in environment")
 	return authFromTerminal()
 }
 

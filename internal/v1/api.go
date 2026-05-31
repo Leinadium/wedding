@@ -3,10 +3,12 @@ package v1
 import (
 	"context"
 	"fmt"
+	"strings"
 
 	"github.com/google/uuid"
 	"github.com/guregu/null/v6"
 	"leinadium.dev/wedding/internal/models"
+	"leinadium.dev/wedding/internal/notification"
 	"leinadium.dev/wedding/internal/payment"
 	"leinadium.dev/wedding/internal/store"
 )
@@ -15,14 +17,21 @@ type Params struct {
 }
 
 type Service struct {
-	store   store.Service
-	payment *payment.Service
+	store       store.Service
+	payment     *payment.Service
+	notificator notification.Notificator
 }
 
-func New(store store.Service, payment *payment.Service, params Params) *Service {
+func New(
+	store store.Service,
+	payment *payment.Service,
+	notificator notification.Notificator,
+	params Params,
+) *Service {
 	return &Service{
-		store:   store,
-		payment: payment,
+		store:       store,
+		payment:     payment,
+		notificator: notificator,
 	}
 }
 
@@ -78,6 +87,13 @@ func (s *Service) NewPurchase(ctx context.Context, body []byte, signature string
 	purchase, err := s.payment.Purchase(ctx, session)
 	if err != nil {
 		return fmt.Errorf("could not get purchase: %v", err)
+	}
+
+	if s.notificator != nil {
+		msg := fmt.Sprintf("new purchase: %s bought %s (%f)", purchase.Email, purchase.ProductName, float64(purchase.Price)/100)
+		if err := s.notificator.Notify(ctx, msg); err != nil {
+			return fmt.Errorf("could not notify: %v", err)
+		}
 	}
 
 	return s.store.NewPurchase(ctx, purchase)
@@ -141,6 +157,14 @@ func (s *Service) UpsertAttendee(ctx context.Context, attendeeID uuid.UUID, isCh
 	if err := s.store.UpsertAttendee(ctx, attendee); err != nil {
 		return fmt.Errorf("could not upsert attendee: %v", err)
 	}
+
+	if s.notificator != nil {
+		msg := createAttendeeNotification(&attendee)
+		if err := s.notificator.Notify(ctx, msg); err != nil {
+			return fmt.Errorf("could not notify: %v", err)
+		}
+	}
+
 	return nil
 }
 
@@ -149,4 +173,22 @@ func (s *Service) DeleteAttendee(ctx context.Context, attendeeID uuid.UUID) erro
 		return fmt.Errorf("could not delete attendee: %v", err)
 	}
 	return nil
+}
+
+func createAttendeeNotification(a *models.Attendee) string {
+	var sb strings.Builder
+	sb.WriteString("attendee updated: ")
+	sb.WriteString(a.Name)
+	if a.IsChild {
+		sb.WriteString(" (child)")
+	}
+	sb.WriteString(" -> ")
+	if a.Confirmed.Valid && a.Confirmed.Bool {
+		sb.WriteString("confirmed")
+	} else if a.Confirmed.Valid {
+		sb.WriteString("won't go")
+	} else {
+		sb.WriteString("not confirmed")
+	}
+	return sb.String()
 }
