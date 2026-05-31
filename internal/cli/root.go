@@ -14,6 +14,7 @@ var rootCmd = &cobra.Command{
 
 func init() {
 	rootCmd.PersistentFlags().StringVarP(&globalFlagURL, "url", "u", "http://localhost:8080/v1", "API URL")
+	rootCmd.CompletionOptions.HiddenDefaultCmd = true
 }
 
 func Execute() error {

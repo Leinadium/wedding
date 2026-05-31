@@ -1,4 +1,4 @@
-package request
+package client
 
 import (
 	"bytes"
@@ -9,18 +9,18 @@ import (
 	"net/http"
 )
 
-// APIClient holds the underlying http.Client and base URL.
-type APIClient struct {
+// apiClient holds the underlying http.Client and base URL.
+type apiClient struct {
 	BaseURL    string
 	HTTPClient *http.Client
 }
 
 // NewAPIClient creates a new client. It defaults to http.DefaultClient if nil is passed.
-func New(baseURL string, client *http.Client) *APIClient {
+func NewAPIClient(baseURL string, client *http.Client) *apiClient {
 	if client == nil {
 		client = http.DefaultClient
 	}
-	return &APIClient{
+	return &apiClient{
 		BaseURL:    baseURL,
 		HTTPClient: client,
 	}
@@ -28,7 +28,7 @@ func New(baseURL string, client *http.Client) *APIClient {
 
 // doRequest is the internal helper that executes the HTTP request.
 // reqBody is marshaled to JSON if provided. resBody is populated from the JSON response if provided.
-func (c *APIClient) doRequest(ctx context.Context, method, path string, headers map[string]string, reqBody any, resBody any) error {
+func (c *apiClient) doRequest(ctx context.Context, method, path string, headers map[string]string, reqBody any, resBody any) error {
 	var bodyReader io.Reader
 
 	// 1. Marshal Request Payload (if any)
@@ -82,7 +82,7 @@ func (c *APIClient) doRequest(ctx context.Context, method, path string, headers 
 
 // Get performs an HTTP GET request.
 // Type parameter Res represents the expected JSON response struct.
-func Get[Res any](c *APIClient, ctx context.Context, path string, headers map[string]string) (*Res, error) {
+func Get[Res any](c *apiClient, ctx context.Context, path string, headers map[string]string) (*Res, error) {
 	var res Res
 	err := c.doRequest(ctx, http.MethodGet, path, headers, nil, &res)
 	if err != nil {
@@ -93,7 +93,7 @@ func Get[Res any](c *APIClient, ctx context.Context, path string, headers map[st
 
 // Post performs an HTTP POST request.
 // Type Req is the payload struct, Res is the expected response struct.
-func Post[Req any, Res any](c *APIClient, ctx context.Context, path string, headers map[string]string, payload Req) (*Res, error) {
+func Post[Req any, Res any](c *apiClient, ctx context.Context, path string, headers map[string]string, payload Req) (*Res, error) {
 	var res Res
 	err := c.doRequest(ctx, http.MethodPost, path, headers, payload, &res)
 	if err != nil {
@@ -103,7 +103,7 @@ func Post[Req any, Res any](c *APIClient, ctx context.Context, path string, head
 }
 
 // Patch performs an HTTP PATCH request.
-func Patch[Req any, Res any](c *APIClient, ctx context.Context, path string, headers map[string]string, payload Req) (*Res, error) {
+func Patch[Req any, Res any](c *apiClient, ctx context.Context, path string, headers map[string]string, payload Req) (*Res, error) {
 	var res Res
 	err := c.doRequest(ctx, http.MethodPatch, path, headers, payload, &res)
 	if err != nil {
@@ -113,7 +113,7 @@ func Patch[Req any, Res any](c *APIClient, ctx context.Context, path string, hea
 }
 
 // Delete performs an HTTP DELETE request.
-func Delete(c *APIClient, ctx context.Context, path string, headers map[string]string) error {
+func Delete(c *apiClient, ctx context.Context, path string, headers map[string]string) error {
 	err := c.doRequest(ctx, http.MethodDelete, path, headers, nil, nil)
 	if err != nil {
 		return err

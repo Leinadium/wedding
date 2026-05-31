@@ -27,7 +27,7 @@
 
     <section class="intro">
       <p>We're so excited to celebrate with you!</p>
-      <p>Join us on January 17th, 2027.</p>
+      <p>Join us on Month 00th, 2027.</p>
     </section>
 
     <!-- RSVP wrapper -->

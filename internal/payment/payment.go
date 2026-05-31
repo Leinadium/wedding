@@ -30,7 +30,7 @@ type Service struct {
 func New(p Params) *Service {
 	return &Service{
 		client:        stripe.NewClient(p.Key),
-		successURL:    fmt.Sprintf("%s/success?session_id={CHECKOUT_SESSION_ID}", p.Domain),
+		successURL:    fmt.Sprintf("%s/purchase?session_id={CHECKOUT_SESSION_ID}", p.Domain),
 		webhookSecret: p.WebhookSecret,
 	}
 }

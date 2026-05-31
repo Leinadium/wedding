@@ -1,46 +1,44 @@
-# wedding / api
+# wedding
 
-## API Spec
+My own wedding website. To be hosted on wedding.leinadium.dev
 
-```text
-POST /v1/guest/
-<- {name, phone}
--> 201 ""
--> 400 {error}
--> 500 {error}
+## API
 
-GET /v1/product
--> 200 {products: {id, name, imageURL, priceBRL}}
+The API is a Go project, using the Gin framework. Has integrations with:
 
-POST /v1/product
-<- products: {name, imageURL, priceBRL}
--> {id}
+- Stripe for payment processing and product listing
+- PostgreSQL for data storage
+- Telegram for notifications
 
-GET /v1/product/<id>/payment
--> 200 {url}
+There is a CLI tool for administrative tasks that interact with the API. It can:
 
-GET /v1/purchase/
--> 200 []{email, productID, price}
+- Manage invites
+- Manage attendees
+- List products
+- List purchases
 
-POST /v1/purchase/
-<- {?}
--> 201 ""
--> 500 {error}
+All the API code was written manually (except the boilerplate that is the internal/client/request.go file).
+
+Refer to the `internal/v1` package for features, and `internal/server` for the HTTP server implementation.
+Database schema can be found in the `internal/models` package.
+
+### Executing
+
+Add necessary environment variables to the `.env` file, following the `example.env` file.
+
+Use Docker Compose to run the application, with:
+
+```bash
+docker compose up --build
 ```
 
-## DB Spec
+It builds the API and spawns a PostgreSQL instance.
 
-```text
-Product:
-- stripe_id
-- name
-- image_url
-- price_brl
-- price_stripe_id
-- purchased
+Use the CLI to manage invites, attendees, products, and purchases. To run:
 
-Guest:
-- name
-- phone
-- registerDate
+```bash
+# first, install it
+go install ./cmd/wedding
+
+wedding -h
 ```

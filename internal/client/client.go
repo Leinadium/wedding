@@ -6,7 +6,6 @@ import (
 	"net/http"
 
 	"leinadium.dev/wedding/internal/models"
-	"leinadium.dev/wedding/internal/request"
 )
 
 type CLIClient interface {
@@ -25,14 +24,14 @@ type CLIClient interface {
 type client struct {
 	ctx context.Context
 
-	api  *request.APIClient
+	api  *apiClient
 	auth string
 }
 
 func New(url string) CLIClient {
 	return &client{
 		ctx:  context.Background(),
-		api:  request.New(url, &http.Client{}),
+		api:  NewAPIClient(url, &http.Client{}),
 		auth: "",
 	}
 }
@@ -45,7 +44,7 @@ func (c *client) Products() ([]models.Product, error) {
 	type Res struct {
 		Products []models.Product `json:"products"`
 	}
-	res, err := request.Get[Res](c.api, c.ctx, "/product", nil)
+	res, err := Get[Res](c.api, c.ctx, "/product", nil)
 	if err != nil {
 		return nil, err
 	}
@@ -61,7 +60,7 @@ func (c *client) Purchases() ([]models.Purchase, error) {
 	type Res struct {
 		Purchases []models.Purchase `json:"purchases"`
 	}
-	res, err := request.Get[Res](c.api, c.ctx, "/purchase", headers)
+	res, err := Get[Res](c.api, c.ctx, "/purchase", headers)
 	if err != nil {
 		return nil, err
 	}
@@ -77,7 +76,7 @@ func (c *client) Invites() ([]models.Invite, error) {
 	type Res struct {
 		Invites []models.Invite `json:"invites"`
 	}
-	res, err := request.Get[Res](c.api, c.ctx, "/invite", headers)
+	res, err := Get[Res](c.api, c.ctx, "/invite", headers)
 	if err != nil {
 		return nil, err
 	}
@@ -93,7 +92,7 @@ func (c *client) CreateInvite(invite models.Invite) (models.InviteID, error) {
 	type Res struct {
 		InviteID models.InviteID `json:"id"`
 	}
-	res, err := request.Post[models.Invite, Res](c.api, c.ctx, "/invite", headers, invite)
+	res, err := Post[models.Invite, Res](c.api, c.ctx, "/invite", headers, invite)
 	if err != nil {
 		return "", err
 	}
@@ -105,7 +104,7 @@ func (c *client) DeleteInvite(inviteID models.InviteID) error {
 	if err != nil {
 		return err
 	}
-	return request.Delete(c.api, c.ctx, "/invite/"+string(inviteID), headers)
+	return Delete(c.api, c.ctx, "/invite/"+string(inviteID), headers)
 }
 
 func (c *client) Attendees() ([]models.Attendee, error) {
@@ -117,7 +116,7 @@ func (c *client) Attendees() ([]models.Attendee, error) {
 	type Res struct {
 		Attendees []models.Attendee `json:"attendees"`
 	}
-	res, err := request.Get[Res](c.api, c.ctx, "/attendee", headers)
+	res, err := Get[Res](c.api, c.ctx, "/attendee", headers)
 	if err != nil {
 		return nil, err
 	}
@@ -129,7 +128,7 @@ func (c *client) DeleteAttendee(attendeeID models.AttendeeID) error {
 	if err != nil {
 		return err
 	}
-	return request.Delete(c.api, c.ctx, "/attendee/"+string(attendeeID.String()), headers)
+	return Delete(c.api, c.ctx, "/attendee/"+string(attendeeID.String()), headers)
 }
 
 func (c *client) authReq() (map[string]string, error) {
