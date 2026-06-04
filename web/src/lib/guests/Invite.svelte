@@ -1,8 +1,15 @@
 <script lang="ts">
+  import { fade, fly } from "svelte/transition";
   import { onMount } from "svelte";
   import { api, type InviteResponse } from "../api";
   import Attendee from "./Attendee.svelte";
   import { loadStoredInvite, saveStoredInvite } from "./state";
+
+  let {
+    closeCb,
+  }: {
+    closeCb: () => void;
+  } = $props();
 
   let inviteCode: string = $state("");
   let isLoading: boolean = $state(false);
@@ -63,85 +70,124 @@
   }
 </script>
 
-<div class="invite">
-  <div class="invite-input">
-    <span>Input the code received in the invite</span>
-    <input type="text" placeholder="e.g. ABC123" bind:value={inviteCode} />
-  </div>
-  {#if invite}
-    <div class="invite-content">
-      {#each invite.attendees as attendee, i}
-        <Attendee
-          {attendee}
-          updateStatus={updateAttendeeStatusFactory(i)}
-          updateIsChild={updateAttendeeIsChildFactory(i)}
+<div class="invite-wrapper" transition:fade={{ duration: 300 }}>
+  <div class="invite" transition:fly={{ duration: 300, y: +150 }}>
+    <div class="input">
+      <span>Input the code received in the invite</span>
+      <input type="text" placeholder="ABC123" bind:value={inviteCode} />
+    </div>
+    {#if invite}
+      <div class="content">
+        {#each invite.attendees as attendee, i}
+          <Attendee
+            {attendee}
+            updateStatus={updateAttendeeStatusFactory(i)}
+            updateIsChild={updateAttendeeIsChildFactory(i)}
+          />
+        {/each}
+      </div>
+      <div class="note">
+        <input
+          type="text"
+          placeholder="Any observations or comments"
+          bind:value={currentNote}
         />
-      {/each}
-    </div>
-    <div class="invite-note">
-      <input
-        type="text"
-        placeholder="Any observations or comments"
-        bind:value={currentNote}
-      />
-    </div>
-
-    <div class="invite-confirm">
-      <input type="submit" value="Save" onclick={saveInvite} />
-    </div>
-  {/if}
+      </div>
+      <div class="confirm">
+        <input type="submit" value="Save" onclick={saveInvite} />
+      </div>
+    {/if}
+    <button class="close" onclick={closeCb}>X</button>
+  </div>
 </div>
 
 <style>
+  .invite-wrapper {
+    position: fixed;
+    top: 0;
+    left: 0;
+
+    width: 100vw;
+    height: 100vh;
+
+    display: flex;
+    flex-flow: column nowrap;
+    justify-content: center;
+    align-items: center;
+
+    background-color: rgba(0, 0, 0, 0.6);
+    z-index: 999;
+  }
+
   .invite {
+    position: relative;
     display: flex;
     flex-direction: column;
     gap: 1.5rem;
-    padding: 1.5rem;
-    background-color: #f9fafb;
+    padding: 2rem;
     border: 1px solid #e5e7eb;
     border-radius: 8px;
     font-family:
       system-ui,
       -apple-system,
       sans-serif;
+
+    background-image: url("src/assets/images/texture.png");
+    background-color: #f0f0f0;
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
+
+    width: 80%;
+    max-width: 800px;
+    min-height: 500px;
+    height: auto;
+    max-height: 90vh;
+    overflow-y: auto;
   }
 
   /* Stacks the span above the input naturally */
-  .invite-input {
+  .input {
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
+
+    display: flex;
+    flex-flow: column nowrap;
+    align-items: center;
+    justify-content: center;
   }
 
-  .invite-input span {
+  .input span {
     font-size: 0.875rem;
     color: #4b5563;
     font-weight: 500;
   }
 
   /* Shared styling for text inputs */
-  .invite-input input,
-  .invite-note input {
+  .input input,
+  .note input {
     padding: 0.75rem;
     border: 1px solid #d1d5db;
     border-radius: 6px;
     font-size: 1rem;
     width: 100%;
     box-sizing: border-box;
+    text-align: center;
     transition:
       border-color 0.2s,
       box-shadow 0.2s;
+
+    width: 80%;
+    max-width: 100px;
   }
 
-  .invite-input input:focus,
-  .invite-note input:focus {
+  .input input:focus,
+  .note input:focus {
     outline: none;
     border-color: #3b82f6;
     box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
   }
 
-  .invite-content {
+  .content {
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
@@ -150,12 +196,12 @@
     border-bottom: 1px solid #e5e7eb;
   }
 
-  .invite-confirm {
+  .confirm {
     display: flex;
     justify-content: flex-end; /* Aligns the save button to the right */
   }
 
-  .invite-confirm input[type="submit"] {
+  .confirm input[type="submit"] {
     padding: 0.75rem 2rem;
     background-color: #111827;
     color: white;
@@ -167,7 +213,20 @@
     transition: background-color 0.2s;
   }
 
-  .invite-confirm input[type="submit"]:hover {
+  .confirm input[type="submit"]:hover {
     background-color: #374151;
+  }
+
+  .close {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    color: #777;
+
+    cursor: pointer;
   }
 </style>

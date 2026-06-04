@@ -9,36 +9,6 @@
 
   // Fetch products on mount
   $effect(() => {
-    // products = [
-    //   {
-    //     id: "123",
-    //     name: "produto 1",
-    //     imageURL: "",
-    //     priceBRL: 1234,
-    //     purchased: false,
-    //   },
-    //   {
-    //     id: "123",
-    //     name: "produto 1",
-    //     imageURL: "",
-    //     priceBRL: 1234,
-    //     purchased: false,
-    //   },
-    //   {
-    //     id: "123",
-    //     name: "produto 1",
-    //     imageURL: "",
-    //     priceBRL: 1234,
-    //     purchased: false,
-    //   },
-    //   {
-    //     id: "123",
-    //     name: "produto 1",
-    //     imageURL: "",
-    //     priceBRL: 1234,
-    //     purchased: false,
-    //   },
-    // ];
     api.getProducts().then((res) => (products = res.products));
   });
 

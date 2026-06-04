@@ -37,7 +37,7 @@
       </button>
 
       {#if rsvpOpen}
-        <Invite />
+        <Invite closeCb={toggleRSVP} />
       {/if}
     </div>
 
