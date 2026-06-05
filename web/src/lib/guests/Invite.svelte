@@ -74,11 +74,21 @@
   <div class="invite" transition:fly={{ duration: 300, y: +150 }}>
     <span class="title great-cursive">RSVP</span>
     <div class="input cursive">
-      <span>Input the code received in the invite:</span>
+      <span>Input the code received:</span>
       <input type="text" placeholder="ABC123" bind:value={inviteCode} />
     </div>
+    {#if isLoading}
+      <span class="cursive">Loading...</span>
+    {/if}
     {#if invite}
-      <div class="content">
+      <span
+        class="description-content cursive"
+        transition:fly={{ duration: 300, y: +100 }}
+      >
+        You can confirm your presence by clicking on the current status of each
+        attendee.
+      </span>
+      <div class="content" transition:fly={{ duration: 300, y: +100 }}>
         {#each invite.attendees as attendee, i}
           <Attendee
             {attendee}
@@ -87,14 +97,14 @@
           />
         {/each}
       </div>
-      <div class="note">
-        <input
-          type="text"
-          placeholder="Any observations or comments"
-          bind:value={currentNote}
-        />
-      </div>
-      <div class="confirm">
+
+      <textarea
+        class="note"
+        transition:fly={{ duration: 300, y: +100 }}
+        placeholder="Any observations or comments"
+        bind:value={currentNote}
+      ></textarea>
+      <div class="confirm" transition:fly={{ duration: 300, y: +100 }}>
         <input type="submit" value="Save" onclick={saveInvite} />
       </div>
     {/if}
@@ -124,6 +134,7 @@
     position: relative;
     display: flex;
     flex-direction: column;
+    align-items: center;
     gap: 1.5rem;
     padding: 2rem;
     border: 1px solid #e5e7eb;
@@ -172,13 +183,33 @@
     font-weight: 300;
   }
 
+  .description-content {
+    font-size: 1.3rem;
+    color: #4b5563;
+    font-weight: 300;
+  }
+
   .content {
+    width: 100%;
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
     padding: 1rem 0;
     border-top: 1px solid #e5e7eb;
     border-bottom: 1px solid #e5e7eb;
+  }
+
+  .note {
+    font-size: 1rem;
+    color: #4b5563;
+    font-weight: 300;
+
+    width: 90%;
+    height: 100px;
+
+    text-align: left;
+    vertical-align: top;
+    font-family: cursive;
   }
 
   .confirm {
@@ -220,9 +251,9 @@
   }
 
   .great-cursive {
-    font-family: "Great Vibes", cursive;
+    font-family: "Alex Brush", cursive;
   }
   .cursive {
-    font-family: "Parisienne", cursive;
+    font-family: "Dancing Script", cursive;
   }
 </style>

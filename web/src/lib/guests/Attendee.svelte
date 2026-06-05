@@ -14,20 +14,20 @@
   function statusToText(status: boolean | null): string {
     switch (status) {
       case true:
-        return "✅ Will be there!";
+        return "Confirmed!";
       case false:
-        return "❌ Won't go :(";
+        return "Won't attend.";
       default:
-        return "⏳ Pending";
+        return "Pending...";
     }
   }
 
   function statusToClass(status: boolean | null): string {
     switch (status) {
       case true:
-        return "confirmed";
+        return "yes";
       case false:
-        return "not-confirmed";
+        return "no";
       default:
         return "pending";
     }
@@ -57,97 +57,77 @@
 </script>
 
 <div class="attendee">
+  <button class="child" onclick={toggleIsChild}>
+    {attendee.isChild ? "Child" : "Adult"}
+  </button>
+
   <span class="name">{attendee.name}</span>
 
   <button class="status {statusClass}" onclick={toggleStatus}>
     {statusText}
   </button>
-
-  <div class="child-container">
-    <span class="child-label">Child?</span>
-    <input
-      type="checkbox"
-      checked={attendee.isChild}
-      onchange={toggleIsChild}
-    />
-  </div>
 </div>
 
 <style>
   .attendee {
     display: flex;
+    flex-flow: row nowrap;
+    justify-content: right;
     align-items: center;
-    gap: 1.5rem; /* Slightly wider gap for better spacing */
-    padding: 0.75rem 1rem;
-    background-color: white;
-    border: 1px solid #e5e7eb;
+    gap: 1rem; /* Slightly wider gap for better spacing */
     border-radius: 6px;
+
+    font-family: cursive;
+    font-size: 1.3rem;
   }
 
   .name {
-    flex: 1; /* Pushes everything else to the right */
+    flex: 1;
+    width: 100%;
     font-weight: 500;
     color: #1f2937;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    text-align: left;
   }
 
-  .status {
-    /* FIX: Fixed width and flex-shrink prevents layout shifting */
-    width: 120px;
-    flex-shrink: 0;
-    text-align: center;
+  button {
+    background-color: rgba(0, 0, 0, 0.05);
 
-    padding: 0.5rem 0; /* Removed horizontal padding to let width control it */
-    border: 1px solid #d1d5db;
-    border-radius: 6px;
-    background-color: white;
-    color: #374151;
-    font-size: 0.875rem;
+    cursor: pointer;
+    padding: 0.2rem 0.3rem;
     font-weight: 500;
-    cursor: pointer;
-    transition: background-color 0.2s;
+    font-size: 1.2rem;
+    font-family: cursive;
+    text-decoration: underline;
+
+    border: 1px solid transparent;
+    border-radius: 5px;
+
+    transition: border 0.2s ease-in-out;
   }
 
-  .status:hover {
-    background-color: #f3f4f6;
+  button:hover {
+    border: 1px solid #767;
   }
 
-  :global(.status.confirmed) {
-    background-color: #dcfce7;
+  .child {
+    color: #767;
+  }
+
+  :global(.status.yes) {
     color: #166534;
-    border-color: #bbf7d0;
+    background-color: #16653430;
   }
 
-  :global(.status.declined) {
-    background-color: #fee2e2;
+  :global(.status.no) {
     color: #991b1b;
-    border-color: #fecaca;
+    background-color: #991b1b30;
   }
 
-  /* NEW: Stacks the label on top of the checkbox */
-  .child-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 0.25rem;
-    flex-shrink: 0; /* Prevents the checkbox area from squeezing */
-  }
-
-  .child-label {
-    font-size: 0.75rem;
-    color: #6b7280;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-  }
-
-  input[type="checkbox"] {
-    width: 1.25rem;
-    height: 1.25rem;
-    cursor: pointer;
-    accent-color: #111827;
-    margin: 0;
+  :global(.status.pending) {
+    color: #92400e;
+    background-color: #99999930;
   }
 </style>
