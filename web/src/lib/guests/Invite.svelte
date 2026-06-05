@@ -72,8 +72,9 @@
 
 <div class="invite-wrapper" transition:fade={{ duration: 300 }}>
   <div class="invite" transition:fly={{ duration: 300, y: +150 }}>
-    <div class="input">
-      <span>Input the code received in the invite</span>
+    <span class="title great-cursive">RSVP</span>
+    <div class="input cursive">
+      <span>Input the code received in the invite:</span>
       <input type="text" placeholder="ABC123" bind:value={inviteCode} />
     </div>
     {#if invite}
@@ -137,54 +138,38 @@
     box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
 
     width: 80%;
-    max-width: 800px;
+    max-width: 500px;
     min-height: 500px;
     height: auto;
     max-height: 90vh;
     overflow-y: auto;
   }
 
-  /* Stacks the span above the input naturally */
   .input {
     display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
+    flex-direction: row nowrap;
+    gap: 1rem;
 
-    display: flex;
-    flex-flow: column nowrap;
     align-items: center;
     justify-content: center;
   }
 
   .input span {
-    font-size: 0.875rem;
+    font-size: 1.5rem;
     color: #4b5563;
-    font-weight: 500;
+    font-weight: 300;
   }
 
-  /* Shared styling for text inputs */
-  .input input,
-  .note input {
-    padding: 0.75rem;
-    border: 1px solid #d1d5db;
-    border-radius: 6px;
-    font-size: 1rem;
-    width: 100%;
-    box-sizing: border-box;
-    text-align: center;
-    transition:
-      border-color 0.2s,
-      box-shadow 0.2s;
-
+  .input input {
     width: 80%;
-    max-width: 100px;
-  }
-
-  .input input:focus,
-  .note input:focus {
-    outline: none;
-    border-color: #3b82f6;
-    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+    max-width: 80px;
+    padding: 0.5rem;
+    border: 0;
+    border-bottom: 1px solid black;
+    background: transparent;
+    font-size: 1rem;
+    color: #4b5563;
+    font-weight: 300;
   }
 
   .content {
@@ -228,5 +213,16 @@
     color: #777;
 
     cursor: pointer;
+  }
+
+  .title {
+    font-size: 2rem;
+  }
+
+  .great-cursive {
+    font-family: "Great Vibes", cursive;
+  }
+  .cursive {
+    font-family: "Parisienne", cursive;
   }
 </style>
