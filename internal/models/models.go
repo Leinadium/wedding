@@ -12,7 +12,7 @@ type Invite struct {
 	ID        InviteID   `gorm:"primary_key" json:"id"`
 	Phone     string     `json:"phone"`
 	Note      string     `json:"note"`
-	Attendees []Attendee `json:"attendees" gorm:"foreignKey:InviteID"`
+	Attendees []Attendee `json:"attendees" gorm:"foreignKey:InviteID;constraint:OnDelete:CASCADE;"`
 }
 
 type AttendeeID = uuid.UUID
