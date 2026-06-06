@@ -3,6 +3,7 @@
   import Gifts from "./lib/gifts/Gifts.svelte";
   import Header from "./lib/screen/Header.svelte";
   import Footer from "./lib/screen/Footer.svelte";
+  import Countdown from "./lib/countdown/Countdown.svelte";
   // 1. Logic for collapsible sections
   let rsvpOpen = $state(false);
   let giftsOpen = $state(false);
@@ -56,6 +57,8 @@
       {/if}
     </div>
   </div>
+
+  <Countdown />
 
   <Footer />
 </main>
