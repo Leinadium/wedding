@@ -4,6 +4,7 @@
   import Header from "./lib/screen/Header.svelte";
   import Footer from "./lib/screen/Footer.svelte";
   import Countdown from "./lib/countdown/Countdown.svelte";
+  import Landing from "./lib/screen/Landing.svelte";
   // 1. Logic for collapsible sections
   let rsvpOpen = $state(false);
   let giftsOpen = $state(false);
@@ -22,6 +23,8 @@
 
 <main>
   <Header />
+
+  <Landing enableRSVP={toggleRSVP} />
 
   <div class="content">
     <h1 class="title">Our Big Day</h1>
@@ -66,7 +69,7 @@
 <style>
   :global(body) {
     margin: 0;
-    background-color: #fffaf5;
+    background-color: #c79ead;
     color: #4a4a4a;
     font-family: "Georgia", serif;
   }

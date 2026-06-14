@@ -17,6 +17,14 @@
   let invite: InviteResponse | undefined = $state(undefined);
   let currentNote: string = $state("");
 
+  let buttonSave = $state("");
+  function save() {
+    buttonSave = "saved";
+    setTimeout(() => {
+      buttonSave = "";
+    }, 3000);
+  }
+
   onMount(() => {
     let invite = loadStoredInvite();
     if (invite) {
@@ -66,6 +74,7 @@
     for (let i = 0; i < invite!.attendees.length; i++) {
       const attendee = invite!.attendees[i];
       await api.saveAttendee(attendee);
+      save();
     }
   }
 </script>
@@ -104,12 +113,16 @@
         placeholder="Any observations or comments"
         bind:value={currentNote}
       ></textarea>
-      <div class="confirm" transition:fly={{ duration: 300, y: +100 }}>
+      <div
+        class="confirm {buttonSave}"
+        transition:fly={{ duration: 300, y: +100 }}
+      >
         <input type="submit" value="Save" onclick={saveInvite} />
       </div>
     {/if}
     <button class="close" onclick={closeCb}>X</button>
   </div>
+  <!-- <img src="src/assets/invite/invite.png" alt="invite" /> -->
 </div>
 
 <style>
@@ -144,7 +157,7 @@
       -apple-system,
       sans-serif;
 
-    background-image: url("src/assets/images/texture.png");
+    background-image: url("src/assets/invite/texture.png");
     background-color: #f0f0f0;
     box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
 

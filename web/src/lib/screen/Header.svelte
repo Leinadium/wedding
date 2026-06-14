@@ -13,6 +13,6 @@
     text-transform: uppercase;
     letter-spacing: 3px;
     font-size: 0.9rem;
-    color: #8a7b6e;
+    color: #fae7b6;
   }
 </style>
