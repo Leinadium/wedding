@@ -1,5 +1,5 @@
 <header>
-  <span class="names">Daniel & Gabi</span>
+  <span class="names">Gabi & Daniel</span>
 </header>
 
 <style>
@@ -12,7 +12,7 @@
   span {
     text-transform: uppercase;
     letter-spacing: 3px;
-    font-size: 0.9rem;
+    font-size: 1rem;
     color: #fae7b6;
   }
 </style>

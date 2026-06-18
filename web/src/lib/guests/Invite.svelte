@@ -267,6 +267,6 @@
     font-family: "Alex Brush", cursive;
   }
   .cursive {
-    font-family: "Dancing Script", cursive;
+    font-family: "Great Vibes", cursive;
   }
 </style>

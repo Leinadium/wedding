@@ -1,5 +1,7 @@
 <script lang="ts">
+  import { fly } from "svelte/transition";
   import Invite from "../guests/Invite.svelte";
+  import { cubicIn } from "svelte/easing";
 
   let invite = $state(false);
 
@@ -9,11 +11,31 @@
 </script>
 
 <div id="landing">
-  <img id="l1" src="src/assets/landing/l1.png" alt="card" />
-  <img id="l2" src="src/assets/landing/l2.png" alt="invite" />
-  <img id="l3" src="src/assets/landing/l3.png" alt="couple" />
+  <img
+    id="l1"
+    src="src/assets/landing/l1.png"
+    alt="card"
+    transition:fly={{ delay: 150, y: 100, duration: 1000 }}
+  />
+  <img
+    id="l2"
+    src="src/assets/landing/l2.png"
+    alt="invite"
+    transition:fly={{ delay: 250, y: 120, duration: 1100 }}
+  />
+  <img
+    id="l3"
+    src="src/assets/landing/l3.png"
+    alt="couple"
+    transition:fly={{ delay: 500, y: 80, duration: 500 }}
+  />
   <button id="l4" onclick={toggleInvite}>
-    <img class="inside" src="src/assets/landing/l4.png" alt="details" />
+    <img
+      class="inside"
+      src="src/assets/landing/l4.png"
+      alt="details"
+      transition:fly={{ delay: 750, y: 120, duration: 800 }}
+    />
   </button>
 
   {#if invite}
