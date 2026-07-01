@@ -1,7 +1,11 @@
+<script lang="ts">
+  import github from "../../assets/github.svg";
+</script>
+
 <footer>
   <span>Feito com ♥️ por Daniel e Gabi</span>
   <a href="https://github.com/Leinadium/wedding">
-    <img src="/src/assets/github.svg" alt="Github" />
+    <img src={github} alt="Github" />
   </a>
 </footer>
 

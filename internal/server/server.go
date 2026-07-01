@@ -41,6 +41,9 @@ func New(svc *v1.Service, p Params) *Server {
 		authSecret: p.AuthSecret,
 	}
 
+	debug := engine.Group("/debug")
+	debug.GET("/status", server.getStatus)
+
 	api := engine.Group("/v1")
 	api.GET("/product", server.getProducts)
 	api.GET("/product/:id/payment", server.getProductPayment)
@@ -79,6 +82,10 @@ func (s *Server) checkAuth(c *gin.Context) bool {
 		return false
 	}
 	return true
+}
+
+func (s *Server) getStatus(c *gin.Context) {
+	c.JSON(http.StatusOK, gin.H{"status": "ok"})
 }
 
 func (s *Server) getProducts(c *gin.Context) {

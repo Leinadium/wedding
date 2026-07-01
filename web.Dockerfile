@@ -7,6 +7,6 @@ RUN npm run build
 RUN npm prune --production
 
 FROM nginx:alpine
-COPY web/deploy/nginx.conf /etc/nginx/conf.d/default.conf
+COPY infra/nginx.conf /etc/nginx/templates/default.conf.template
 COPY --from=builder /app/dist /usr/share/nginx/html
 EXPOSE 3000

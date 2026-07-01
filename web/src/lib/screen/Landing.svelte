@@ -1,4 +1,9 @@
 <script lang="ts">
+  import l1 from "../../assets/landing/l1.png";
+  import l2 from "../../assets/landing/l2.png";
+  import l3 from "../../assets/landing/l3.png";
+  import l4 from "../../assets/landing/l4.png";
+
   import { fly } from "svelte/transition";
   import Invite from "../guests/Invite.svelte";
   import { cubicIn } from "svelte/easing";
@@ -13,26 +18,26 @@
 <div id="landing">
   <img
     id="l1"
-    src="src/assets/landing/l1.png"
+    src={l1}
     alt="card"
     transition:fly={{ delay: 150, y: 100, duration: 1000 }}
   />
   <img
     id="l2"
-    src="src/assets/landing/l2.png"
+    src={l2}
     alt="invite"
     transition:fly={{ delay: 250, y: 120, duration: 1100 }}
   />
   <img
     id="l3"
-    src="src/assets/landing/l3.png"
+    src={l3}
     alt="couple"
     transition:fly={{ delay: 500, y: 80, duration: 500 }}
   />
   <button id="l4" onclick={toggleInvite}>
     <img
       class="inside"
-      src="src/assets/landing/l4.png"
+      src={l4}
       alt="details"
       transition:fly={{ delay: 750, y: 120, duration: 800 }}
     />

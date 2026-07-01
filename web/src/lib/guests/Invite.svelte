@@ -157,7 +157,7 @@
       -apple-system,
       sans-serif;
 
-    background-image: url("src/assets/invite/texture.png");
+    background-image: url("../../assets/invite/texture.png");
     background-color: #f0f0f0;
     box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
 
