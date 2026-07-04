@@ -13,8 +13,9 @@ import (
 )
 
 type Params struct {
-	AuthSecret string
-	StaticDir  string
+	AuthSecret   string
+	AllowOrigins []string
+	StaticDir    string
 }
 
 type Server struct {
@@ -29,7 +30,7 @@ func New(svc *v1.Service, p Params) *Server {
 	_ = engine.SetTrustedProxies(nil)
 
 	engine.Use(cors.New(cors.Config{
-		AllowOrigins:     []string{"http://localhost:5173"},
+		AllowOrigins:     p.AllowOrigins,
 		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"},
 		AllowHeaders:     []string{"Content-Type"},
 		AllowCredentials: true,

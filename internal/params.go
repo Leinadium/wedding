@@ -1,6 +1,8 @@
 package internal
 
-import "github.com/caarlos0/env/v11"
+import (
+	"github.com/caarlos0/env/v11"
+)
 
 type Params struct {
 	ServerURL  string `env:"SERVER_URL" envDefault:"http://localhost:8080"`
@@ -16,9 +18,10 @@ type Params struct {
 	TelegramToken  string `env:"TELEGRAM_TOKEN"`
 	TelegramChatID string `env:"TELEGRAM_CHAT_ID"`
 
-	UseStaticStore bool   `env:"USE_STATIC_STORE" envDefault:"false"`
-	UseSync        bool   `env:"USE_SYNC" envDefault:"false"`
-	StaticDir      string `env:"STATIC_DIR"`
+	UseStaticStore bool     `env:"USE_STATIC_STORE" envDefault:"false"`
+	UseSync        bool     `env:"USE_SYNC" envDefault:"false"`
+	StaticDir      string   `env:"STATIC_DIR"`
+	AllowOrigins   []string `env:"ALLOW_ORIGINS"`
 }
 
 func NewParams() (p Params, err error) {
