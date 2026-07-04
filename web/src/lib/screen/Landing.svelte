@@ -53,7 +53,7 @@
     id="l6"
     src={l6}
     alt="stamp"
-    transition:fly={{ delay: 900, y: 60, duration: 900 }}
+    transition:fly={{ delay: 830, y: 60, duration: 600 }}
   />
 
   {#if invite}

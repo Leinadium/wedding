@@ -1,0 +1,16 @@
+services:
+  wedding-db:
+    networks:
+      - internal
+
+  wedding-server:
+    networks:
+      - internal
+
+  wedding-web:
+    networks:
+      - internal
+
+networks:
+  internal:
+    external: true
