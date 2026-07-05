@@ -23,8 +23,7 @@
 
 <main>
   <Header />
-
-  <Landing enableRSVP={toggleRSVP} />
+  <Landing />
 
   <div class="content">
     <h1 class="title">Our Big Day</h1>

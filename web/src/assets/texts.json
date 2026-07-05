@@ -1,0 +1,16 @@
+{
+  "header-date": "01-01-2000",
+  "header-names": "Name & Name",
+  "footer-madeby": "Made with ♥️ by Name and Name",
+
+  "invite-title": "RSVP",
+  "invite-input": "Input the code received:",
+  "invite-loading": "Loading...",
+  "invite-description": "You can confirm your presence by clicking on the current status of each attendee",
+  "invite-comments": "Any observations or comments",
+  "invite-save": "Save",
+
+  "attendee-confirmed": "Confirmed!",
+  "attendee-wontgo": "Won't go :(",
+  "attendee-pending": "Pending"
+}

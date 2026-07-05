@@ -4,6 +4,8 @@
   import { api, type InviteResponse } from "../api";
   import Attendee from "./Attendee.svelte";
   import { loadStoredInvite, saveStoredInvite } from "./state";
+  import Text from "../text/Text.svelte";
+  import { getText } from "../text/text";
 
   let {
     closeCb,
@@ -81,21 +83,26 @@
 
 <div class="invite-wrapper" transition:fade={{ duration: 300 }}>
   <div class="invite" transition:fly={{ duration: 300, y: +150 }}>
-    <span class="title great-cursive">RSVP</span>
+    <span class="title great-cursive">
+      <Text key="invite-title" />
+    </span>
     <div class="input cursive">
-      <span>Input the code received:</span>
+      <span>
+        <Text key="invite-input" />
+      </span>
       <input type="text" placeholder="ABC123" bind:value={inviteCode} />
     </div>
     {#if isLoading}
-      <span class="cursive">Loading...</span>
+      <span class="cursive">
+        <Text key="invite-loading" />
+      </span>
     {/if}
     {#if invite}
       <span
         class="description-content cursive"
         transition:fly={{ duration: 300, y: +100 }}
       >
-        You can confirm your presence by clicking on the current status of each
-        attendee.
+        <Text key="invite-description" />
       </span>
       <div class="content" transition:fly={{ duration: 300, y: +100 }}>
         {#each invite.attendees as attendee, i}
@@ -110,14 +117,18 @@
       <textarea
         class="note"
         transition:fly={{ duration: 300, y: +100 }}
-        placeholder="Any observations or comments"
+        placeholder={getText("invite-comments")}
         bind:value={currentNote}
       ></textarea>
       <div
         class="confirm {buttonSave}"
         transition:fly={{ duration: 300, y: +100 }}
       >
-        <input type="submit" value="Save" onclick={saveInvite} />
+        <input
+          type="submit"
+          value={getText("invite-save")}
+          onclick={saveInvite}
+        />
       </div>
     {/if}
     <button class="close" onclick={closeCb}>X</button>

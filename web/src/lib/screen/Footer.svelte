@@ -1,9 +1,12 @@
 <script lang="ts">
   import github from "../../assets/github.svg";
+  import Text from "../text/Text.svelte";
 </script>
 
 <footer>
-  <span>Feito com ♥️ por Daniel e Gabi</span>
+  <span>
+    <Text key="footer-madeby" />
+  </span>
   <a href="https://github.com/Leinadium/wedding">
     <img src={github} alt="Github" />
   </a>

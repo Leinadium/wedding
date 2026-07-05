@@ -1,5 +1,6 @@
 <script lang="ts">
   import type { Attendee } from "../api";
+  import { getText } from "../text/text";
 
   let {
     attendee,
@@ -14,11 +15,11 @@
   function statusToText(status: boolean | null): string {
     switch (status) {
       case true:
-        return "Confirmed!";
+        return getText("attendee-confirmed");
       case false:
-        return "Won't attend.";
+        return getText("attendee-wontgo");
       default:
-        return "Pending...";
+        return getText("attendee-pending");
     }
   }
 

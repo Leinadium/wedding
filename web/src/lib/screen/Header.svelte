@@ -1,5 +1,11 @@
+<script>
+  import Text from "../text/Text.svelte";
+</script>
+
 <header>
-  <span class="names">Gabi & Daniel</span>
+  <span class="names">
+    <Text key="header-names" />
+  </span>
 </header>
 
 <style>
