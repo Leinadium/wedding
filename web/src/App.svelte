@@ -68,9 +68,13 @@
 <style>
   :global(body) {
     margin: 0;
-    background-color: #c79ead;
     color: #4a4a4a;
     font-family: "Georgia", serif;
+
+    background-color: #c79ead;
+    background-image:
+        url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.08'/%3E%3C/svg%3E"),
+        radial-gradient(circle at 50% 0%, #c79ead 0%, #a67b8b 100%);
   }
 
   main {
