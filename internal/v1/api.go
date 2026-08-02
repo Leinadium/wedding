@@ -2,6 +2,7 @@ package v1
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"strings"
 
@@ -44,6 +45,10 @@ func (s *Service) Products(ctx context.Context) ([]models.Product, error) {
 	return products, nil
 }
 
+func (s *Service) Purchase(ctx context.Context, sessionID string) (*models.Purchase, error) {
+	return s.payment.Purchase(ctx, payment.Session{ID: sessionID})
+}
+
 func (s *Service) Payment(ctx context.Context, pid models.ProductID) (models.Payment, error) {
 	product, err := s.store.Product(ctx, pid)
 	if err != nil {
@@ -65,7 +70,7 @@ func (s *Service) Purchases(ctx context.Context) ([]models.Purchase, error) {
 	return purchases, nil
 }
 
-func (s *Service) NewPurchase(ctx context.Context, body []byte, signature string) error {
+func (s *Service) NewPurchase(ctx context.Context, body []byte, signature string) (bool, error) {
 	// body <- req body
 	// header <- req.Header.Get("Stripe-Signature")
 	//
@@ -74,29 +79,36 @@ func (s *Service) NewPurchase(ctx context.Context, body []byte, signature string
 	// get purchase from session
 	// store purchase
 	// notify purchase
-	sessions, err := s.payment.Sessions(body, signature)
+	session, err := s.payment.Session(body, signature)
 	if err != nil {
-		return fmt.Errorf("could not get session: %v", err)
+		return false, fmt.Errorf("could not get session: %v", err)
 	}
 
-	if len(sessions) != 1 {
-		return fmt.Errorf("expected 1 session, got %d", len(sessions))
+	if session == nil {
+		return false, nil
 	}
 
-	session := sessions[0]
-	purchase, err := s.payment.Purchase(ctx, session)
+	purchase, err := s.payment.Purchase(ctx, *session)
 	if err != nil {
-		return fmt.Errorf("could not get purchase: %v", err)
+		return false, fmt.Errorf("could not get purchase: %v", err)
 	}
 
-	if s.notificator != nil {
-		msg := fmt.Sprintf("new purchase: %s bought %s (%f)", purchase.Email, purchase.ProductName, float64(purchase.Price)/100)
-		if err := s.notificator.Notify(ctx, msg); err != nil {
-			return fmt.Errorf("could not notify: %v", err)
+	if purchase == nil {
+		return false, errors.New("purchase is nil")
+	}
+
+	go func() {
+		if s.notificator != nil {
+			msg := fmt.Sprintf("new purchase: %s bought %s (%f)", purchase.Email, purchase.ProductName, float64(purchase.Price)/100)
+			if err := s.notificator.Notify(ctx, msg); err != nil {
+				fmt.Printf("could not notify: %v\n", err)
+			}
 		}
-	}
+	}()
 
-	return s.store.NewPurchase(ctx, purchase)
+	fmt.Printf("storing a purchase: %v\n", purchase.ID)
+
+	return true, s.store.NewPurchase(ctx, *purchase)
 }
 
 func (s *Service) NewInvite(ctx context.Context, invite models.Invite) (models.InviteID, error) {

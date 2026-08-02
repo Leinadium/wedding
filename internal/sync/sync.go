@@ -40,9 +40,7 @@ func (s *Service) run(ctx context.Context) {
 	s.lock.Lock()
 	defer s.lock.Unlock()
 
-	fmt.Printf("sync: running\n")
 	s.lastUpdate = time.Now()
-
 	if s.source == nil {
 		fmt.Println("sync: source is nil")
 		return

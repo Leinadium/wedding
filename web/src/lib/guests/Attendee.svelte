@@ -58,9 +58,9 @@
 </script>
 
 <div class="attendee">
-  <button class="child" onclick={toggleIsChild}>
+  <!-- <button class="child" onclick={toggleIsChild}>
     {attendee.isChild ? "Child" : "Adult"}
-  </button>
+  </button> -->
 
   <span class="name">{attendee.name}</span>
 

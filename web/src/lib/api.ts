@@ -1,4 +1,6 @@
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:8080";
+export const API_URL = import.meta.env.VITE_API_URL || "http://localhost:8080";
+export const FRONT_URL =
+  import.meta.env.VITE_FRONT_URL || "http://localhost:5173";
 
 // --- Types ---
 
@@ -25,6 +27,18 @@ export interface ProductListResponse {
 
 export interface PaymentResponse {
   payment: Payment;
+}
+
+export interface PurchaseResponse {
+  purchase: Purchase;
+}
+
+export interface Purchase {
+  id: string;
+  email: string;
+  productId: string;
+  productName: string;
+  price: number;
 }
 
 export interface Attendee {
@@ -73,6 +87,11 @@ export const api = {
   async getPaymentUrl(productId: string): Promise<PaymentResponse> {
     const res = await fetch(`${API_URL}/v1/product/${productId}/payment`);
     return handleResponse<PaymentResponse>(res);
+  },
+
+  async getPurchase(purchaseId: string): Promise<PurchaseResponse> {
+    const res = await fetch(`${API_URL}/v1/purchase/${purchaseId}`);
+    return handleResponse<PurchaseResponse>(res);
   },
 
   async getInvite(inviteCode: string): Promise<InviteResponse> {

@@ -74,7 +74,9 @@
     }
     // for each attendee, save
     for (let i = 0; i < invite!.attendees.length; i++) {
-      const attendee = invite!.attendees[i];
+      var attendee = invite!.attendees[i];
+      // hardcodding as adult
+      attendee.isChild = false;
       await api.saveAttendee(attendee);
       save();
     }
@@ -131,7 +133,7 @@
         />
       </div>
     {/if}
-    <button class="close" onclick={closeCb}>X</button>
+    <button class="close" onclick={closeCb}>&times;</button>
   </div>
   <!-- <img src="src/assets/invite/invite.png" alt="invite" /> -->
 </div>

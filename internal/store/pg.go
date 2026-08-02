@@ -54,7 +54,9 @@ func (p *PGStore) Product(ctx context.Context, pid models.ProductID) (models.Pro
 }
 
 func (p *PGStore) NewPurchase(ctx context.Context, purchase models.Purchase) error {
-	return gorm.G[models.Purchase](p.db).Create(ctx, &purchase)
+	return p.db.Clauses(clause.OnConflict{
+		DoNothing: true,
+	}).Create(&purchase).Error
 }
 
 func (p *PGStore) Purchases(ctx context.Context) ([]models.Purchase, error) {

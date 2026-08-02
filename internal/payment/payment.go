@@ -3,7 +3,9 @@ package payment
 import (
 	"context"
 	"encoding/json"
+	"errors"
 	"fmt"
+	"time"
 
 	"github.com/stripe/stripe-go/v85"
 	"leinadium.dev/wedding/internal/models"
@@ -30,7 +32,7 @@ type Service struct {
 func New(p Params) *Service {
 	return &Service{
 		client:        stripe.NewClient(p.Key),
-		successURL:    fmt.Sprintf("%s/purchase?session_id={CHECKOUT_SESSION_ID}", p.Domain),
+		successURL:    createSuccessURL(p.Domain),
 		webhookSecret: p.WebhookSecret,
 	}
 }
@@ -52,6 +54,13 @@ func (s *Service) CreateSession(ctx context.Context, product models.Product) (Se
 				Quantity: stripe.Int64(1),
 			},
 		},
+		CustomerCreation: stripe.String(string(stripe.CheckoutSessionCustomerCreationAlways)),
+		NameCollection: &stripe.CheckoutSessionCreateNameCollectionParams{
+			Individual: &stripe.CheckoutSessionCreateNameCollectionIndividualParams{
+				Enabled:  stripe.Bool(true),
+				Optional: stripe.Bool(false),
+			},
+		},
 		Mode:       stripe.String(string(stripe.CheckoutSessionModePayment)),
 		SuccessURL: stripe.String(s.successURL),
 		//PaymentMethodTypes: []*string{stripe.String("card"), stripe.String("pix")},
@@ -65,7 +74,7 @@ func (s *Service) CreateSession(ctx context.Context, product models.Product) (Se
 	return Session{URL: session.URL}, nil
 }
 
-func (s *Service) Sessions(body []byte, signature string) ([]Session, error) {
+func (s *Service) Session(body []byte, signature string) (*Session, error) {
 	// Pass the request body and Stripe-Signature header to ConstructEvent, along with the webhook signing key
 	// Use the secret provided by Stripe CLI for local testing
 	// or your webhook endpoint's secret.
@@ -79,8 +88,6 @@ func (s *Service) Sessions(body []byte, signature string) ([]Session, error) {
 		return nil, fmt.Errorf("could not create event: %v", err)
 	}
 
-	var sessions []Session
-
 	if event.Type == stripe.EventTypeCheckoutSessionCompleted ||
 		event.Type == stripe.EventTypeCheckoutSessionAsyncPaymentSucceeded {
 		var cs stripe.CheckoutSession
@@ -88,9 +95,9 @@ func (s *Service) Sessions(body []byte, signature string) ([]Session, error) {
 		if err != nil {
 			return nil, fmt.Errorf("could not unmarshal checkout session: %v", err)
 		}
-		sessions = append(sessions, Session{URL: cs.URL})
+		return &Session{ID: cs.ID, URL: cs.URL}, nil
 	}
-	return sessions, nil
+	return nil, nil
 }
 
 func (s *Service) Products(ctx context.Context, inactive bool) ([]models.Product, error) {
@@ -129,7 +136,7 @@ func (s *Service) Products(ctx context.Context, inactive bool) ([]models.Product
 	return products, nil
 }
 
-func (s *Service) Purchase(ctx context.Context, session Session) (models.Purchase, error) {
+func (s *Service) Purchase(ctx context.Context, session Session) (*models.Purchase, error) {
 	// TODO: Make this function safe to run multiple times,
 	// even concurrently, with the same session ID
 
@@ -139,23 +146,20 @@ func (s *Service) Purchase(ctx context.Context, session Session) (models.Purchas
 	// Retrieve the Checkout Session from the API with line_items expanded
 	params := &stripe.CheckoutSessionRetrieveParams{}
 	params.AddExpand("line_items")
+	params.AddExpand("customer")
 
 	cs, _ := s.client.V1CheckoutSessions.Retrieve(ctx, session.ID, params)
 
 	// Check the Checkout Session's payment_status property
 	// to determine if fulfillment should be performed
-	var purchase models.Purchase
+	var purchase *models.Purchase
 
 	if cs.PaymentStatus != stripe.CheckoutSessionPaymentStatusUnpaid {
 		if cs.LineItems != nil {
-			for _, line := range cs.LineItems.Data {
-				if line.Price != nil && line.Price.Product != nil {
-					purchase.ProductID = line.Price.Product.ID
-					purchase.ProductName = line.Price.Product.Name
-					purchase.Email = cs.CustomerEmail
-					purchase.Price = line.AmountTotal
-					purchase.ID = line.ID
-				}
+			var err error
+			purchase, err = stripeIntoProduct(cs.LineItems.Data, cs.Customer)
+			if err != nil {
+				return nil, err
 			}
 		}
 	}
@@ -170,6 +174,33 @@ func (s *Service) Purchase(ctx context.Context, session Session) (models.Purchas
 type Session struct {
 	ID  string
 	URL string
+}
+
+func createSuccessURL(domain string) string {
+	return fmt.Sprintf("%s?callback={CHECKOUT_SESSION_ID}", domain)
+}
+
+func stripeIntoProduct(lines []*stripe.LineItem, customer *stripe.Customer) (*models.Purchase, error) {
+	var purchase models.Purchase
+	for _, line := range lines {
+		if line.Price != nil && line.Price.Product != nil {
+			purchase.ProductID = line.Price.Product.ID
+			purchase.ProductName = line.Description // "defaults to product name when not set"
+			purchase.Price = line.AmountTotal
+			purchase.ID = line.ID
+			purchase.Timestamp = time.Now()
+		}
+	}
+	if purchase.ID == "" {
+		return nil, errors.New("no products in lineItems")
+	}
+
+	if customer != nil {
+		purchase.Email = customer.Email
+		purchase.Name = customer.Name
+	}
+
+	return &purchase, nil
 }
 
 func firstOrZero(slice []string) string {

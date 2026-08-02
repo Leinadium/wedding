@@ -35,11 +35,13 @@ type Product struct {
 }
 
 type Purchase struct {
-	ID          string `json:"id"`
-	Email       string `json:"email"`
-	ProductID   string `json:"productId"`
-	ProductName string `json:"productName"`
-	Price       int64  `json:"price"`
+	ID          string    `json:"id"`
+	Email       string    `json:"email"`
+	Name        string    `json:"name"`
+	ProductID   string    `json:"productId"`
+	ProductName string    `json:"productName"`
+	Price       int64     `json:"price"`
+	Timestamp   time.Time `json:"timestamp"`
 }
 
 // do not store in table

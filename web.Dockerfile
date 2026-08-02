@@ -7,6 +7,11 @@ COPY web/ .
 # overriding translations
 RUN if [ -f "./src/assets/override.texts.json" ]; then cp ./src/assets/override.texts.json ./src/assets/texts.json; fi;
 
+ARG VITE_API_URL
+ARG VITE_FRONT_URL
+ENV VITE_API_URL=$VITE_API_URL
+ENV VITE_FRONT_URL=$VITE_FRONT_URL
+
 RUN npm run build
 RUN npm prune --production
 

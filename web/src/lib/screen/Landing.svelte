@@ -10,51 +10,62 @@
 
   import { fly } from "svelte/transition";
   import Invite from "../guests/Invite.svelte";
-    import Image from "./Image.svelte";
+  import Image from "./Image.svelte";
+  import Gifts from "../gifts/Gifts.svelte";
 
   let invite = $state(false);
+  let gifts = $state(false);
 
   function toggleInvite() {
     invite = !invite;
   }
+  function toggleGifts() {
+    gifts = !gifts;
+  }
 </script>
 
 <div id="landing">
-    <div id="l1" class="image-container">
-        <Image src={l1} alt="card" delay={150} y={100} duration={1000} />
-    </div>
-    <div id="l2" class="image-container">
-        <Image src={l2} alt="invite" delay={250} y={120} duration={1100} />
-    </div>
+  <div id="l1" class="image-container">
+    <Image src={l1} alt="card" delay={150} y={100} duration={1000} />
+  </div>
+  <div id="l2" class="image-container">
+    <Image src={l2} alt="invite" delay={250} y={120} duration={1100} />
+  </div>
 
-    <div id="l3" class="image-container">
-        <Image src={l3} alt="couple" delay={500} y={80} duration={500} />
-    </div>
+  <div id="l3" class="image-container">
+    <Image src={l3} alt="couple" delay={500} y={80} duration={1200} />
+  </div>
 
-    <button id="l4" onclick={toggleInvite}>
-        <div class="inside">
-            <Image src={l4} alt="details" delay={750} y={120} duration={800} />
-        </div>
-    </button>
-
-    <div id="l5" class="image-container">
-        <Image src={l5} alt="couple2" delay={850} y={50} duration={700} />
+  <button id="l4" onclick={toggleInvite}>
+    <div class="inside">
+      <Image src={l4} alt="details" delay={750} y={120} duration={800} />
     </div>
+  </button>
 
-    <div id="l6" class="image-container">
-        <Image src={l6} alt="stamp" delay={1000} y={60} duration={600} />
-    </div>
+  <div id="l5" class="image-container">
+    <Image src={l5} alt="couple2" delay={850} y={50} duration={700} />
+  </div>
 
-    <div id="l7" class="image-container">
-        <Image src={l7} alt="photo3" delay={1100} y={60} duration={600} />
-    </div>
+  <div id="l6" class="image-container">
+    <Image src={l6} alt="stamp" delay={1000} y={60} duration={600} />
+  </div>
 
-    <div id="l8" class="image-container">
-        <Image src={l8} alt="portal" delay={1250} y={30} duration={600} />
+  <div id="l7" class="image-container">
+    <Image src={l7} alt="photo3" delay={1100} y={60} duration={600} />
+  </div>
+
+  <button id="l8" onclick={toggleGifts}>
+    <div class="inside">
+      <Image src={l8} alt="portal" delay={1250} y={30} duration={600} />
     </div>
+  </button>
 
   {#if invite}
     <Invite closeCb={toggleInvite} />
+  {/if}
+
+  {#if gifts}
+    <Gifts closeCb={toggleGifts} />
   {/if}
 </div>
 

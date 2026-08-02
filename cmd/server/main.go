@@ -32,9 +32,9 @@ func main() {
 	}
 	// payment
 	paymentService := payment.New(payment.Params{
-		Domain:        p.ServerURL,
+		Domain:        p.FrontURL,
 		Key:           p.StripeKey,
-		WebhookSecret: p.StripeSecret,
+		WebhookSecret: p.StripeWebhookSecret,
 	})
 
 	// notificator

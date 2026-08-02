@@ -5,12 +5,14 @@ import (
 )
 
 type Params struct {
+	FrontURL   string `env:"FRONT_URL" envDefault:"http://localhost:5173"`
 	ServerURL  string `env:"SERVER_URL" envDefault:"http://localhost:8080"`
 	AuthSecret string `env:"AUTH_SECRET" envDefault:"changeMe!"`
 	Port       int    `env:"PORT" envDefault:"8080"`
 
-	StripeKey    string `env:"STRIPE_KEY,notEmpty"`
-	StripeSecret string `env:"STRIPE_SECRET,notEmpty"`
+	StripeKey           string `env:"STRIPE_KEY,notEmpty"`
+	StripeSecret        string `env:"STRIPE_SECRET,notEmpty"`
+	StripeWebhookSecret string `env:"STRIPE_WEBHOOK_SECRET,notEmpty"`
 
 	DatabaseDSN         string `env:"DATABASE_DSN"`
 	DatabaseAutomigrate bool   `env:"DATABASE_AUTOMIGRATE" envDefault:"true"`

@@ -37,13 +37,9 @@
 <style>
   img {
       width: 100%;
-      filter: drop-shadow(0px 20px 40px rgba(94, 58, 73, 0.5));
-      transition: filter 0.3s ease;
+      filter: drop-shadow(0px 20px 40px rgba(94, 58, 73, 0.3));
   }
 
-  img:hover{
-      filter: drop-shadow(0px 20px 30px rgba(94, 58, 73, 0.7));
-  }
 
 
 </style>

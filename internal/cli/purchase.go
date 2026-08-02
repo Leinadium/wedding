@@ -22,9 +22,11 @@ var purchasesCmd = &cobra.Command{
 			fmt.Println("---------")
 			fmt.Println("ID:", purchase.ID)
 			fmt.Println("Email:", purchase.Email)
+			fmt.Println("Name:", purchase.Name)
 			fmt.Println("ProductID:", purchase.ProductID)
 			fmt.Println("ProductName:", purchase.ProductName)
 			fmt.Println("Price:", purchase.Price)
+			fmt.Println("Timestamp:", purchase.Timestamp)
 		}
 		return nil
 	},

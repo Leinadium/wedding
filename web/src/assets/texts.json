@@ -12,5 +12,11 @@
 
   "attendee-confirmed": "Confirmed!",
   "attendee-wontgo": "Won't go :(",
-  "attendee-pending": "Pending"
+  "attendee-pending": "Pending",
+
+  "gifts-title": "Gifts List",
+  "gifts-description": "Thanks for giving us a present!",
+  "gifts-description2": "We are very glad for your help ♥️",
+
+  "callback": "You can close this window now."
 }

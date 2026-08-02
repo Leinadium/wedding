@@ -49,6 +49,7 @@ func New(svc *v1.Service, p Params) *Server {
 	api.GET("/product", server.getProducts)
 	api.GET("/product/:id/payment", server.getProductPayment)
 	api.GET("/purchase", server.getPurchases)
+	api.GET("/purchase/:id", server.getPurchase)
 	api.POST("/purchase", server.postPurchase)
 	api.POST("/invite", server.postInvite)
 	api.GET("/invite", server.getInvites)
@@ -71,6 +72,7 @@ func (s *Server) Run(port int) error {
 }
 
 func (s *Server) error(c *gin.Context, status int, err error) {
+	fmt.Printf("error: %v\n", err)
 	c.JSON(status, gin.H{"error": err.Error()})
 }
 
@@ -108,6 +110,16 @@ func (s *Server) getProductPayment(c *gin.Context) {
 
 }
 
+func (s *Server) getPurchase(c *gin.Context) {
+	id := c.Param("id")
+	purchase, err := s.svc.Purchase(c.Request.Context(), id)
+	if err != nil {
+		s.error(c, http.StatusNotFound, err)
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{"purchase": purchase})
+}
+
 func (s *Server) getPurchases(c *gin.Context) {
 	if !s.checkAuth(c) {
 		return
@@ -129,13 +141,20 @@ func (s *Server) postPurchase(c *gin.Context) {
 	body, err := io.ReadAll(c.Request.Body)
 	if err != nil {
 		s.error(c, http.StatusInternalServerError, err)
+		return
 	}
 	defer c.Request.Body.Close()
 
-	if err := s.svc.NewPurchase(c.Request.Context(), body, signature); err != nil {
+	res, err := s.svc.NewPurchase(c.Request.Context(), body, signature)
+	if err != nil {
 		s.error(c, http.StatusInternalServerError, err)
+		return
 	}
-	c.JSON(http.StatusCreated, gin.H{})
+	if res {
+		c.JSON(http.StatusCreated, gin.H{})
+	} else {
+		c.JSON(http.StatusNoContent, gin.H{})
+	}
 }
 
 func (s *Server) postInvite(c *gin.Context) {

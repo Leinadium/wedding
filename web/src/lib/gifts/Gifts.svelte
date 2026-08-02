@@ -1,88 +1,98 @@
 <script lang="ts">
   import { fade } from "svelte/transition";
   import { api, type Product } from "../api";
+  import Text from "../text/Text.svelte";
+  import { formatPrice } from "../common";
+  import Gift from "./Gift.svelte";
+  import { onMount } from "svelte";
 
-  // State for products and the selected product for the popup
+  let {
+    closeCb,
+  }: {
+    closeCb: () => void;
+  } = $props();
+
   let products = $state<Product[]>([]);
   let selectedProduct = $state<Product | null>(null);
-  let loadingPayment = $state(false);
 
-  // Fetch products on mount
-  $effect(() => {
-    api.getProducts().then((res) => (products = res.products));
-  });
-
-  function formatPrice(price: number): string {
-    if (isNaN(price) || price === 0) return "--";
-    return `R$ ${Math.trunc(price / 100)},${price % 100}`;
-  }
-
-  async function handlePurchase(id: string) {
-    loadingPayment = true;
+  async function loadProducts() {
     try {
-      const { payment } = await api.getPaymentUrl(id);
-      window.open(payment.url, "_blank");
-    } finally {
-      loadingPayment = false;
+      let res = await api.getProducts();
+      products = res.products;
+    } catch (e) {
+      console.error(e);
     }
   }
+
+  onMount(loadProducts);
 </script>
 
-<div class="gallery">
-  {#each products as product}
-    <button
-      class="product-box {product.purchased ? 'purchased' : ''}"
-      onclick={() => (selectedProduct = product)}
-    >
-      <img src={product.imageUrl} alt={product.name} />
-      <div class="info">
-        <h3>{product.name}</h3>
-        <p>{formatPrice(product.priceBrl)}</p>
-      </div>
-      {#if product.purchased}
-        <span class="status-tag">Presenteado!</span>
-      {/if}
-    </button>
-  {/each}
-</div>
+<div class="gifts-wrapper" transition:fade={{ duration: 300 }}>
+  <div class="gifts-container">
+    <button class="close-main" onclick={closeCb}>&times;</button>
 
-{#if selectedProduct}
-  <div
-    class="modal-backdrop"
-    transition:fade
-    onclick={() => (selectedProduct = null)}
-  >
-    <div class="modal-card" onclick={(e) => e.stopPropagation()}>
-      <button class="close-btn" onclick={() => (selectedProduct = null)}
-        >&times;</button
-      >
+    <div class="description">
+      <span class="description-title">
+        <Text key="gifts-title" />
+      </span>
+      <span class="description-body">
+        <Text key="gifts-description" />
+      </span>
+      <span class="description-body">
+        <Text key="gifts-description2" />
+      </span>
+    </div>
 
-      <img src={selectedProduct.imageUrl} alt={selectedProduct.name} />
-      <h2>{selectedProduct.name}</h2>
-      <p class="price">{formatPrice(selectedProduct.priceBrl)}</p>
-
-      {#if selectedProduct.purchased}
-        <p class="purchased-msg">
-          This gift has already been purchased. Thank you!
-        </p>
-      {:else}
+    <div class="gallery">
+      {#each products as product}
         <button
-          class="buy-btn"
-          disabled={loadingPayment}
-          onclick={() => handlePurchase(selectedProduct!.id)}
+          class="product-box {product.purchased ? 'purchased' : ''}"
+          onclick={() => (selectedProduct = product)}
         >
-          {loadingPayment ? "Generating Link..." : "Give this Gift"}
+          <img src={product.imageUrl} alt={product.name} />
+          <div class="info">
+            <h3>{product.name}</h3>
+            <p>{formatPrice(product.priceBrl)}</p>
+          </div>
+          {#if product.purchased}
+            <span class="status-tag">Presenteado!</span>
+          {/if}
         </button>
-      {/if}
+      {/each}
     </div>
   </div>
-{/if}
+  {#if selectedProduct}
+    <Gift
+      product={selectedProduct}
+      close={() => {
+        selectedProduct = null;
+        loadProducts(); // trigger reload
+      }}
+    />
+  {/if}
+</div>
 
 <style>
-  /* 1. The Grid Container */
+  .gifts-wrapper {
+    position: fixed;
+    top: 0;
+    left: 0;
+
+    width: 100vw;
+    height: 100vh;
+
+    display: flex;
+    flex-flow: column nowrap;
+    justify-content: center;
+    align-items: center;
+
+    background-color: rgba(0, 0, 0, 0.6);
+    z-index: 999;
+  }
+
   .gallery {
+    position: relative;
     display: grid;
-    /* 2 columns on mobile */
     grid-template-columns: repeat(2, 1fr);
     gap: 12px;
     padding: 1rem;
@@ -90,7 +100,6 @@
     box-sizing: border-box;
   }
 
-  /* 4 columns on desktop/tablets */
   @media (min-width: 768px) {
     .gallery {
       grid-template-columns: repeat(4, 1fr);
@@ -98,16 +107,15 @@
     }
   }
 
-  /* 2. The Square Product Card */
   .product-box {
     position: relative;
-    aspect-ratio: 1 / 1; /* Forces perfect square */
+    aspect-ratio: 1 / 1;
     width: 100%;
     display: flex;
     flex-direction: column;
     background: #ffffff;
     border: 1px solid #eaeaea;
-    border-radius: 8px; /* Small rounded corners */
+    border-radius: 8px;
     overflow: hidden;
     cursor: pointer;
     padding: 0;
@@ -122,15 +130,13 @@
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
   }
 
-  /* Image handling within the square */
   .product-box img {
     width: 100%;
     flex-grow: 1;
-    min-height: 0; /* Important for flex-squish behavior */
+    min-height: 0;
     object-fit: cover;
   }
 
-  /* Bottom text area */
   .info {
     padding: 8px;
     background: #ffffff;
@@ -145,7 +151,7 @@
     color: #333;
     white-space: nowrap;
     overflow: hidden;
-    text-overflow: ellipsis; /* Keeps layout tight */
+    text-overflow: ellipsis;
   }
 
   .info p {
@@ -155,7 +161,6 @@
     color: #8a7b6e;
   }
 
-  /* 3. Purchased Logic */
   .product-box.purchased {
     background-color: #f9f9f9;
     filter: grayscale(1);
@@ -180,88 +185,52 @@
     z-index: 2;
   }
 
-  /* 4. Modal / Popup Styles */
-  .modal-backdrop {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.6);
-    backdrop-filter: blur(2px);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 1000;
-    padding: 20px;
-  }
-
-  .modal-card {
-    background: white;
-    width: 100%;
-    max-width: 350px;
-    border-radius: 16px;
-    padding: 24px;
+  .gifts-container {
     position: relative;
-    text-align: center;
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
-  }
+    width: 90%;
+    max-width: 800px;
+    max-height: 90vh;
+    overflow-y: auto;
 
-  .modal-card img {
-    width: 100%;
-    aspect-ratio: 1;
-    object-fit: cover;
-    border-radius: 12px;
-    margin-bottom: 16px;
-  }
+    border-radius: 8px;
+    padding: 3rem 1rem 1rem 1rem;
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
 
-  .modal-card h2 {
-    font-size: 1.25rem;
-    margin: 0 0 8px 0;
-  }
+    background-image: url("../../assets/invite/texture.png");
+    background-color: #f0f0f0;
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
 
-  .price-large {
-    font-size: 1.1rem;
-    color: #8a7b6e;
-    font-weight: bold;
-    margin-bottom: 20px;
-  }
-
-  .buy-btn {
-    background: #8a7b6e;
-    color: white;
-    border: none;
-    padding: 14px;
-    border-radius: 30px;
-    font-size: 1rem;
-    font-weight: bold;
-    width: 100%;
-    cursor: pointer;
-    transition: background 0.2s;
-  }
-
-  .buy-btn:active {
-    background: #6f6258;
-  }
-
-  .buy-btn:disabled {
-    background: #ccc;
-    cursor: not-allowed;
-  }
-
-  .close-btn {
-    position: absolute;
-    top: 12px;
-    right: 12px;
-    background: #eee;
-    border: none;
-    width: 30px;
-    height: 30px;
-    border-radius: 50%;
-    font-size: 1.2rem;
     display: flex;
-    align-items: center;
+    flex-flow: column nowrap;
     justify-content: center;
+  }
+
+  .close-main {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    color: #777;
     cursor: pointer;
+    z-index: 10;
+  }
+
+  .description {
+    display: flex;
+    flex-flow: column;
+    justify-content: start;
+    align-items: center;
+  }
+
+  .description-title {
+    font-family: "Alex Brush", cursive;
+    font-size: 2rem;
+  }
+
+  .description-body {
+    font-family: "Great Vibes", cursive;
+    font-size: 1.5rem;
   }
 </style>

@@ -31,6 +31,9 @@ services:
     build:
       dockerfile: web.Dockerfile
       context: .
+      args:
+        VITE_API_URL: ${VITE_API_URL}
+        VITE_FRONT_URL: ${VITE_FRONT_URL}
     ports:
       - "8086:80"
     env_file:

@@ -5,7 +5,9 @@
   import Footer from "./lib/screen/Footer.svelte";
   import Countdown from "./lib/countdown/Countdown.svelte";
   import Landing from "./lib/screen/Landing.svelte";
-  // 1. Logic for collapsible sections
+  import Callback from "./lib/callback/Callback.svelte";
+  import { onMount } from "svelte";
+
   let rsvpOpen = $state(false);
   let giftsOpen = $state(false);
   let locationOpen = $state(false);
@@ -19,51 +21,66 @@
   function toggleLocation() {
     locationOpen = !locationOpen;
   }
+
+  let showContent = $state(true);
+  onMount(() => {
+    const thisUrl = new URLSearchParams(window.location.search);
+    console.log(thisUrl);
+    showContent = !thisUrl.has("callback");
+  });
 </script>
 
-<main>
-  <Header />
-  <Landing />
+{#if showContent}
+  <main>
+    <Header />
+    <Landing />
 
-  <div class="content">
-    <h1 class="title">Our Big Day</h1>
+    <div class="content">
+      <h1 class="title">Our Big Day</h1>
 
-    <section class="intro">
-      <p>We're so excited to celebrate with you!</p>
-      <p>Join us on Month 00th, 2027.</p>
-    </section>
+      <section class="intro">
+        <p>We're so excited to celebrate with you!</p>
+        <p>Join us on Month 00th, 2027.</p>
+      </section>
 
-    <!-- RSVP wrapper -->
-    <div class="collapsible-wrapper">
-      <button onclick={toggleRSVP} class="toggle-btn" aria-expanded={rsvpOpen}>
-        RSVP {rsvpOpen ? "-" : "+"}
-      </button>
+      <!-- RSVP wrapper -->
+      <div class="collapsible-wrapper">
+        <button
+          onclick={toggleRSVP}
+          class="toggle-btn"
+          aria-expanded={rsvpOpen}
+        >
+          RSVP {rsvpOpen ? "-" : "+"}
+        </button>
 
-      {#if rsvpOpen}
-        <Invite closeCb={toggleRSVP} />
-      {/if}
+        {#if rsvpOpen}
+          <Invite closeCb={toggleRSVP} />
+        {/if}
+      </div>
+
+      <!-- Gifts wrapper -->
+      <div class="collapsible-wrapper">
+        <button
+          onclick={toggleGifts}
+          class="toggle-btn"
+          aria-expanded={giftsOpen}
+        >
+          Gifts {giftsOpen ? "-" : "+"}
+        </button>
+
+        {#if giftsOpen}
+          <Gifts closeCb={toggleGifts} />
+        {/if}
+      </div>
     </div>
 
-    <!-- Gifts wrapper -->
-    <div class="collapsible-wrapper">
-      <button
-        onclick={toggleGifts}
-        class="toggle-btn"
-        aria-expanded={giftsOpen}
-      >
-        Gifts {giftsOpen ? "-" : "+"}
-      </button>
+    <Countdown />
 
-      {#if giftsOpen}
-        <Gifts />
-      {/if}
-    </div>
-  </div>
-
-  <Countdown />
-
-  <Footer />
-</main>
+    <Footer />
+  </main>
+{:else}
+  <Callback />
+{/if}
 
 <style>
   :global(body) {
@@ -73,8 +90,8 @@
 
     background-color: #c79ead;
     background-image:
-        url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.08'/%3E%3C/svg%3E"),
-        radial-gradient(circle at 50% 0%, #c79ead 0%, #a67b8b 100%);
+      url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.08'/%3E%3C/svg%3E"),
+      radial-gradient(circle at 50% 0%, #c79ead 0%, #a67b8b 100%);
   }
 
   main {
