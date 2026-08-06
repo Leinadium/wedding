@@ -21,7 +21,7 @@ var productsCmd = &cobra.Command{
 			fmt.Println("StripeID:", product.StripeID)
 			fmt.Printf("Name: %s\n", product.Name)
 			fmt.Printf("Price: %d\n", product.PriceBRL)
-			fmt.Printf("Purchased: %t\n", product.Purchased)
+			fmt.Printf("Active: %t\n", product.Active)
 		}
 		return nil
 	},

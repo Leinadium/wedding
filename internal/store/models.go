@@ -27,18 +27,18 @@ type Attendee struct {
 
 type ProductID string
 type Product struct {
-	StripeID  ProductID `json:"id" gorm:"primary_key"`
-	Name      string    `json:"name"`
-	ImageURL  string    `json:"imageUrl"`
-	PriceBRL  int64     `json:"priceBrl"`
-	Purchased bool      `json:"purchased"`
+	StripeID ProductID `json:"id" gorm:"primary_key"`
+	Name     string    `json:"name"`
+	ImageURL string    `json:"imageUrl"`
+	PriceBRL int64     `json:"priceBrl"`
+	Active   bool      `json:"active"`
 }
 
 type Purchase struct {
 	ID          string    `json:"id"`
 	Email       string    `json:"email"`
 	Name        string    `json:"name"`
-	ProductID   string    `json:"productId"`
+	ProductID   ProductID `json:"productId"`
 	ProductName string    `json:"productName"`
 	Price       int64     `json:"price"`
 	Timestamp   time.Time `json:"timestamp"`

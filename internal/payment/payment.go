@@ -125,11 +125,11 @@ func (s *Service) Products(ctx context.Context, inactive bool) ([]store.Product,
 		}
 
 		products = append(products, store.Product{
-			StripeID:  store.ProductID(p.ID),
-			Name:      p.Name,
-			ImageURL:  firstOrZero(p.Images),
-			PriceBRL:  price,
-			Purchased: !p.Active,
+			StripeID: store.ProductID(p.ID),
+			Name:     p.Name,
+			ImageURL: firstOrZero(p.Images),
+			PriceBRL: price,
+			Active:   p.Active,
 		})
 	}
 
@@ -184,7 +184,7 @@ func stripeIntoProduct(lines []*stripe.LineItem, customer *stripe.Customer) (*st
 	var purchase store.Purchase
 	for _, line := range lines {
 		if line.Price != nil && line.Price.Product != nil {
-			purchase.ProductID = line.Price.Product.ID
+			purchase.ProductID = store.ProductID(line.Price.Product.ID)
 			purchase.ProductName = line.Description // "defaults to product name when not set"
 			purchase.Price = line.AmountTotal
 			purchase.ID = line.ID

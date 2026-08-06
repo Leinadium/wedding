@@ -15,6 +15,7 @@ export interface Product {
   imageUrl: string;
   priceBrl: number;
   purchased: boolean;
+  active: boolean;
 }
 
 export interface Payment {

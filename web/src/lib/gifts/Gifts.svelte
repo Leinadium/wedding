@@ -46,7 +46,9 @@
     <div class="gallery">
       {#each products as product}
         <button
-          class="product-box {product.purchased ? 'purchased' : ''}"
+          class="product-box {product.purchased || !product.active
+            ? 'purchased'
+            : ''}"
           onclick={() => (selectedProduct = product)}
         >
           <img src={product.imageUrl} alt={product.name} />
@@ -56,6 +58,8 @@
           </div>
           {#if product.purchased}
             <span class="status-tag">Presenteado!</span>
+          {:else if !product.active}
+            <span class="status-tag">Indisponível!</span>
           {/if}
         </button>
       {/each}

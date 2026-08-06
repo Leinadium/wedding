@@ -47,6 +47,8 @@
 
     {#if product.purchased}
       <p class="msg">This gift has already been purchased. Thank you!</p>
+    {:else if !product.active}
+      <p class="msg">This gift is not available.</p>
     {:else if justPurchased}
       <p class="msg purchased" transition:fade>Thanks for the purchase!</p>
     {:else}

@@ -27,13 +27,30 @@ func New(
 	return &Service{store: store, payment: payment, notificator: notificator}
 }
 
-func (s *Service) Products(ctx context.Context) ([]store.Product, error) {
+func (s *Service) Products(ctx context.Context) ([]PurchasableProduct, error) {
 	products, err := s.store.Products(ctx)
 	if err != nil {
 		return nil, fmt.Errorf("could not obtain products: %v", err)
 	}
 
-	return products, nil
+	purchases, err := s.store.Purchases(ctx)
+	if err != nil {
+		return nil, fmt.Errorf("could not obtain products: %v", err)
+	}
+	productsPurchased := make(map[store.ProductID]bool)
+	for _, p := range purchases {
+		productsPurchased[p.ProductID] = true
+	}
+
+	var purchasableProducts []PurchasableProduct
+	for _, p := range products {
+		purchasableProducts = append(purchasableProducts, PurchasableProduct{
+			Product:   p,
+			Purchased: productsPurchased[p.StripeID],
+		})
+	}
+
+	return purchasableProducts, nil
 }
 
 func (s *Service) Purchase(ctx context.Context, sessionID string) (*store.Purchase, error) {
@@ -90,7 +107,7 @@ func (s *Service) NewPurchase(ctx context.Context, body []byte, signature string
 
 	go func() {
 		if s.notificator != nil {
-			msg := fmt.Sprintf("new purchase: %s bought %s (%f)", purchase.Email, purchase.ProductName, float64(purchase.Price)/100)
+			msg := fmt.Sprintf("new purchase: %s bought %s (%f)", purchase.Name, purchase.ProductName, float64(purchase.Price)/100)
 			if err := s.notificator.Notify(ctx, msg); err != nil {
 				fmt.Printf("could not notify: %v\n", err)
 			}
@@ -194,8 +211,4 @@ func createAttendeeNotification(a *store.Attendee) string {
 		sb.WriteString("not confirmed")
 	}
 	return sb.String()
-}
-
-type Payment struct {
-	URL string `json:"url"`
 }
