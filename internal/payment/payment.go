@@ -8,7 +8,7 @@ import (
 	"time"
 
 	"github.com/stripe/stripe-go/v85"
-	"leinadium.dev/wedding/internal/models"
+	"leinadium.dev/wedding/internal/store"
 	"leinadium.dev/wedding/internal/sync"
 )
 
@@ -41,7 +41,7 @@ func (s *Service) AddSyncTrigger(trigger sync.Trigger) {
 	s.trigger = trigger
 }
 
-func (s *Service) CreateSession(ctx context.Context, product models.Product) (Session, error) {
+func (s *Service) CreateSession(ctx context.Context, product store.Product) (Session, error) {
 	// getting payment link
 	params := &stripe.CheckoutSessionCreateParams{
 		LineItems: []*stripe.CheckoutSessionCreateLineItemParams{
@@ -100,8 +100,8 @@ func (s *Service) Session(body []byte, signature string) (*Session, error) {
 	return nil, nil
 }
 
-func (s *Service) Products(ctx context.Context, inactive bool) ([]models.Product, error) {
-	products := []models.Product{}
+func (s *Service) Products(ctx context.Context, inactive bool) ([]store.Product, error) {
+	products := []store.Product{}
 
 	params := &stripe.ProductListParams{
 		Active: stripe.Bool(!inactive),
@@ -124,8 +124,8 @@ func (s *Service) Products(ctx context.Context, inactive bool) ([]models.Product
 			price = int64(p.DefaultPrice.UnitAmount)
 		}
 
-		products = append(products, models.Product{
-			StripeID:  models.ProductID(p.ID),
+		products = append(products, store.Product{
+			StripeID:  store.ProductID(p.ID),
 			Name:      p.Name,
 			ImageURL:  firstOrZero(p.Images),
 			PriceBRL:  price,
@@ -136,7 +136,7 @@ func (s *Service) Products(ctx context.Context, inactive bool) ([]models.Product
 	return products, nil
 }
 
-func (s *Service) Purchase(ctx context.Context, session Session) (*models.Purchase, error) {
+func (s *Service) Purchase(ctx context.Context, session Session) (*store.Purchase, error) {
 	// TODO: Make this function safe to run multiple times,
 	// even concurrently, with the same session ID
 
@@ -152,7 +152,7 @@ func (s *Service) Purchase(ctx context.Context, session Session) (*models.Purcha
 
 	// Check the Checkout Session's payment_status property
 	// to determine if fulfillment should be performed
-	var purchase *models.Purchase
+	var purchase *store.Purchase
 
 	if cs.PaymentStatus != stripe.CheckoutSessionPaymentStatusUnpaid {
 		if cs.LineItems != nil {
@@ -180,8 +180,8 @@ func createSuccessURL(domain string) string {
 	return fmt.Sprintf("%s?callback={CHECKOUT_SESSION_ID}", domain)
 }
 
-func stripeIntoProduct(lines []*stripe.LineItem, customer *stripe.Customer) (*models.Purchase, error) {
-	var purchase models.Purchase
+func stripeIntoProduct(lines []*stripe.LineItem, customer *stripe.Customer) (*store.Purchase, error) {
+	var purchase store.Purchase
 	for _, line := range lines {
 		if line.Price != nil && line.Price.Product != nil {
 			purchase.ProductID = line.Price.Product.ID

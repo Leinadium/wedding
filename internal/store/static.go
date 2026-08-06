@@ -6,7 +6,6 @@ import (
 	"sync"
 
 	"github.com/google/uuid"
-	"leinadium.dev/wedding/internal/models"
 )
 
 type StaticStore struct {
@@ -17,13 +16,13 @@ func NewStaticStore() *StaticStore {
 	return &StaticStore{}
 }
 
-func (s *StaticStore) Products(_ context.Context) ([]models.Product, error) {
+func (s *StaticStore) Products(_ context.Context) ([]Product, error) {
 	s.lock.RLock()
 	defer s.lock.RUnlock()
 	return products, nil
 }
 
-func (s *StaticStore) Product(_ context.Context, pid models.ProductID) (models.Product, error) {
+func (s *StaticStore) Product(_ context.Context, pid ProductID) (Product, error) {
 	s.lock.RLock()
 	defer s.lock.RUnlock()
 
@@ -32,10 +31,10 @@ func (s *StaticStore) Product(_ context.Context, pid models.ProductID) (models.P
 			return p, nil
 		}
 	}
-	return models.Product{}, errors.New("product not found")
+	return Product{}, errors.New("product not found")
 }
 
-func (s *StaticStore) NewPurchase(_ context.Context, purchase models.Purchase) error {
+func (s *StaticStore) NewPurchase(_ context.Context, purchase Purchase) error {
 	s.lock.Lock()
 	defer s.lock.Unlock()
 
@@ -44,37 +43,37 @@ func (s *StaticStore) NewPurchase(_ context.Context, purchase models.Purchase) e
 
 }
 
-func (s *StaticStore) Purchases(_ context.Context) ([]models.Purchase, error) {
+func (s *StaticStore) Purchases(_ context.Context) ([]Purchase, error) {
 	s.lock.RLock()
 	defer s.lock.RUnlock()
 	return purchases, nil
 }
 
-func (s *StaticStore) Sync(_ context.Context, active, inactive []models.Product) error {
+func (s *StaticStore) Sync(_ context.Context, active, inactive []Product) error {
 	return nil
 }
 
-func (s *StaticStore) NewInvite(ctx context.Context, invite models.Invite) (models.InviteID, error) {
-	return models.InviteID("AAABBB"), nil
+func (s *StaticStore) NewInvite(ctx context.Context, invite Invite) (InviteID, error) {
+	return InviteID("AAABBB"), nil
 }
 
-func (s *StaticStore) Invite(_ context.Context, inviteID models.InviteID) (models.Invite, error) {
-	return models.Invite{}, nil
+func (s *StaticStore) Invite(_ context.Context, inviteID InviteID) (Invite, error) {
+	return Invite{}, nil
 }
 
-func (s *StaticStore) Invites(_ context.Context) ([]models.Invite, error) {
+func (s *StaticStore) Invites(_ context.Context) ([]Invite, error) {
 	return nil, nil
 }
 
-func (s *StaticStore) NewAttendee(ctx context.Context, inviteID models.InviteID, attendee models.Attendee) error {
+func (s *StaticStore) NewAttendee(ctx context.Context, inviteID InviteID, attendee Attendee) error {
 	return nil
 }
 
-func (s *StaticStore) Attendee(_ context.Context, attendeeID uuid.UUID) (models.Attendee, error) {
-	return models.Attendee{}, nil
+func (s *StaticStore) Attendee(_ context.Context, attendeeID uuid.UUID) (Attendee, error) {
+	return Attendee{}, nil
 }
 
-func (s *StaticStore) Attendees(ctx context.Context) ([]models.Attendee, error) {
+func (s *StaticStore) Attendees(ctx context.Context) ([]Attendee, error) {
 	return nil, nil
 }
 
@@ -82,20 +81,20 @@ func (s *StaticStore) DeleteAttendee(_ context.Context, attendeeID uuid.UUID) er
 	return nil
 }
 
-func (s *StaticStore) UpsertAttendee(ctx context.Context, attendee models.Attendee) error {
+func (s *StaticStore) UpsertAttendee(ctx context.Context, attendee Attendee) error {
 	return nil
 }
 
-func (s *StaticStore) UpsertNoteInvite(ctx context.Context, inviteID models.InviteID, note string) error {
+func (s *StaticStore) UpsertNoteInvite(ctx context.Context, inviteID InviteID, note string) error {
 	return nil
 }
 
-func (s *StaticStore) DeleteInvite(_ context.Context, inviteID models.InviteID) error {
+func (s *StaticStore) DeleteInvite(_ context.Context, inviteID InviteID) error {
 	return nil
 }
 
 var (
-	products = []models.Product{
+	products = []Product{
 		{
 			StripeID:  "prod_UZ7qFL3mYeEotv",
 			Name:      "First product",
@@ -171,7 +170,7 @@ var (
 		},
 	}
 
-	purchases = []models.Purchase{
+	purchases = []Purchase{
 		{
 			ID:          "1",
 			Email:       "test@test.com",

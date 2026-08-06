@@ -8,35 +8,26 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/guregu/null/v6"
-	"leinadium.dev/wedding/internal/models"
 	"leinadium.dev/wedding/internal/notification"
 	"leinadium.dev/wedding/internal/payment"
 	"leinadium.dev/wedding/internal/store"
 )
 
-type Params struct {
-}
-
 type Service struct {
-	store       store.Service
+	store       store.Store
 	payment     *payment.Service
 	notificator notification.Notificator
 }
 
 func New(
-	store store.Service,
+	store store.Store,
 	payment *payment.Service,
 	notificator notification.Notificator,
-	params Params,
 ) *Service {
-	return &Service{
-		store:       store,
-		payment:     payment,
-		notificator: notificator,
-	}
+	return &Service{store: store, payment: payment, notificator: notificator}
 }
 
-func (s *Service) Products(ctx context.Context) ([]models.Product, error) {
+func (s *Service) Products(ctx context.Context) ([]store.Product, error) {
 	products, err := s.store.Products(ctx)
 	if err != nil {
 		return nil, fmt.Errorf("could not obtain products: %v", err)
@@ -45,24 +36,24 @@ func (s *Service) Products(ctx context.Context) ([]models.Product, error) {
 	return products, nil
 }
 
-func (s *Service) Purchase(ctx context.Context, sessionID string) (*models.Purchase, error) {
+func (s *Service) Purchase(ctx context.Context, sessionID string) (*store.Purchase, error) {
 	return s.payment.Purchase(ctx, payment.Session{ID: sessionID})
 }
 
-func (s *Service) Payment(ctx context.Context, pid models.ProductID) (models.Payment, error) {
+func (s *Service) Payment(ctx context.Context, pid store.ProductID) (Payment, error) {
 	product, err := s.store.Product(ctx, pid)
 	if err != nil {
-		return models.Payment{}, fmt.Errorf("could not get product: %v", err)
+		return Payment{}, fmt.Errorf("could not get product: %v", err)
 	}
 
 	session, err := s.payment.CreateSession(ctx, product)
 	if err != nil {
-		return models.Payment{}, fmt.Errorf("could not create payment link: %v", err)
+		return Payment{}, fmt.Errorf("could not create payment link: %v", err)
 	}
-	return models.Payment{URL: session.URL}, nil
+	return Payment{URL: session.URL}, nil
 }
 
-func (s *Service) Purchases(ctx context.Context) ([]models.Purchase, error) {
+func (s *Service) Purchases(ctx context.Context) ([]store.Purchase, error) {
 	purchases, err := s.store.Purchases(ctx)
 	if err != nil {
 		return nil, fmt.Errorf("could not get purchases: %v", err)
@@ -111,7 +102,7 @@ func (s *Service) NewPurchase(ctx context.Context, body []byte, signature string
 	return true, s.store.NewPurchase(ctx, *purchase)
 }
 
-func (s *Service) NewInvite(ctx context.Context, invite models.Invite) (models.InviteID, error) {
+func (s *Service) NewInvite(ctx context.Context, invite store.Invite) (store.InviteID, error) {
 	inviteID, err := s.store.NewInvite(ctx, invite)
 	if err != nil {
 		return "", fmt.Errorf("could not create invite: %v", err)
@@ -119,15 +110,15 @@ func (s *Service) NewInvite(ctx context.Context, invite models.Invite) (models.I
 	return inviteID, nil
 }
 
-func (s *Service) Invite(ctx context.Context, inviteID models.InviteID) (models.Invite, error) {
+func (s *Service) Invite(ctx context.Context, inviteID store.InviteID) (store.Invite, error) {
 	invite, err := s.store.Invite(ctx, inviteID)
 	if err != nil {
-		return models.Invite{}, fmt.Errorf("could not get invite: %v", err)
+		return store.Invite{}, fmt.Errorf("could not get invite: %v", err)
 	}
 	return invite, nil
 }
 
-func (s *Service) Invites(ctx context.Context) ([]models.Invite, error) {
+func (s *Service) Invites(ctx context.Context) ([]store.Invite, error) {
 	invites, err := s.store.Invites(ctx)
 	if err != nil {
 		return nil, fmt.Errorf("could not get invites: %v", err)
@@ -135,21 +126,21 @@ func (s *Service) Invites(ctx context.Context) ([]models.Invite, error) {
 	return invites, nil
 }
 
-func (s *Service) DeleteInvite(ctx context.Context, inviteID models.InviteID) error {
+func (s *Service) DeleteInvite(ctx context.Context, inviteID store.InviteID) error {
 	if err := s.store.DeleteInvite(ctx, inviteID); err != nil {
 		return fmt.Errorf("could not delete invite: %v", err)
 	}
 	return nil
 }
 
-func (s *Service) UpdateInviteNote(ctx context.Context, inviteID models.InviteID, note string) error {
+func (s *Service) UpdateInviteNote(ctx context.Context, inviteID store.InviteID, note string) error {
 	if err := s.store.UpsertNoteInvite(ctx, inviteID, note); err != nil {
 		return fmt.Errorf("could not update invite note: %v", err)
 	}
 	return nil
 }
 
-func (s *Service) Attendees(ctx context.Context) ([]models.Attendee, error) {
+func (s *Service) Attendees(ctx context.Context) ([]store.Attendee, error) {
 	attendees, err := s.store.Attendees(ctx)
 	if err != nil {
 		return nil, fmt.Errorf("could not get attendees: %v", err)
@@ -187,7 +178,7 @@ func (s *Service) DeleteAttendee(ctx context.Context, attendeeID uuid.UUID) erro
 	return nil
 }
 
-func createAttendeeNotification(a *models.Attendee) string {
+func createAttendeeNotification(a *store.Attendee) string {
 	var sb strings.Builder
 	sb.WriteString("attendee updated: ")
 	sb.WriteString(a.Name)
@@ -203,4 +194,8 @@ func createAttendeeNotification(a *models.Attendee) string {
 		sb.WriteString("not confirmed")
 	}
 	return sb.String()
+}
+
+type Payment struct {
+	URL string `json:"url"`
 }

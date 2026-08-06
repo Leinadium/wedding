@@ -5,44 +5,31 @@ import (
 	"errors"
 	"net/http"
 
-	"leinadium.dev/wedding/internal/models"
+	"leinadium.dev/wedding/internal/store"
 )
 
-type CLIClient interface {
-	SetAuth(auth string)
-
-	Products() ([]models.Product, error)
-	Purchases() ([]models.Purchase, error)
-	Invites() ([]models.Invite, error)
-	CreateInvite(models.Invite) (models.InviteID, error)
-	DeleteInvite(models.InviteID) error
-
-	Attendees() ([]models.Attendee, error)
-	DeleteAttendee(models.AttendeeID) error
-}
-
-type client struct {
+type Client struct {
 	ctx context.Context
 
 	api  *apiClient
 	auth string
 }
 
-func New(url string) CLIClient {
-	return &client{
+func New(url string) *Client {
+	return &Client{
 		ctx:  context.Background(),
 		api:  NewAPIClient(url, &http.Client{}),
 		auth: "",
 	}
 }
 
-func (c *client) SetAuth(auth string) {
+func (c *Client) SetAuth(auth string) {
 	c.auth = auth
 }
 
-func (c *client) Products() ([]models.Product, error) {
+func (c *Client) Products() ([]store.Product, error) {
 	type Res struct {
-		Products []models.Product `json:"products"`
+		Products []store.Product `json:"products"`
 	}
 	res, err := Get[Res](c.api, c.ctx, "/product", nil)
 	if err != nil {
@@ -51,14 +38,14 @@ func (c *client) Products() ([]models.Product, error) {
 	return res.Products, nil
 }
 
-func (c *client) Purchases() ([]models.Purchase, error) {
+func (c *Client) Purchases() ([]store.Purchase, error) {
 	headers, err := c.authReq()
 	if err != nil {
 		return nil, err
 	}
 
 	type Res struct {
-		Purchases []models.Purchase `json:"purchases"`
+		Purchases []store.Purchase `json:"purchases"`
 	}
 	res, err := Get[Res](c.api, c.ctx, "/purchase", headers)
 	if err != nil {
@@ -67,14 +54,14 @@ func (c *client) Purchases() ([]models.Purchase, error) {
 	return res.Purchases, nil
 }
 
-func (c *client) Invites() ([]models.Invite, error) {
+func (c *Client) Invites() ([]store.Invite, error) {
 	headers, err := c.authReq()
 	if err != nil {
 		return nil, err
 	}
 
 	type Res struct {
-		Invites []models.Invite `json:"invites"`
+		Invites []store.Invite `json:"invites"`
 	}
 	res, err := Get[Res](c.api, c.ctx, "/invite", headers)
 	if err != nil {
@@ -83,23 +70,23 @@ func (c *client) Invites() ([]models.Invite, error) {
 	return res.Invites, nil
 }
 
-func (c *client) CreateInvite(invite models.Invite) (models.InviteID, error) {
+func (c *Client) CreateInvite(invite store.Invite) (store.InviteID, error) {
 	headers, err := c.authReq()
 	if err != nil {
 		return "", err
 	}
 
 	type Res struct {
-		InviteID models.InviteID `json:"id"`
+		InviteID store.InviteID `json:"id"`
 	}
-	res, err := Post[models.Invite, Res](c.api, c.ctx, "/invite", headers, invite)
+	res, err := Post[store.Invite, Res](c.api, c.ctx, "/invite", headers, invite)
 	if err != nil {
 		return "", err
 	}
 	return res.InviteID, nil
 }
 
-func (c *client) DeleteInvite(inviteID models.InviteID) error {
+func (c *Client) DeleteInvite(inviteID store.InviteID) error {
 	headers, err := c.authReq()
 	if err != nil {
 		return err
@@ -107,14 +94,14 @@ func (c *client) DeleteInvite(inviteID models.InviteID) error {
 	return Delete(c.api, c.ctx, "/invite/"+string(inviteID), headers)
 }
 
-func (c *client) Attendees() ([]models.Attendee, error) {
+func (c *Client) Attendees() ([]store.Attendee, error) {
 	headers, err := c.authReq()
 	if err != nil {
 		return nil, err
 	}
 
 	type Res struct {
-		Attendees []models.Attendee `json:"attendees"`
+		Attendees []store.Attendee `json:"attendees"`
 	}
 	res, err := Get[Res](c.api, c.ctx, "/attendee", headers)
 	if err != nil {
@@ -123,7 +110,7 @@ func (c *client) Attendees() ([]models.Attendee, error) {
 	return res.Attendees, nil
 }
 
-func (c *client) DeleteAttendee(attendeeID models.AttendeeID) error {
+func (c *Client) DeleteAttendee(attendeeID store.AttendeeID) error {
 	headers, err := c.authReq()
 	if err != nil {
 		return err
@@ -131,7 +118,7 @@ func (c *client) DeleteAttendee(attendeeID models.AttendeeID) error {
 	return Delete(c.api, c.ctx, "/attendee/"+string(attendeeID.String()), headers)
 }
 
-func (c *client) authReq() (map[string]string, error) {
+func (c *Client) authReq() (map[string]string, error) {
 	if c.auth == "" {
 		return nil, errors.New("no auth provided")
 	}

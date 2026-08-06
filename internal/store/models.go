@@ -1,4 +1,4 @@
-package models
+package store
 
 import (
 	"time"
@@ -42,9 +42,4 @@ type Purchase struct {
 	ProductName string    `json:"productName"`
 	Price       int64     `json:"price"`
 	Timestamp   time.Time `json:"timestamp"`
-}
-
-// do not store in table
-type Payment struct {
-	URL string `json:"url"`
 }

@@ -8,7 +8,7 @@ import (
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
-	"leinadium.dev/wedding/internal/models"
+	"leinadium.dev/wedding/internal/store"
 	v1 "leinadium.dev/wedding/internal/v1"
 )
 
@@ -101,7 +101,7 @@ func (s *Server) getProducts(c *gin.Context) {
 
 func (s *Server) getProductPayment(c *gin.Context) {
 	pid := c.Param("id")
-	payment, err := s.svc.Payment(c.Request.Context(), models.ProductID(pid))
+	payment, err := s.svc.Payment(c.Request.Context(), store.ProductID(pid))
 	if err != nil {
 		s.error(c, http.StatusInternalServerError, err)
 		return
@@ -162,7 +162,7 @@ func (s *Server) postInvite(c *gin.Context) {
 		return
 	}
 
-	var invite models.Invite
+	var invite store.Invite
 	if err := c.BindJSON(&invite); err != nil {
 		s.error(c, http.StatusBadRequest, err)
 		return
@@ -183,7 +183,7 @@ func (s *Server) getInvite(c *gin.Context) {
 		return
 	}
 
-	invite, err := s.svc.Invite(c.Request.Context(), models.InviteID(id))
+	invite, err := s.svc.Invite(c.Request.Context(), store.InviteID(id))
 	if err != nil {
 		s.error(c, http.StatusInternalServerError, err)
 		return
@@ -219,7 +219,7 @@ func (s *Server) putNote(c *gin.Context) {
 		return
 	}
 
-	if err := s.svc.UpdateInviteNote(c.Request.Context(), models.InviteID(id), req.Note); err != nil {
+	if err := s.svc.UpdateInviteNote(c.Request.Context(), store.InviteID(id), req.Note); err != nil {
 		s.error(c, http.StatusInternalServerError, err)
 		return
 	}
@@ -237,7 +237,7 @@ func (s *Server) deleteInvite(c *gin.Context) {
 		return
 	}
 
-	if err := s.svc.DeleteInvite(c.Request.Context(), models.InviteID(id)); err != nil {
+	if err := s.svc.DeleteInvite(c.Request.Context(), store.InviteID(id)); err != nil {
 		s.error(c, http.StatusInternalServerError, err)
 		return
 	}

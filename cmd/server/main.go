@@ -21,7 +21,7 @@ func main() {
 
 	// creating services
 	// store
-	var storeService store.Service
+	var storeService store.Store
 	if p.UseStaticStore {
 		storeService = store.NewStaticStore()
 	} else {
@@ -57,7 +57,6 @@ func main() {
 		storeService,
 		paymentService,
 		notificator,
-		v1.Params{},
 	)
 
 	// sync

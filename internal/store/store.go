@@ -4,27 +4,26 @@ import (
 	"context"
 
 	"github.com/google/uuid"
-	"leinadium.dev/wedding/internal/models"
 )
 
-type Service interface {
-	Products(ctx context.Context) ([]models.Product, error)
-	Product(ctx context.Context, pid models.ProductID) (models.Product, error)
+type Store interface {
+	Products(ctx context.Context) ([]Product, error)
+	Product(ctx context.Context, pid ProductID) (Product, error)
 
-	NewPurchase(ctx context.Context, purchase models.Purchase) error
-	Purchases(ctx context.Context) ([]models.Purchase, error)
+	NewPurchase(ctx context.Context, purchase Purchase) error
+	Purchases(ctx context.Context) ([]Purchase, error)
 
-	Sync(ctx context.Context, active, inactive []models.Product) error
+	Sync(ctx context.Context, active, inactive []Product) error
 
-	NewInvite(ctx context.Context, invite models.Invite) (models.InviteID, error)
-	Invite(ctx context.Context, inviteID models.InviteID) (models.Invite, error)
-	Invites(ctx context.Context) ([]models.Invite, error)
-	UpsertNoteInvite(ctx context.Context, inviteID models.InviteID, note string) error
-	DeleteInvite(ctx context.Context, inviteID models.InviteID) error
+	NewInvite(ctx context.Context, invite Invite) (InviteID, error)
+	Invite(ctx context.Context, inviteID InviteID) (Invite, error)
+	Invites(ctx context.Context) ([]Invite, error)
+	UpsertNoteInvite(ctx context.Context, inviteID InviteID, note string) error
+	DeleteInvite(ctx context.Context, inviteID InviteID) error
 
-	NewAttendee(ctx context.Context, inviteID models.InviteID, attendee models.Attendee) error
-	Attendees(ctx context.Context) ([]models.Attendee, error)
-	Attendee(ctx context.Context, attendeeID uuid.UUID) (models.Attendee, error)
-	UpsertAttendee(ctx context.Context, attendee models.Attendee) error
+	NewAttendee(ctx context.Context, inviteID InviteID, attendee Attendee) error
+	Attendees(ctx context.Context) ([]Attendee, error)
+	Attendee(ctx context.Context, attendeeID uuid.UUID) (Attendee, error)
+	UpsertAttendee(ctx context.Context, attendee Attendee) error
 	DeleteAttendee(ctx context.Context, attendeeID uuid.UUID) error
 }

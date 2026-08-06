@@ -6,15 +6,19 @@ import (
 	"sync"
 	"time"
 
-	"leinadium.dev/wedding/internal/models"
+	"leinadium.dev/wedding/internal/store"
 )
 
 type Source interface {
-	Products(ctx context.Context, inactive bool) ([]models.Product, error)
+	Products(ctx context.Context, inactive bool) ([]store.Product, error)
 }
 
 type Destination interface {
-	Sync(ctx context.Context, active, inactive []models.Product) error
+	Sync(ctx context.Context, active, inactive []store.Product) error
+}
+
+type Trigger interface {
+	Trigger()
 }
 
 func New(source Source, destination Destination) *Service {
@@ -95,7 +99,11 @@ func (s *Service) Stop() {
 	s.cancel()
 }
 
+func (s *Service) Trigger() {
+	s.trigger <- struct{}{}
+}
+
 type SyncContent struct {
-	Active   []models.Product
-	Inactive []models.Product
+	Active   []store.Product
+	Inactive []store.Product
 }

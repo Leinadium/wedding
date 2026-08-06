@@ -8,7 +8,7 @@ import (
 	"github.com/guregu/null/v6"
 	"github.com/spf13/cobra"
 	"leinadium.dev/wedding/internal/client"
-	"leinadium.dev/wedding/internal/models"
+	"leinadium.dev/wedding/internal/store"
 )
 
 var inviteCmd = &cobra.Command{
@@ -52,12 +52,12 @@ var inviteCreateCmd = &cobra.Command{
 	RunE: func(cmd *cobra.Command, args []string) error {
 		cli := client.New(globalFlagURL)
 		cli.SetAuth(Auth())
-		invite := models.Invite{
+		invite := store.Invite{
 			Phone:     inviteCreateFlag.Phone,
-			Attendees: make([]models.Attendee, 0, len(inviteCreateFlag.Attendee)),
+			Attendees: make([]store.Attendee, 0, len(inviteCreateFlag.Attendee)),
 		}
 		for _, name := range inviteCreateFlag.Attendee {
-			invite.Attendees = append(invite.Attendees, models.Attendee{
+			invite.Attendees = append(invite.Attendees, store.Attendee{
 				Name:      name,
 				IsChild:   false,
 				Confirmed: null.BoolFromPtr(nil),
@@ -84,7 +84,7 @@ var inviteDeleteCmd = &cobra.Command{
 		if inviteDeleteFlag.ID == "" {
 			return errors.New("invite ID is required")
 		}
-		err := cli.DeleteInvite(models.InviteID(inviteDeleteFlag.ID))
+		err := cli.DeleteInvite(store.InviteID(inviteDeleteFlag.ID))
 		if err != nil {
 			return err
 		}
