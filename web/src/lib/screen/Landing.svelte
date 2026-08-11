@@ -7,20 +7,25 @@
   import l6 from "../../assets/landing/l6.png";
   import l7 from "../../assets/landing/l7.png";
   import l8 from "../../assets/landing/l8.png";
+  import l9 from "../../assets/landing/l9.png";
 
-  import { fly } from "svelte/transition";
   import Invite from "../guests/Invite.svelte";
   import Image from "./Image.svelte";
   import Gifts from "../gifts/Gifts.svelte";
+  import Venue from "../venue/Venue.svelte";
 
   let invite = $state(false);
   let gifts = $state(false);
+  let venue = $state(false);
 
   function toggleInvite() {
     invite = !invite;
   }
   function toggleGifts() {
     gifts = !gifts;
+  }
+  function toggleVenue() {
+    venue = !venue;
   }
 </script>
 
@@ -60,12 +65,22 @@
     </div>
   </button>
 
+  <button id="l9" onclick={toggleVenue}>
+    <div class="inside">
+      <Image src={l9} alt="letter" delay={1350} y={50} duration={600} />
+    </div>
+  </button>
+
   {#if invite}
     <Invite closeCb={toggleInvite} />
   {/if}
 
   {#if gifts}
     <Gifts closeCb={toggleGifts} />
+  {/if}
+
+  {#if venue}
+    <Venue closeCb={toggleVenue} />
   {/if}
 </div>
 
@@ -117,24 +132,35 @@
   }
 
   #l6 {
-    right: 20%;
-    width: 25%;
-    top: 54%;
-    transform: rotate(-15deg);
-    z-index: 6;
-  }
-  #l7 {
     left: 3%;
     width: 29%;
     top: 56%;
     transform: rotate(7deg);
+    z-index: 6;
+  }
+
+  #l7 {
+    left: 15%;
+    width: 25%;
+    top: 67%;
+    transform: rotate(-15deg);
     z-index: 7;
   }
+
   #l8 {
-    right: 3%;
+    right: 0%;
     width: 50%;
-    top: 60%;
-    z-index: 7;
+    top: 52%;
+    transform: rotate(1deg);
+    z-index: 8;
+  }
+
+  #l9 {
+    left: 0%;
+    width: 60%;
+    top: 72%;
+    transform: rotate(-2.5deg);
+    z-index: 8;
   }
 
   #landing > .image-container {

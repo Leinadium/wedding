@@ -280,6 +280,6 @@
     font-family: "Alex Brush", cursive;
   }
   .cursive {
-    font-family: "Great Vibes", cursive;
+    font-family: "Italianno", cursive;
   }
 </style>

@@ -234,7 +234,7 @@
   }
 
   .description-body {
-    font-family: "Great Vibes", cursive;
+    font-family: "Italianno", cursive;
     font-size: 1.5rem;
   }
 </style>

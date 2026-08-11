@@ -18,5 +18,12 @@
   "gifts-description": "Thanks for giving us a present!",
   "gifts-description2": "We are very glad for your help ♥️",
 
+  "calendar-name": "Wedding",
+  "calendar-label": "Calendar",
+  "calendar-location": "Brazil",
+  "calendar-date": "2027-01-01",
+  "calendar-startime": "15:00",
+  "calendar-endtime": "21:00",
+
   "callback": "You can close this window now."
 }
