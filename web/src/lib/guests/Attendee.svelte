@@ -78,7 +78,6 @@
     gap: 1rem; /* Slightly wider gap for better spacing */
     border-radius: 6px;
 
-    font-family: cursive;
     font-size: 1.3rem;
   }
 
@@ -100,7 +99,6 @@
     padding: 0.2rem 0.3rem;
     font-weight: 500;
     font-size: 1.2rem;
-    font-family: cursive;
     text-decoration: underline;
 
     border: 1px solid transparent;

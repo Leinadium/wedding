@@ -32,13 +32,13 @@
     <button class="close-main" onclick={closeCb}>&times;</button>
 
     <div class="description">
-      <span class="description-title">
+      <span class="description-title cursive">
         <Text key="gifts-title" />
       </span>
-      <span class="description-body">
+      <span class="description-body formal">
         <Text key="gifts-description" />
       </span>
-      <span class="description-body">
+      <span class="description-body formal">
         <Text key="gifts-description2" />
       </span>
     </div>
@@ -229,12 +229,10 @@
   }
 
   .description-title {
-    font-family: "Alex Brush", cursive;
-    font-size: 2rem;
+    font-size: 1.5rem;
   }
 
   .description-body {
-    font-family: "Italianno", cursive;
     font-size: 1.5rem;
   }
 </style>

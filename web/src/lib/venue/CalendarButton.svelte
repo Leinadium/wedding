@@ -6,7 +6,7 @@
   } from "add-to-calendar-button";
   import { getTextDefault } from "../text/text";
 
-  import iconCalendar from "../../assets/venue/icon-calendar.png";
+  import iconCalendar from "../../assets/venue/icon-calendar.svg";
 
   const name = getTextDefault("calendar-name", "Wedding");
   const label = getTextDefault("calendar-label", "Calendar");

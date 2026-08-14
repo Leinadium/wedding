@@ -85,23 +85,22 @@
 
 <div class="invite-wrapper" transition:fade={{ duration: 300 }}>
   <div class="invite" transition:fly={{ duration: 300, y: +150 }}>
-    <span class="title great-cursive">
-      <Text key="invite-title" />
-    </span>
-    <div class="input cursive">
-      <span>
-        <Text key="invite-input" />
-      </span>
-      <input type="text" placeholder="ABC123" bind:value={inviteCode} />
+    <span class="title cursive"><Text key="invite-title" /></span>
+    <div class="input formal">
+      <span><Text key="invite-input" /></span>
+      <input
+        class="formal-num"
+        type="text"
+        placeholder="ABC123"
+        bind:value={inviteCode}
+      />
     </div>
     {#if isLoading}
-      <span class="cursive">
-        <Text key="invite-loading" />
-      </span>
+      <span class="formal"><Text key="invite-loading" /></span>
     {/if}
     {#if invite}
       <span
-        class="description-content cursive"
+        class="description-content formal"
         transition:fly={{ duration: 300, y: +100 }}
       >
         <Text key="invite-description" />
@@ -152,10 +151,12 @@
     justify-content: center;
     align-items: center;
 
-    background-color: rgba(0, 0, 0, 0.6);
+    /*background-color: rgba(0, 0, 0, 0ß.6);*/
+    background-image:
+      url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.08'/%3E%3C/svg%3E"),
+      radial-gradient(circle at 50% 0%, #c79eadd0 0%, #a67b8bd0 100%);
     z-index: 999;
   }
-
   .invite {
     position: relative;
     display: flex;
@@ -163,15 +164,15 @@
     align-items: center;
     gap: 1.5rem;
     padding: 2rem;
-    border: 1px solid #e5e7eb;
+    border: 2px solid #dedacd;
     border-radius: 8px;
     font-family:
       system-ui,
       -apple-system,
       sans-serif;
 
-    background-image: url("../../assets/invite/texture.png");
-    background-color: #f0f0f0;
+    /*background-image: url("../../assets/invite/texture.png");*/
+    background-color: #a67b8bff;
     box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
 
     width: 80%;
@@ -192,8 +193,8 @@
   }
 
   .input span {
-    font-size: 1.5rem;
-    color: #4b5563;
+    font-size: 1.2rem;
+    color: #dedacd;
     font-weight: 300;
   }
 
@@ -205,13 +206,13 @@
     border-bottom: 1px solid black;
     background: transparent;
     font-size: 1rem;
-    color: #4b5563;
+    color: #dedacd;
     font-weight: 300;
   }
 
   .description-content {
     font-size: 1.3rem;
-    color: #4b5563;
+    color: #dedacd;
     font-weight: 300;
   }
 
@@ -227,7 +228,7 @@
 
   .note {
     font-size: 1rem;
-    color: #4b5563;
+    color: #dedacd;
     font-weight: 300;
 
     width: 90%;
@@ -235,7 +236,6 @@
 
     text-align: left;
     vertical-align: top;
-    font-family: cursive;
   }
 
   .confirm {
@@ -246,7 +246,7 @@
   .confirm input[type="submit"] {
     padding: 0.75rem 2rem;
     background-color: #111827;
-    color: white;
+    color: #dedacd;
     border: none;
     border-radius: 6px;
     font-size: 1rem;
@@ -267,19 +267,13 @@
     background: none;
     border: none;
     font-size: 1.5rem;
-    color: #777;
+    color: #dedacd;
 
     cursor: pointer;
   }
 
   .title {
+    color: #dedacd;
     font-size: 2rem;
-  }
-
-  .great-cursive {
-    font-family: "Alex Brush", cursive;
-  }
-  .cursive {
-    font-family: "Italianno", cursive;
   }
 </style>

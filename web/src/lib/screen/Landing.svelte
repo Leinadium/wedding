@@ -47,9 +47,11 @@
     </div>
   </button>
 
-  <div id="l5" class="image-container">
-    <Image src={l5} alt="couple2" delay={850} y={50} duration={700} />
-  </div>
+  <button id="l5" onclick={toggleGifts}>
+    <div class="inside">
+      <Image src={l5} alt="portal" delay={820} y={30} duration={600} />
+    </div>
+  </button>
 
   <div id="l6" class="image-container">
     <Image src={l6} alt="stamp" delay={1000} y={60} duration={600} />
@@ -59,11 +61,9 @@
     <Image src={l7} alt="photo3" delay={1100} y={60} duration={600} />
   </div>
 
-  <button id="l8" onclick={toggleGifts}>
-    <div class="inside">
-      <Image src={l8} alt="portal" delay={1250} y={30} duration={600} />
-    </div>
-  </button>
+  <div id="l8" class="image-container">
+    <Image src={l8} alt="couple2" delay={1200} y={50} duration={700} />
+  </div>
 
   <button id="l9" onclick={toggleVenue}>
     <div class="inside">
@@ -110,7 +110,7 @@
 
   #l3 {
     left: 2%;
-    top: 27%;
+    top: 25%;
     width: 30%;
     transform: rotate(10deg);
     z-index: 3;
@@ -119,48 +119,48 @@
   #l4 {
     left: 0%;
     width: 55%;
-    top: 39%;
+    top: 35%;
     z-index: 4;
   }
 
   #l5 {
-    right: 7%;
-    width: 34%;
-    top: 43%;
-    transform: rotate(-15deg);
+    right: 3%;
+    width: 50%;
+    top: 40%;
+    transform: rotate(-3deg);
     z-index: 5;
   }
 
   #l6 {
     left: 3%;
-    width: 29%;
-    top: 56%;
+    width: 34%;
+    top: 50%;
     transform: rotate(7deg);
     z-index: 6;
   }
 
   #l7 {
-    left: 15%;
+    left: 30%;
     width: 25%;
-    top: 67%;
+    top: 58%;
     transform: rotate(-15deg);
-    z-index: 7;
+    z-index: 10;
   }
 
   #l8 {
-    right: 0%;
-    width: 50%;
-    top: 52%;
-    transform: rotate(1deg);
-    z-index: 8;
+    right: 7%;
+    width: 37%;
+    top: 65%;
+    transform: rotate(15deg);
+    z-index: 10;
   }
 
   #l9 {
     left: 0%;
     width: 60%;
-    top: 72%;
+    top: 60%;
     transform: rotate(-2.5deg);
-    z-index: 8;
+    z-index: 9;
   }
 
   #landing > .image-container {
