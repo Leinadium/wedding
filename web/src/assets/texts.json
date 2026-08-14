@@ -22,8 +22,22 @@
   "calendar-label": "Calendar",
   "calendar-location": "Brazil",
   "calendar-date": "2027-01-01",
-  "calendar-startime": "15:00",
+  "calendar-startime": "12:00",
   "calendar-endtime": "21:00",
+
+  "location-link": "https://maps.google.com/",
+
+  "venue-parentsleft": "Bride's father<br />Bride's mother",
+  "venue-parentsmiddle": "Under the blessings of",
+  "venue-parentsright": "Groom's father<br />Groom's mother",
+  "venue-name": "Name &<br />Name",
+  "venue-description": "invite your to your wedding",
+  "venue-calendardescription": "January 01, 2027<br/>12h00",
+  "venue-calendarcall": "Click to save to calendar",
+  "venue-dressingdescription": "Formal dressing",
+  "venue-locationdescription": "Somewhere in<br />Brazil",
+  "venue-locationcall": "Click to open the location",
+  "venue-footer": "I have found whom my heart loves<br />Ct 3:4",
 
   "callback": "You can close this window now."
 }

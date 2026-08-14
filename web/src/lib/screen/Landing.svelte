@@ -159,7 +159,7 @@
     left: 0%;
     width: 60%;
     top: 60%;
-    transform: rotate(-2.5deg);
+    transform: rotate(1deg);
     z-index: 9;
   }
 

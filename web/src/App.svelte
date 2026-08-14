@@ -6,20 +6,6 @@
   import Callback from "./lib/callback/Callback.svelte";
   import { onMount } from "svelte";
 
-  let rsvpOpen = $state(false);
-  let giftsOpen = $state(false);
-  let locationOpen = $state(false);
-
-  function toggleRSVP() {
-    rsvpOpen = !rsvpOpen;
-  }
-  function toggleGifts() {
-    giftsOpen = !giftsOpen;
-  }
-  function toggleLocation() {
-    locationOpen = !locationOpen;
-  }
-
   let showContent = $state(true);
   onMount(() => {
     const thisUrl = new URLSearchParams(window.location.search);

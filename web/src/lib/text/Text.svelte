@@ -5,4 +5,4 @@
   let content: string = $derived(getText(key));
 </script>
 
-{content}
+{@html content}
