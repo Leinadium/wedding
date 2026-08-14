@@ -6,7 +6,6 @@ import (
 
 type Params struct {
 	FrontURL   string `env:"FRONT_URL" envDefault:"http://localhost:5173"`
-	ServerURL  string `env:"SERVER_URL" envDefault:"http://localhost:8080"`
 	AuthSecret string `env:"AUTH_SECRET" envDefault:"changeMe!"`
 	Port       int    `env:"PORT" envDefault:"8080"`
 

@@ -38,4 +38,7 @@ services:
       - "8086:80"
     env_file:
       - .env
+    environment:
+      BACKEND_HOST: wedding-server
+      BACKEND_PORT: 8080
     restart: unless-stopped
