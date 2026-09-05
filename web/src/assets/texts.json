@@ -1,7 +1,7 @@
 {
   "header-date": "01 • 01 • 2027",
   "header-names": "Name & Name",
-  "footer-madeby": "Made with ♥️ by Name and Name",
+  "footer-madeby": "Created by Name and Name",
 
   "invite-title": "R S V P",
   "invite-input": "Input the code received:",
@@ -9,14 +9,16 @@
   "invite-description": "You can confirm your presence by clicking on the current status of each attendee",
   "invite-comments": "Any observations or comments",
   "invite-save": "Save",
+  "invite-saved": "Saved!",
 
   "attendee-confirmed": "Confirmed!",
-  "attendee-wontgo": "Won't go :(",
-  "attendee-pending": "Pending",
+  "attendee-wontgo": "Can't attend",
+  "attendee-pending": "Pending...",
 
   "gifts-title": "Gifts List",
   "gifts-description": "Thanks for giving us a present!",
   "gifts-description2": "We are very glad for your help ♥️",
+  "gifts-url": "/#",
 
   "calendar-name": "Wedding",
   "calendar-label": "Calendar",
@@ -26,6 +28,7 @@
   "calendar-endtime": "21:00",
 
   "location-link": "https://maps.google.com/",
+  "dressing-link": "/#",
 
   "venue-parentsleft": "Bride's father<br />Bride's mother",
   "venue-parentsmiddle": "Under the blessings of",

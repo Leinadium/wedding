@@ -1,9 +1,9 @@
 <script lang="ts">
-  import Header from "./lib/screen/Header.svelte";
-  import Footer from "./lib/screen/Footer.svelte";
-  import Countdown from "./lib/countdown/Countdown.svelte";
-  import Landing from "./lib/screen/Landing.svelte";
-  import Callback from "./lib/callback/Callback.svelte";
+  import Header from "./lib/landing/Header.svelte";
+  import Footer from "./lib/landing/Footer.svelte";
+  import Countdown from "./lib/Countdown.svelte";
+  import Landing from "./lib/landing/Landing.svelte";
+  import Callback from "./lib/Callback.svelte";
   import { onMount } from "svelte";
 
   let showContent = $state(true);
@@ -45,7 +45,7 @@
     font-family: "Cormorant Garamond", Georgia, "Times New Roman", Times, serif;
   }
   :global(.formal-num) {
-    font-family: "Courier New", Courier, monospace;
+    font-family: "Bodoni Moda", Courier, monospace;
   }
 
   main {

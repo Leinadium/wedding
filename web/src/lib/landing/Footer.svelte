@@ -4,7 +4,7 @@
 </script>
 
 <footer>
-  <span>
+  <span class="formal">
     <Text key="footer-madeby" />
   </span>
   <a href="https://github.com/Leinadium/wedding">
@@ -15,11 +15,10 @@
 <style>
   footer {
     display: flex;
-    flex-flow: row wrap;
+    flex-flow: column wrap;
     justify-content: center;
     gap: 0.5em;
     align-items: center;
-    height: 1.5rem;
   }
   span,
   a,
@@ -31,6 +30,6 @@
   }
   a,
   img {
-    height: 80%;
+    height: 20px;
   }
 </style>

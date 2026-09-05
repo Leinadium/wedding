@@ -3,8 +3,8 @@
 </script>
 
 <header>
-  <span class="date">
-    <Text key="header-date" />
+  <span class="date formal">
+    <Text key="header-names" />
   </span>
 </header>
 
@@ -21,7 +21,6 @@
   }
 
   span {
-    text-transform: uppercase;
     letter-spacing: 3px;
     font-size: 1.5rem;
     color: #fae7b6;

@@ -1,6 +1,8 @@
 <script lang="ts">
   import { onDestroy, onMount } from "svelte";
 
+  import l1 from "../assets/landing/l1.png";
+
   const weddingDate = new Date("2027-01-17T15:30:00"); // sample date
 
   let currentTime: Date = $state(new Date());
@@ -37,37 +39,59 @@
   });
 </script>
 
-<div class="countdown">
-  <div class="slot">
-    <span class="number">{formatTime(days)}</span>
-    <span class="text">days</span>
-  </div>
-  <span class="sep">:</span>
-  <div class="slot">
-    <span class="number">{formatTime(hours)}</span>
-    <span class="text">hours</span>
-  </div>
-  <span class="sep">:</span>
-  <div class="slot">
-    <span class="number">{formatTime(minutes)}</span>
-    <span class="text">minutes</span>
-  </div>
-  <span class="sep">:</span>
-  <div class="slot">
-    <span class="number">{formatTime(seconds)}</span>
-    <span class="text">seconds</span>
+<div class="countdown-wrapper">
+  <img src={l1} alt="l1" />
+  <div class="countdown">
+    <div class="slot">
+      <span class="number formal-num">{formatTime(days)}</span>
+      <span class="text formal">days</span>
+    </div>
+    <!-- <span class="sep">:</span> -->
+    <div class="slot">
+      <span class="number formal-num">{formatTime(hours)}</span>
+      <span class="text formal">hours</span>
+    </div>
+    <!-- <span class="sep">:</span> -->
+    <div class="slot">
+      <span class="number formal-num">{formatTime(minutes)}</span>
+      <span class="text formal">minutes</span>
+    </div>
+    <!-- <span class="sep">:</span> -->
+    <div class="slot">
+      <span class="number formal-num">{formatTime(seconds)}</span>
+      <span class="text formal">seconds</span>
+    </div>
   </div>
 </div>
 
 <style>
+  .countdown-wrapper {
+    width: 60%;
+    position: relative;
+    display: inline-block;
+
+    color: #fae7b6;
+    font-weight: bold;
+  }
+
+  img {
+    display: block;
+    width: 100%;
+    object-fit: cover;
+  }
+
   .countdown {
+    box-sizing: border-box;
+    position: absolute;
+    top: 35%;
+    width: 100%;
+    padding: 20%;
+    height: 30%;
+
     display: flex;
     flex-flow: row nowrap;
-    width: 60%;
-    max-width: 300px;
-    min-width: 100px;
 
-    align-items: start;
+    align-items: center;
   }
 
   .slot {
@@ -79,17 +103,15 @@
   }
 
   .number {
-    font-family: cursive;
     font-size: 2rem;
   }
 
   .text {
-    font-family: cursive;
     font-size: 1rem;
   }
 
   .sep {
-    font-family: cursive;
     font-size: 2rem;
+    height: 2rem;
   }
 </style>

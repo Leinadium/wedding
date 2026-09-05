@@ -13,10 +13,13 @@
   import Image from "./Image.svelte";
   import Gifts from "../gifts/Gifts.svelte";
   import Venue from "../venue/Venue.svelte";
+  import { getTextDefault } from "../text/text";
 
   let invite = $state(false);
   let gifts = $state(false);
   let venue = $state(false);
+
+  const giftsUrl: string = getTextDefault("gifts-url", "/#");
 
   function toggleInvite() {
     invite = !invite;
@@ -47,11 +50,16 @@
     </div>
   </button>
 
-  <button id="l5" onclick={toggleGifts}>
+  <a id="l5" href={giftsUrl} target="_blank">
     <div class="inside">
       <Image src={l5} alt="portal" delay={820} y={30} duration={600} />
     </div>
-  </button>
+  </a>
+  <!-- <button id="l5" onclick={toggleGifts}>
+    <div class="inside">
+      <Image src={l5} alt="portal" delay={820} y={30} duration={600} />
+    </div>
+  </button> -->
 
   <div id="l6" class="image-container">
     <Image src={l6} alt="stamp" delay={1000} y={60} duration={600} />
@@ -174,7 +182,8 @@
     display: block;
   }
 
-  button {
+  button,
+  a {
     background: none;
     border: none;
     padding: 0;

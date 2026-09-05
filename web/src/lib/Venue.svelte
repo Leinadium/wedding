@@ -1,6 +1,6 @@
 <script lang="ts">
   import { fade } from "svelte/transition";
-  import Text from "../text/Text.svelte";
+  import Text from "./text/Text.svelte";
   import backgroundImg from "../../assets/venue/background.png";
   import locationImg from "../../assets/venue/location.svg";
   import calendarImg from "../../assets/venue/calendar.svg";
@@ -10,7 +10,7 @@
     atcb_action,
     type ATCBActionEventConfig,
   } from "add-to-calendar-button";
-  import { getText, getTextDefault } from "../text/text";
+  import { getTextDefault } from "./text/text";
 
   let {
     closeCb,
@@ -20,6 +20,7 @@
 
   // location
   const locationURL = getTextDefault("location-link", "/#");
+  const dressingURL = getTextDefault("dressing-link", "/#");
 
   // calendar
   const nameCalendar = getTextDefault("calendar-name", "Wedding");
@@ -52,14 +53,16 @@
   };
 </script>
 
-<div class="venue-wrapper" transition:fade={{ duration: 300 }}>
+<div class="venue-wrapper" transition:fade={{ duration: 200 }}>
   <div class="closable">
     <button class="close" onclick={closeCb}>&times;</button>
-    <div class="venue-container" in:fade={{ delay: 300, duration: 500 }}>
+    <div class="venue-container">
       <div class="parents formal">
-        <p class="left"><Text key="venue-parentsleft" /></p>
         <p class="middle"><Text key="venue-parentsmiddle" /></p>
-        <p class="right"><Text key="venue-parentsright" /></p>
+        <div class="parents-side">
+          <p class="left"><Text key="venue-parentsleft" /></p>
+          <p class="right"><Text key="venue-parentsright" /></p>
+        </div>
       </div>
 
       <span class="name cursive">
@@ -85,12 +88,7 @@
             <Text key="venue-calendarcall" />
           </span>
         </button>
-        <div class="action">
-          <img src={dressingImg} alt="dressing" class="action-img" />
-          <span class="action-description formal">
-            <Text key="venue-dressingdescription" />
-          </span>
-        </div>
+
         <a href={locationURL} target="_blank" class="action">
           <img src={locationImg} alt="maps" class="action-img" />
           <span class="action-description formal">
@@ -100,8 +98,17 @@
             <Text key="venue-locationcall" />
           </span>
         </a>
-      </div>
 
+        <a href={dressingURL} target="_blank" class="action">
+          <img src={dressingImg} alt="dressing" class="action-img" />
+          <span class="action-description formal">
+            <Text key="venue-dressingdescription" />
+          </span>
+          <span class="action-call formal">
+            <Text key="venue-locationcall" />
+          </span>
+        </a>
+      </div>
       <div class="footer">
         <div class="footer-line"></div>
         <p class="footer-text formal">
@@ -170,60 +177,56 @@
     color: #dedacdff;
     cursor: pointer;
     z-index: 10;
+
+    border-radius: 1rem;
+    border: 1px solid transparent;
   }
 
   .parents {
     width: 100%;
-    height: 4rem;
     display: flex;
-    flex-flow: row nowrap;
-    justify-content: space-between;
+    flex-flow: column nowrap;
+    justify-content: center;
+    align-items: center;
 
     color: #dedacda0;
-
     font-style: italic;
-    font-size: 1.1rem;
+  }
+
+  .parents-side {
+    display: flex;
+    width: 90%;
+    flex-flow: row nowrap;
+    justify-content: space-between;
   }
 
   .left {
-    align-self: flex-end;
     text-align: left;
   }
 
   .middle {
-    align-self: flex-start;
     text-align: center;
   }
 
   .right {
-    align-self: flex-end;
     text-align: right;
   }
 
   .name {
-    font-size: 6rem;
-    line-height: 5rem;
     text-align: center;
-    margin-top: 3rem;
-
     color: #dedacdff;
   }
 
   .description {
-    font-size: 1.2rem;
     font-style: italic;
     text-align: center;
-    margin-bottom: 4rem;
 
     color: #dedacdc0;
   }
 
   .actions {
     width: 100%;
-    height: 8rem;
     display: flex;
-    flex-flow: row nowrap;
-    justify-content: space-around;
     align-items: center;
   }
 
@@ -233,9 +236,8 @@
     padding: 0;
     background: transparent;
     text-decoration: none;
-
-    width: 30%;
     flex: 1 1 0px;
+    box-sizing: border-box;
 
     text-align: center;
     color: #dedacdff;
@@ -247,7 +249,6 @@
 
     border: 1px solid transparent;
     border-radius: 1rem;
-    padding: 1rem;
   }
 
   button,
@@ -261,21 +262,10 @@
   }
 
   .action-call {
-    font-size: 0.8rem;
     font-style: italic;
   }
 
-  .action-img {
-    height: 2rem;
-    margin-bottom: 0.3rem;
-  }
-
-  .action-description {
-    font-size: 1.2rem;
-  }
-
   .footer {
-    margin-top: 3rem;
     display: flex;
     flex-flow: column;
     justify-content: start;
@@ -283,13 +273,10 @@
   }
 
   .footer-line {
-    width: 3rem;
-    height: 0.5rem;
     border-top: 0.1rem solid #dedacdff;
   }
 
   .footer-text {
-    font-size: 1rem;
     text-align: center;
     font-style: italic;
     color: #dedacda0;
@@ -297,5 +284,102 @@
 
   p {
     margin: 0;
+  }
+
+  @media only screen and (max-width: 768px) {
+    .parents {
+      height: 5rem;
+      font-size: 0.9rem;
+      gap: 0.5rem;
+    }
+    .parents-side {
+      width: 100%;
+    }
+
+    .name {
+      font-size: 6rem;
+      line-height: 5rem;
+      margin-top: 3rem;
+    }
+    .description {
+      font-size: 1.2rem;
+      margin-bottom: 2rem;
+    }
+    .actions {
+      flex-flow: column nowrap;
+      justify-content: center;
+      align-items: center;
+    }
+    .action {
+      width: 400px;
+      padding: 1rem;
+      flex-flow: row nowrap;
+      justify-content: flex-start;
+      gap: 2rem;
+    }
+    .action-call {
+      font-size: 0.8rem;
+    }
+    .action-img {
+      height: 2.5rem;
+    }
+    .action-description {
+      font-size: 1rem;
+    }
+    .footer {
+      margin-top: 1.5rem;
+    }
+    .footer-line {
+      width: 3rem;
+      height: 0.5rem;
+    }
+    .footer-text {
+      font-size: 1rem;
+    }
+  }
+
+  @media only screen and (min-width: 768px) {
+    .parents {
+      height: 4rem;
+      font-size: 1.1rem;
+    }
+    .name {
+      font-size: 6rem;
+      line-height: 5rem;
+      margin-top: 3rem;
+    }
+    .description {
+      font-size: 1.2rem;
+      margin-bottom: 4rem;
+    }
+    .actions {
+      height: 8rem;
+      flex-flow: row nowrap;
+      justify-content: space-around;
+    }
+    .action {
+      width: 30%;
+      padding: 1rem;
+    }
+    .action-call {
+      font-size: 0.8rem;
+    }
+    .action-img {
+      height: 2rem;
+      margin-bottom: 0.3rem;
+    }
+    .action-description {
+      font-size: 1.2rem;
+    }
+    .footer {
+      margin-top: 3rem;
+    }
+    .footer-line {
+      width: 3rem;
+      height: 0.5rem;
+    }
+    .footer-text {
+      font-size: 1rem;
+    }
   }
 </style>

@@ -1,7 +1,7 @@
-export const API_URL = import.meta.env.VITE_API_URL || "http://localhost:8080";
-export const FRONT_URL =
+export const API_URL: string =
+  import.meta.env.VITE_API_URL || "http://localhost:8082";
+export const FRONT_URL: string =
   import.meta.env.VITE_FRONT_URL || "http://localhost:5173";
-
 // --- Types ---
 
 export interface Guest {

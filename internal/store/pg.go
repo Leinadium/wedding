@@ -12,6 +12,10 @@ import (
 	"gorm.io/gorm/clause"
 )
 
+var (
+	ErrNotFound = gorm.ErrRecordNotFound
+)
+
 type Params struct {
 	DSN         string
 	AutoMigrate bool

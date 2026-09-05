@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { fade } from "svelte/transition";
+  import { fade, fly } from "svelte/transition";
   import { api, type Product } from "../api";
   import Text from "../text/Text.svelte";
   import { formatPrice } from "../common";
@@ -28,7 +28,7 @@
 </script>
 
 <div class="gifts-wrapper" transition:fade={{ duration: 300 }}>
-  <div class="gifts-container">
+  <div class="gifts-container" transition:fly={{ duration: 300, y: +150 }}>
     <button class="close-main" onclick={closeCb}>&times;</button>
 
     <div class="description">

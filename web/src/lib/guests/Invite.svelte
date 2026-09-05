@@ -2,10 +2,11 @@
   import { fade, fly } from "svelte/transition";
   import { onMount } from "svelte";
   import { api, type InviteResponse } from "../api";
-  import Attendee from "./Attendee.svelte";
   import { loadStoredInvite, saveStoredInvite } from "./state";
   import Text from "../text/Text.svelte";
   import { getText } from "../text/text";
+  import Submit from "./Submit.svelte";
+  import Attendee from "./Attendee.svelte";
 
   let {
     closeCb,
@@ -19,13 +20,7 @@
   let invite: InviteResponse | undefined = $state(undefined);
   let currentNote: string = $state("");
 
-  let buttonSave = $state("");
-  function save() {
-    buttonSave = "saved";
-    setTimeout(() => {
-      buttonSave = "";
-    }, 3000);
-  }
+  let isSuccess: boolean = $state(false);
 
   onMount(() => {
     let invite = loadStoredInvite();
@@ -45,6 +40,7 @@
       .then((data) => {
         invite = data;
         currentNote = invite.note;
+
         saveStoredInvite(inviteCode);
         isLoading = false;
       })
@@ -54,16 +50,9 @@
       });
   });
 
-  function updateAttendeeStatusFactory(i: number) {
-    return (status: boolean | null) => {
-      invite!.attendees[i].confirmed = status;
-    };
-  }
-
-  function updateAttendeeIsChildFactory(i: number) {
-    return (isChild: boolean) => {
-      invite!.attendees[i].isChild = isChild;
-    };
+  function updateAttendee(i: number, status: boolean | null) {
+    invite!.attendees[i].confirmed = status;
+    console.log(i, invite!.attendees[i].confirmed);
   }
 
   async function saveInvite() {
@@ -78,7 +67,11 @@
       // hardcodding as adult
       attendee.isChild = false;
       await api.saveAttendee(attendee);
-      save();
+
+      isSuccess = true;
+      setTimeout(() => {
+        isSuccess = false;
+      }, 3000);
     }
   }
 </script>
@@ -89,7 +82,7 @@
     <div class="input formal">
       <span><Text key="invite-input" /></span>
       <input
-        class="formal-num"
+        class="input-code formal-num"
         type="text"
         placeholder="ABC123"
         bind:value={inviteCode}
@@ -106,12 +99,8 @@
         <Text key="invite-description" />
       </span>
       <div class="content" transition:fly={{ duration: 300, y: +100 }}>
-        {#each invite.attendees as attendee, i}
-          <Attendee
-            {attendee}
-            updateStatus={updateAttendeeStatusFactory(i)}
-            updateIsChild={updateAttendeeIsChildFactory(i)}
-          />
+        {#each invite.attendees as attendee, i (attendee.id)}
+          <Attendee index={i} {attendee} updateStatus={updateAttendee} />
         {/each}
       </div>
 
@@ -121,15 +110,8 @@
         placeholder={getText("invite-comments")}
         bind:value={currentNote}
       ></textarea>
-      <div
-        class="confirm {buttonSave}"
-        transition:fly={{ duration: 300, y: +100 }}
-      >
-        <input
-          type="submit"
-          value={getText("invite-save")}
-          onclick={saveInvite}
-        />
+      <div class="confirm" transition:fly={{ duration: 300, y: +100 }}>
+        <Submit success={isSuccess} onClick={saveInvite} />
       </div>
     {/if}
     <button class="close" onclick={closeCb}>&times;</button>
@@ -166,12 +148,8 @@
     padding: 2rem;
     border: 2px solid #dedacd;
     border-radius: 8px;
-    font-family:
-      system-ui,
-      -apple-system,
-      sans-serif;
 
-    /*background-image: url("../../assets/invite/texture.png");*/
+    background-image: url("../../assets/invite/background.png");
     background-color: #a67b8bff;
     box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
 
@@ -198,12 +176,12 @@
     font-weight: 300;
   }
 
-  .input input {
+  .input-code {
     width: 80%;
     max-width: 80px;
     padding: 0.5rem;
     border: 0;
-    border-bottom: 1px solid black;
+    border-bottom: 1px solid #dedacd;
     background: transparent;
     font-size: 1rem;
     color: #dedacd;
@@ -211,7 +189,9 @@
   }
 
   .description-content {
-    font-size: 1.3rem;
+    font-size: 1rem;
+    font-style: italic;
+    text-align: center;
     color: #dedacd;
     font-weight: 300;
   }
@@ -227,36 +207,25 @@
   }
 
   .note {
-    font-size: 1rem;
-    color: #dedacd;
-    font-weight: 300;
-
     width: 90%;
     height: 100px;
 
+    box-sizing: border-box;
+    background-color: #00000040;
+    border-radius: 1rem;
+    border: 1px solid #dedacd;
+    padding: 0.5rem;
+
+    font-size: 0.9rem;
+    color: #dedacd;
+    font-weight: 300;
     text-align: left;
     vertical-align: top;
   }
 
   .confirm {
     display: flex;
-    justify-content: flex-end; /* Aligns the save button to the right */
-  }
-
-  .confirm input[type="submit"] {
-    padding: 0.75rem 2rem;
-    background-color: #111827;
-    color: #dedacd;
-    border: none;
-    border-radius: 6px;
-    font-size: 1rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: background-color 0.2s;
-  }
-
-  .confirm input[type="submit"]:hover {
-    background-color: #374151;
+    justify-content: flex-end;
   }
 
   .close {

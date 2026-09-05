@@ -13,6 +13,10 @@ import (
 	"leinadium.dev/wedding/internal/store"
 )
 
+var (
+	ErrNotFound = store.ErrNotFound
+)
+
 type Service struct {
 	store       store.Store
 	payment     *payment.Service

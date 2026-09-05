@@ -1,72 +1,80 @@
 <script lang="ts">
+  import { onMount } from "svelte";
   import type { Attendee } from "../api";
-  import { getText } from "../text/text";
+  import Text from "../text/Text.svelte";
 
   let {
+    index,
     attendee,
     updateStatus,
-    updateIsChild,
   }: {
+    index: number;
     attendee: Attendee;
-    updateStatus: (status: boolean | null) => void;
-    updateIsChild: (status: boolean) => void;
+    updateStatus: (index: number, status: boolean | null) => void;
   } = $props();
 
-  function statusToText(status: boolean | null): string {
-    switch (status) {
-      case true:
-        return getText("attendee-confirmed");
-      case false:
-        return getText("attendee-wontgo");
-      default:
-        return getText("attendee-pending");
-    }
-  }
-
-  function statusToClass(status: boolean | null): string {
-    switch (status) {
-      case true:
-        return "yes";
-      case false:
-        return "no";
-      default:
-        return "pending";
-    }
-  }
+  let name: string = $derived(attendee.name);
+  let selected: string = $state("pending");
 
   let status: boolean | null = $derived(attendee.confirmed);
-  let statusClass: string = $derived(statusToClass(status));
-  let statusText: string = $derived(statusToText(status));
 
-  function toggleStatus() {
-    switch (status) {
-      case false:
-        updateStatus(true);
+  function handle() {
+    console.log("handle");
+    switch (selected) {
+      case "confirmed":
+        updateStatus(index, true);
         break;
-      case true:
-        updateStatus(null);
+      case "wontgo":
+        updateStatus(index, false);
         break;
       default:
-        updateStatus(false);
+        updateStatus(index, null);
         break;
     }
   }
 
-  function toggleIsChild() {
-    updateIsChild(!attendee.isChild);
-  }
+  onMount(() => {
+    switch (status) {
+      case true:
+        selected = "confirmed";
+        break;
+      case false:
+        selected = "wontgo";
+        break;
+      default:
+        selected = "pending";
+        break;
+    }
+  });
 </script>
 
 <div class="attendee">
-  <!-- <button class="child" onclick={toggleIsChild}>
-    {attendee.isChild ? "Child" : "Adult"}
-  </button> -->
+  <span class="name formal {selected}">
+    {attendee.name}
+  </span>
 
-  <span class="name">{attendee.name}</span>
+  <label for="attendee-{name}"></label>
+  <select
+    bind:value={selected}
+    onchange={handle}
+    name="attendee"
+    id="attendee-{name}"
+    class="formal"
+  >
+    <option value="pending">
+      <Text key="attendee-pending"></Text>
+    </option>
+    <option value="confirmed">
+      <Text key="attendee-confirmed"></Text>
+    </option>
+    <option value="wontgo">
+      <Text key="attendee-wontgo"></Text>
+    </option>
+  </select>
 
-  <button class="status {statusClass}" onclick={toggleStatus}>
+  <!-- <button class="status {statusClass}" onclick={toggleStatus}>
     {statusText}
-  </button>
+  </button> -->
 </div>
 
 <style>
@@ -75,58 +83,32 @@
     flex-flow: row nowrap;
     justify-content: right;
     align-items: center;
-    gap: 1rem; /* Slightly wider gap for better spacing */
-    border-radius: 6px;
-
-    font-size: 1.3rem;
+    gap: 1rem;
   }
 
   .name {
     flex: 1;
     width: 100%;
-    font-weight: 500;
-    color: #1f2937;
+    font-weight: 300;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
     text-align: left;
+
+    font-size: 1.3rem;
+    color: #dedacd;
   }
 
-  button {
-    background-color: rgba(0, 0, 0, 0.05);
-
-    cursor: pointer;
-    padding: 0.2rem 0.3rem;
-    font-weight: 500;
-    font-size: 1.2rem;
-    text-decoration: underline;
-
-    border: 1px solid transparent;
-    border-radius: 5px;
-
-    transition: border 0.2s ease-in-out;
+  .wontgo {
+    text-decoration: line-through;
   }
 
-  button:hover {
-    border: 1px solid #767;
-  }
+  select {
+    border: none;
+    border-bottom: 1px solid #fae7b6;
 
-  .child {
-    color: #767;
-  }
-
-  :global(.status.yes) {
-    color: #166534;
-    background-color: #16653430;
-  }
-
-  :global(.status.no) {
-    color: #991b1b;
-    background-color: #991b1b30;
-  }
-
-  :global(.status.pending) {
-    color: #92400e;
-    background-color: #99999930;
+    color: #dedacd;
+    font-size: 1rem;
+    background: transparent;
   }
 </style>

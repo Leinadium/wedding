@@ -1,6 +1,7 @@
 package server
 
 import (
+	"errors"
 	"fmt"
 	"io"
 	"net/http"
@@ -185,7 +186,11 @@ func (s *Server) getInvite(c *gin.Context) {
 
 	invite, err := s.svc.Invite(c.Request.Context(), store.InviteID(id))
 	if err != nil {
-		s.error(c, http.StatusInternalServerError, err)
+		if errors.Is(err, v1.ErrNotFound) {
+			s.error(c, http.StatusNotFound, err)
+		} else {
+			s.error(c, http.StatusInternalServerError, err)
+		}
 		return
 	}
 	c.JSON(http.StatusOK, invite)
