@@ -12,7 +12,7 @@
   import Invite from "../guests/Invite.svelte";
   import Image from "./Image.svelte";
   import Gifts from "../gifts/Gifts.svelte";
-  import Venue from "../venue/Venue.svelte";
+  import Venue from "../Venue.svelte";
   import { getTextDefault } from "../text/text";
 
   let invite = $state(false);
@@ -99,7 +99,7 @@
     width: 100%;
     max-width: 800px;
     height: 100%;
-    aspect-ratio: 1 / 3;
+    aspect-ratio: 1 / 2.8;
   }
 
   #l1 {
@@ -111,14 +111,14 @@
 
   #l2 {
     right: 2%;
-    top: 13%;
+    top: 17%;
     width: 60%;
     z-index: 2;
   }
 
   #l3 {
     left: 2%;
-    top: 25%;
+    top: 28%;
     width: 30%;
     transform: rotate(10deg);
     z-index: 3;
@@ -127,14 +127,14 @@
   #l4 {
     left: 0%;
     width: 55%;
-    top: 35%;
+    top: 38%;
     z-index: 4;
   }
 
   #l5 {
     right: 3%;
     width: 50%;
-    top: 40%;
+    top: 43%;
     transform: rotate(-3deg);
     z-index: 5;
   }
@@ -142,7 +142,7 @@
   #l6 {
     left: 3%;
     width: 34%;
-    top: 50%;
+    top: 55%;
     transform: rotate(7deg);
     z-index: 6;
   }
@@ -150,7 +150,7 @@
   #l7 {
     left: 30%;
     width: 25%;
-    top: 58%;
+    top: 62%;
     transform: rotate(-15deg);
     z-index: 10;
   }
@@ -158,7 +158,7 @@
   #l8 {
     right: 7%;
     width: 37%;
-    top: 65%;
+    top: 69%;
     transform: rotate(15deg);
     z-index: 10;
   }
@@ -166,7 +166,7 @@
   #l9 {
     left: 0%;
     width: 60%;
-    top: 60%;
+    top: 68%;
     transform: rotate(1deg);
     z-index: 9;
   }

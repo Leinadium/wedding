@@ -1,10 +1,10 @@
 <script lang="ts">
   import { fade } from "svelte/transition";
   import Text from "./text/Text.svelte";
-  import backgroundImg from "../../assets/venue/background.png";
-  import locationImg from "../../assets/venue/location.svg";
-  import calendarImg from "../../assets/venue/calendar.svg";
-  import dressingImg from "../../assets/venue/dressing.svg";
+  import backgroundImg from "../assets/venue/background.png";
+  import locationImg from "../assets/venue/location.svg";
+  import calendarImg from "../assets/venue/calendar.svg";
+  import dressingImg from "../assets/venue/dressing.svg";
   import "add-to-calendar-button";
   import {
     atcb_action,
@@ -159,7 +159,7 @@
     padding: 1rem 1rem 1rem 1rem;
     box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
 
-    background-image: url("../../assets/venue/background.png");
+    background-image: url("../assets/venue/background.png");
     background-position: center;
     background-size: cover;
 

@@ -1,7 +1,6 @@
 <script lang="ts">
   import Header from "./lib/landing/Header.svelte";
   import Footer from "./lib/landing/Footer.svelte";
-  import Countdown from "./lib/Countdown.svelte";
   import Landing from "./lib/landing/Landing.svelte";
   import Callback from "./lib/Callback.svelte";
   import { onMount } from "svelte";
@@ -18,7 +17,6 @@
   <main>
     <Header />
     <Landing />
-    <Countdown />
     <Footer />
   </main>
 {:else}
@@ -55,6 +53,7 @@
     flex-direction: column;
     align-items: center;
     padding: 2rem 1rem;
+    padding-bottom: 0;
     overflow-x: hidden;
   }
 </style>
