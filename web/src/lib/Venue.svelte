@@ -105,7 +105,7 @@
             <Text key="venue-dressingdescription" />
           </span>
           <span class="action-call formal">
-            <Text key="venue-locationcall" />
+            <Text key="venue-dressingcall" />
           </span>
         </a>
       </div>

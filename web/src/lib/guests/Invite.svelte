@@ -1,7 +1,7 @@
 <script lang="ts">
   import { fade, fly } from "svelte/transition";
   import { onMount } from "svelte";
-  import { api, type InviteResponse } from "../api";
+  import { api, type Invite } from "../api";
   import { loadStoredInvite, saveStoredInvite } from "./state";
   import Text from "../text/Text.svelte";
   import { getText } from "../text/text";
@@ -17,7 +17,7 @@
   let inviteCode: string = $state("");
   let isLoading: boolean = $state(false);
 
-  let invite: InviteResponse | undefined = $state(undefined);
+  let invite: Invite | undefined = $state(undefined);
   let currentNote: string = $state("");
 
   let isSuccess: boolean = $state(false);
@@ -173,7 +173,7 @@
   .input span {
     font-size: 1.2rem;
     color: #dedacd;
-    font-weight: 300;
+    font-weight: bold;
   }
 
   .input-code {
@@ -185,7 +185,7 @@
     background: transparent;
     font-size: 1rem;
     color: #dedacd;
-    font-weight: 300;
+    font-weight: bold;
   }
 
   .description-content {
@@ -193,7 +193,7 @@
     font-style: italic;
     text-align: center;
     color: #dedacd;
-    font-weight: 300;
+    font-weight: bold;
   }
 
   .content {

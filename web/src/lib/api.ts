@@ -44,15 +44,25 @@ export interface Purchase {
 
 export interface Attendee {
   id: string;
+  inviteId: string;
   name: string;
   isChild: boolean;
   confirmed: boolean | null;
+  updatedAt: string;
 }
 
-export interface InviteResponse {
+export interface Invite {
   id: string;
   phone: string;
   note: string;
+  attendees: Attendee[];
+}
+
+export interface InvitesResponse {
+  invites: Invite[];
+}
+
+export interface AttendeesResponse {
   attendees: Attendee[];
 }
 
@@ -95,9 +105,9 @@ export const api = {
     return handleResponse<PurchaseResponse>(res);
   },
 
-  async getInvite(inviteCode: string): Promise<InviteResponse> {
+  async getInvite(inviteCode: string): Promise<Invite> {
     const res = await fetch(`${API_URL}/v1/invite/${inviteCode}`);
-    return handleResponse<InviteResponse>(res);
+    return handleResponse<Invite>(res);
   },
 
   async saveInviteNote(code: string, note: string): Promise<void> {
@@ -107,6 +117,22 @@ export const api = {
       body: JSON.stringify({ note: note }),
     });
     return handleResponse<void>(res);
+  },
+
+  async getAttendees(auth: string): Promise<AttendeesResponse> {
+    const res = await fetch(`${API_URL}/v1/attendee`, {
+      method: "GET",
+      headers: { "Content-Type": "application/json", Authorization: auth },
+    });
+    return handleResponse<AttendeesResponse>(res);
+  },
+
+  async getInvites(auth: string): Promise<InvitesResponse> {
+    const res = await fetch(`${API_URL}/v1/invite`, {
+      method: "GET",
+      headers: { "Content-Type": "application/json", Authorization: auth },
+    });
+    return handleResponse<InvitesResponse>(res);
   },
 
   async saveAttendee(attendee: Attendee): Promise<void> {

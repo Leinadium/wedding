@@ -28,6 +28,8 @@ type Server struct {
 
 func New(svc *v1.Service, p Params) *Server {
 	engine := gin.Default()
+	engine.RedirectTrailingSlash = false
+	engine.RemoveExtraSlash = true
 	_ = engine.SetTrustedProxies(nil)
 
 	engine.Use(cors.New(cors.Config{

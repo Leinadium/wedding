@@ -4,19 +4,40 @@
   import Landing from "./lib/landing/Landing.svelte";
   import Callback from "./lib/Callback.svelte";
   import { onMount } from "svelte";
+  import { getText } from "./lib/text/text";
+  import { Page } from "./lib/common";
+  import Story from "./lib/Story.svelte";
+  import Backoffice from "./lib/backoffice/Backoffice.svelte";
 
+  let backoffice = $state(true);
   let showContent = $state(true);
   onMount(() => {
     const thisUrl = new URLSearchParams(window.location.search);
-    console.log(thisUrl);
     showContent = !thisUrl.has("callback");
+    backoffice = thisUrl.has("backoffice");
   });
+
+  let page: Page = $state(Page.Landing);
+
+  function setState(p: Page) {
+    page = p;
+  }
 </script>
 
-{#if showContent}
+<svelte:head>
+  <title>{getText("site-title")}</title>
+</svelte:head>
+
+{#if backoffice}
+  <Backoffice />
+{:else if showContent}
   <main>
     <Header />
-    <Landing />
+    {#if page === Page.Landing}
+      <Landing {setState} />
+    {:else}
+      <Story {setState} />
+    {/if}
     <Footer />
   </main>
 {:else}
@@ -38,7 +59,6 @@
   :global(.cursive) {
     font-family: "Luxurious Script", cursive;
   }
-
   :global(.formal) {
     font-family: "Cormorant Garamond", Georgia, "Times New Roman", Times, serif;
   }

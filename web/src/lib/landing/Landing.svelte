@@ -8,12 +8,20 @@
   import l7 from "../../assets/landing/l7.png";
   import l8 from "../../assets/landing/l8.png";
   import l9 from "../../assets/landing/l9.png";
+  import l10 from "../../assets/landing/l10.png";
 
   import Invite from "../guests/Invite.svelte";
-  import Image from "./Image.svelte";
+  import Image from "../Image.svelte";
   import Gifts from "../gifts/Gifts.svelte";
   import Venue from "../Venue.svelte";
   import { getTextDefault } from "../text/text";
+  import { Page } from "../common";
+
+  let {
+    setState,
+  }: {
+    setState: (page: Page) => void;
+  } = $props();
 
   let invite = $state(false);
   let gifts = $state(false);
@@ -79,6 +87,12 @@
     </div>
   </button>
 
+  <button id="l10" onclick={() => setState(Page.Story)}>
+    <div class="inside">
+      <Image src={l10} alt="story" delay={1350} y={50} duration={600} />
+    </div>
+  </button>
+
   {#if invite}
     <Invite closeCb={toggleInvite} />
   {/if}
@@ -99,7 +113,7 @@
     width: 100%;
     max-width: 800px;
     height: 100%;
-    aspect-ratio: 1 / 2.8;
+    aspect-ratio: 1 / 3.2;
   }
 
   #l1 {
@@ -111,14 +125,14 @@
 
   #l2 {
     right: 2%;
-    top: 17%;
+    top: 14%;
     width: 60%;
     z-index: 2;
   }
 
   #l3 {
     left: 2%;
-    top: 28%;
+    top: 24%;
     width: 30%;
     transform: rotate(10deg);
     z-index: 3;
@@ -127,14 +141,15 @@
   #l4 {
     left: 0%;
     width: 55%;
-    top: 38%;
+    top: 35%;
+    transform: rotate(9deg);
     z-index: 4;
   }
 
   #l5 {
     right: 3%;
     width: 50%;
-    top: 43%;
+    top: 39%;
     transform: rotate(-3deg);
     z-index: 5;
   }
@@ -142,7 +157,7 @@
   #l6 {
     left: 3%;
     width: 34%;
-    top: 55%;
+    top: 50%;
     transform: rotate(7deg);
     z-index: 6;
   }
@@ -150,7 +165,7 @@
   #l7 {
     left: 30%;
     width: 25%;
-    top: 62%;
+    top: 58%;
     transform: rotate(-15deg);
     z-index: 10;
   }
@@ -158,7 +173,7 @@
   #l8 {
     right: 7%;
     width: 37%;
-    top: 69%;
+    top: 63%;
     transform: rotate(15deg);
     z-index: 10;
   }
@@ -166,8 +181,16 @@
   #l9 {
     left: 0%;
     width: 60%;
-    top: 68%;
+    top: 63%;
     transform: rotate(1deg);
+    z-index: 9;
+  }
+
+  #l10 {
+    right: 7%;
+    width: 50%;
+    top: 80%;
+    transform: rotate(7deg);
     z-index: 9;
   }
 
