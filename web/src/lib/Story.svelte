@@ -3,6 +3,7 @@
 
   import { Page } from "./common";
   import Image from "./Image.svelte";
+  import Text from "./text/Text.svelte";
   let {
     setState,
   }: {
@@ -64,13 +65,19 @@
     <Image src={p1} alt="p2" delay={300} y={120} duration={1230} />
   </div>
 
-  <a
-    href="/#"
-    onclick={(e) => {
-      e.preventDefault();
-      back();
-    }}>Go back</a
-  >
+  <div id="go-back-wrapper">
+    <a
+      id="go-back"
+      class="formal"
+      href="/#"
+      onclick={(e) => {
+        e.preventDefault();
+        back();
+      }}
+    >
+      <Text key="story-back" />
+    </a>
+  </div>
 </div>
 
 <style>
@@ -91,7 +98,8 @@
     height: auto;
   }
 
-  p {
+  p,
+  a {
     font-size: 1.1rem;
   }
 
@@ -119,5 +127,20 @@
     width: 34%;
     transform: rotate(12deg);
     z-index: 1;
+  }
+
+  #go-back-wrapper {
+    text-align: center;
+    margin-bottom: 2rem;
+    margin-top: 2rem;
+  }
+
+  #go-back {
+    text-decoration: none;
+    color: #fae7b6;
+    font-weight: 300;
+    border: 1px solid #fae7b6;
+    border-radius: 10px;
+    padding: 1rem;
   }
 </style>
