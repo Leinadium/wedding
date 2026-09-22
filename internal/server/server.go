@@ -185,8 +185,9 @@ func (s *Server) getInvite(c *gin.Context) {
 		s.error(c, http.StatusBadRequest, fmt.Errorf("id is required"))
 		return
 	}
+	sanitizedId := s.svc.SanitizeInviteID(store.InviteID(id))
 
-	invite, err := s.svc.Invite(c.Request.Context(), store.InviteID(id))
+	invite, err := s.svc.Invite(c.Request.Context(), sanitizedId)
 	if err != nil {
 		if errors.Is(err, v1.ErrNotFound) {
 			s.error(c, http.StatusNotFound, err)

@@ -4,10 +4,14 @@
   let {
     onClick,
     success,
+    loading,
   }: {
     onClick: () => void;
     success: boolean;
+    loading: boolean;
   } = $props();
+
+  let disabled: boolean = $derived(loading || success);
 
   function handle() {
     if (!success) onClick();
@@ -15,10 +19,13 @@
 </script>
 
 <input
-  class={["save", "formal", { success }]}
+  class={["save", "formal", { success }, { loading }]}
   type="submit"
-  value={getText(success ? "invite-saved" : "invite-save")}
+  value={getText(
+    success ? "invite-saved" : loading ? "invite-saving" : "invite-save",
+  )}
   onclick={handle}
+  {disabled}
 />
 
 <style>
@@ -36,5 +43,9 @@
 
   .success {
     background-color: #777155;
+  }
+
+  .loading {
+    background-color: #aaa599;
   }
 </style>

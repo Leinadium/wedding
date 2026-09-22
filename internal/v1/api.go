@@ -131,6 +131,10 @@ func (s *Service) NewInvite(ctx context.Context, invite store.Invite) (store.Inv
 	return inviteID, nil
 }
 
+func (s *Service) SanitizeInviteID(id store.InviteID) store.InviteID {
+	return store.InviteID(strings.ToUpper(string(id)))
+}
+
 func (s *Service) Invite(ctx context.Context, inviteID store.InviteID) (store.Invite, error) {
 	invite, err := s.store.Invite(ctx, inviteID)
 	if err != nil {

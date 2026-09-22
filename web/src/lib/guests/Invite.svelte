@@ -21,6 +21,7 @@
   let currentNote: string = $state("");
 
   let isSuccess: boolean = $state(false);
+  let isSaving: boolean = $state(false);
 
   onMount(() => {
     let invite = loadStoredInvite();
@@ -52,26 +53,34 @@
 
   function updateAttendee(i: number, status: boolean | null) {
     invite!.attendees[i].confirmed = status;
-    console.log(i, invite!.attendees[i].confirmed);
+    isSuccess = false;
   }
 
   async function saveInvite() {
-    // if note is different, save it
-    if (currentNote !== invite?.note) {
-      invite!.note = currentNote;
-      await api.saveInviteNote(inviteCode, currentNote);
-    }
-    // for each attendee, save
-    for (let i = 0; i < invite!.attendees.length; i++) {
-      var attendee = invite!.attendees[i];
-      // hardcodding as adult
-      attendee.isChild = false;
-      await api.saveAttendee(attendee);
+    isSaving = true;
+    try {
+      // if note is different, save it
+      if (currentNote !== invite?.note) {
+        invite!.note = currentNote;
+        await api.saveInviteNote(inviteCode, currentNote);
+      }
+      // for each attendee, save
+      for (let i = 0; i < invite!.attendees.length; i++) {
+        var attendee = invite!.attendees[i];
+        // hardcodding as adult
+        attendee.isChild = false;
+        await api.saveAttendee(attendee);
 
-      isSuccess = true;
-      setTimeout(() => {
-        isSuccess = false;
-      }, 3000);
+        isSuccess = true;
+        setTimeout(() => {
+          isSuccess = false;
+        }, 3000);
+      }
+    } catch (e) {
+      console.log(e);
+      isSuccess = false;
+    } finally {
+      isSaving = false;
     }
   }
 </script>
@@ -111,7 +120,7 @@
         bind:value={currentNote}
       ></textarea>
       <div class="confirm" transition:fly={{ duration: 300, y: +100 }}>
-        <Submit success={isSuccess} onClick={saveInvite} />
+        <Submit success={isSuccess} loading={isLoading} onClick={saveInvite} />
       </div>
     {/if}
     <button class="close" onclick={closeCb}>&times;</button>
