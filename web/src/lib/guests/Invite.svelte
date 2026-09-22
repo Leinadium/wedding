@@ -70,11 +70,7 @@
         // hardcodding as adult
         attendee.isChild = false;
         await api.saveAttendee(attendee);
-
         isSuccess = true;
-        setTimeout(() => {
-          isSuccess = false;
-        }, 3000);
       }
     } catch (e) {
       console.log(e);
