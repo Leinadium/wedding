@@ -2,7 +2,6 @@
   import github from "../../assets/github.svg";
   import Text from "../text/Text.svelte";
 
-  import backgroundImg from "../../assets/venue/background.png";
   import Countdown from "../Countdown.svelte";
 </script>
 
@@ -17,7 +16,7 @@
 <style>
   footer {
     width: 100vw;
-    height: 10rem;
+    height: 14rem;
 
     display: flex;
     flex-flow: column wrap;
@@ -29,7 +28,8 @@
     background-image: url("../../assets/venue/background.png");
   }
   a {
-    margin-bottom: 10px;
+    margin-top: 2rem;
+    margin-bottom: 2rem;
     color: #fae7b6;
     text-decoration: none;
     font-size: 1rem;

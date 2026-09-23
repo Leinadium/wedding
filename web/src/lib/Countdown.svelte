@@ -64,7 +64,7 @@
 <style>
   .countdown {
     box-sizing: border-box;
-    width: 100%;
+    width: 80%;
 
     display: flex;
     flex-flow: row nowrap;
