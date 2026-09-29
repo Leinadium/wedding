@@ -35,3 +35,5 @@ db/
 .idea/
 .vscode/
 .zed/
+
+.admin

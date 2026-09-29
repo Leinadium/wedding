@@ -29,7 +29,7 @@
   }
   a {
     margin-top: 2rem;
-    margin-bottom: 2rem;
+    margin-bottom: 1rem;
     color: #fae7b6;
     text-decoration: none;
     font-size: 1rem;

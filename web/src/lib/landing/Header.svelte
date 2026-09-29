@@ -3,9 +3,9 @@
 </script>
 
 <header>
-  <span class="date formal">
+  <a href="/" class="date formal">
     <Text key="header-names" />
-  </span>
+  </a>
 </header>
 
 <style>
@@ -20,8 +20,9 @@
     align-items: center;
   }
 
-  span {
+  a {
     letter-spacing: 3px;
+    text-decoration: none;
     font-size: 1.5rem;
     color: #fae7b6;
   }
