@@ -2,6 +2,7 @@
   import { onDestroy, onMount } from "svelte";
 
   import backgroundImg from "../assets/venue/background.png";
+  import Text from "./text/Text.svelte";
 
   const weddingDate = new Date("2027-01-17T15:30:00"); // sample date
 
@@ -42,22 +43,22 @@
 <div class="countdown">
   <div class="slot">
     <span class="number formal-num">{formatTime(days)}</span>
-    <span class="text formal">days</span>
+    <span class="text formal"><Text key="countdown-days" /></span>
   </div>
   <!-- <span class="sep">:</span> -->
   <div class="slot">
     <span class="number formal-num">{formatTime(hours)}</span>
-    <span class="text formal">hours</span>
+    <span class="text formal"><Text key="countdown-hours" /></span>
   </div>
   <!-- <span class="sep">:</span> -->
   <div class="slot">
     <span class="number formal-num">{formatTime(minutes)}</span>
-    <span class="text formal">minutes</span>
+    <span class="text formal"><Text key="countdown-minutes" /></span>
   </div>
   <!-- <span class="sep">:</span> -->
   <div class="slot">
     <span class="number formal-num">{formatTime(seconds)}</span>
-    <span class="text formal">seconds</span>
+    <span class="text formal"><Text key="countdown-seconds" /></span>
   </div>
 </div>
 
