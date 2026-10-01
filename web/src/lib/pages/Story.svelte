@@ -35,7 +35,11 @@
 </script>
 
 <div class="story">
-  <Header src={headerImg} text={getTextDefault("story-title", "Our Story")} />
+  <Header
+    src={headerImg}
+    text={getTextDefault("story-title", "Our Story")}
+    offset="8%"
+  />
 
   <p class="formal first" in:fade={{ delay: 400, duration: 200 }}>
     &emsp;&emsp;<Text key="story-text01" /><br />
@@ -88,7 +92,7 @@
     <Image src={p5} alt="p5" delay={2200} y={100} duration={1000} />
   </div>
 
-  <BackButton textKey="story-back" action={back} color="#fae7b6" />
+  <BackButton textKey="story-back" action={back} color="#f9f6f1" />
 </div>
 
 <style>
@@ -100,7 +104,7 @@
     min-height: 90vh;
     width: 100vw;
 
-    color: #fae7b6;
+    color: #f9f6f1;
     font-size: 1.2rem;
     text-align: justify;
   }
@@ -116,7 +120,7 @@
 
   .photo {
     height: auto;
-    width: 15vh;
+    width: 30vh;
   }
 
   .quote {

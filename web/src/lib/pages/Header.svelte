@@ -2,13 +2,15 @@
   let {
     src,
     text,
+    offset,
   }: {
     src: string;
     text: string;
+    offset: string;
   } = $props();
 </script>
 
-<div class="header">
+<div class="header" style="--offset: {offset}">
   <img {src} alt="header" />
   <span class="cursive">{text}</span>
 </div>
@@ -34,6 +36,7 @@
 
     position: absolute;
     top: 50%;
+    padding-top: var(--offset);
     left: 50%;
     transform: translate(-50%, -50%);
     z-index: 2;
