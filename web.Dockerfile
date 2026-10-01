@@ -4,13 +4,14 @@ COPY web/package*.json .
 RUN npm ci
 COPY web/ .
 
-# overriding translations
-RUN if [ -f "./src/assets/override.texts.json" ]; then cp ./src/assets/override.texts.json ./src/assets/texts.json; fi;
-
 ARG VITE_API_URL
 ARG VITE_FRONT_URL
 ENV VITE_API_URL=$VITE_API_URL
 ENV VITE_FRONT_URL=$VITE_FRONT_URL
+
+# overriding translations
+RUN if [ -f "./src/assets/override.texts.json" ]; then cp ./src/assets/override.texts.json ./src/assets/texts.json; fi;
+RUN if [ ${VITE_FRONT_URL} ]; then sed -i "s|wedding.leinadium.dev|${VITE_FRONT_URL}|g" ./index.html; fi;
 
 RUN npm run build
 RUN npm prune --production
