@@ -108,7 +108,7 @@
     border-bottom: 1px solid #fae7b6;
 
     color: #dedacd;
-    font-size: 1rem;
+    font-size: 1.2rem;
     background: transparent;
   }
 </style>

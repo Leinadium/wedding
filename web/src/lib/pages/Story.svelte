@@ -1,16 +1,21 @@
 <script lang="ts">
   import { fade } from "svelte/transition";
-  import p0 from "../assets/story/p0.png";
-  import p1 from "../assets/story/p1.png";
-  import p2 from "../assets/story/p2.png";
-  import p3 from "../assets/story/p3.png";
-  import p4 from "../assets/story/p4.png";
-  import p5 from "../assets/story/p5.png";
 
-  import { Page } from "./common";
-  import Image from "./Image.svelte";
-  import Text from "./text/Text.svelte";
+  import headerImg from "../../assets/story/header.jpg";
+  import p0 from "../../assets/story/p0.png";
+  import p1 from "../../assets/story/p1.png";
+  import p2 from "../../assets/story/p2.png";
+  import p3 from "../../assets/story/p3.png";
+  import p4 from "../../assets/story/p4.png";
+  import p5 from "../../assets/story/p5.png";
+
+  import { Page } from "../common";
+  import Image from "../Image.svelte";
+  import Text from "../text/Text.svelte";
   import { onDestroy, onMount } from "svelte";
+  import BackButton from "./BackButton.svelte";
+  import Header from "./Header.svelte";
+  import { getTextDefault } from "../text/text";
   let {
     setState,
   }: {
@@ -30,11 +35,9 @@
 </script>
 
 <div class="story">
-  <div id="sep" class="photo">
-    <Image src={p0} alt="p0" delay={0} y={100} duration={100} />
-  </div>
+  <Header src={headerImg} text={getTextDefault("story-title", "Our Story")} />
 
-  <p class="formal" in:fade={{ delay: 400, duration: 200 }}>
+  <p class="formal first" in:fade={{ delay: 400, duration: 200 }}>
     &emsp;&emsp;<Text key="story-text01" /><br />
     &emsp;&emsp;<Text key="story-text02" /><br />
     &emsp;&emsp;<Text key="story-text03" /><br />
@@ -85,19 +88,7 @@
     <Image src={p5} alt="p5" delay={2200} y={100} duration={1000} />
   </div>
 
-  <div id="go-back-wrapper">
-    <a
-      id="go-back"
-      class="formal"
-      href="/#"
-      onclick={(e) => {
-        e.preventDefault();
-        back();
-      }}
-    >
-      <Text key="story-back" />
-    </a>
-  </div>
+  <BackButton textKey="story-back" action={back} color="#fae7b6" />
 </div>
 
 <style>
@@ -107,12 +98,20 @@
     align-items: center;
 
     min-height: 90vh;
-    width: 85vw;
-    max-width: 600px;
+    width: 100vw;
 
     color: #fae7b6;
     font-size: 1.2rem;
     text-align: justify;
+  }
+
+  p {
+    width: 80%;
+    max-width: 600px;
+  }
+
+  .first {
+    margin-top: 1rem;
   }
 
   .photo {
@@ -120,27 +119,7 @@
     width: 15vh;
   }
 
-  #sep {
-    width: 30%;
-  }
-
   .quote {
     font-style: italic;
-  }
-
-  #go-back-wrapper {
-    text-align: center;
-    margin-bottom: 2rem;
-    display: inline-block;
-    margin-top: 2rem;
-  }
-
-  #go-back {
-    text-decoration: none;
-    color: #fae7b6;
-    font-weight: 300;
-    border: 1px solid #fae7b6;
-    border-radius: 10px;
-    padding: 1rem;
   }
 </style>

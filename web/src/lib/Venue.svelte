@@ -1,56 +1,12 @@
 <script lang="ts">
   import { fade } from "svelte/transition";
   import Text from "./text/Text.svelte";
-  import backgroundImg from "../assets/venue/background.png";
-  import locationImg from "../assets/venue/location.svg";
-  import calendarImg from "../assets/venue/calendar.svg";
-  import dressingImg from "../assets/venue/dressing.svg";
-  import "add-to-calendar-button";
-  import {
-    atcb_action,
-    type ATCBActionEventConfig,
-  } from "add-to-calendar-button";
-  import { getTextDefault } from "./text/text";
 
   let {
     closeCb,
   }: {
     closeCb: () => void;
   } = $props();
-
-  // location
-  const locationURL = getTextDefault("location-link", "/#");
-  const dressingURL = getTextDefault("dressing-link", "/#");
-
-  // calendar
-  const nameCalendar = getTextDefault("calendar-name", "Wedding");
-  const labelCalendar = getTextDefault("calendar-label", "Calendar");
-  const location = getTextDefault("calendar-location", "Brazil");
-  const date = getTextDefault("calendar-date", "2027-01-01");
-  const startTime = getTextDefault("calendar-starttime", "15:00");
-  const endTime = getTextDefault("calendar-endtime", "21:00");
-
-  const config: ATCBActionEventConfig = {
-    name: nameCalendar,
-    location: location,
-    startDate: date,
-    startTime: startTime,
-    endTime: endTime,
-    options: ["Apple", "Google", "iCal"],
-    listStyle: "modal",
-    timeZone: "America/Sao_Paulo",
-    hideBackground: true,
-    hideCheckmark: true,
-    buttonStyle: "round",
-  };
-
-  let buttonCalendar: HTMLElement | null = $state(null);
-
-  const openCalendar = () => {
-    if (buttonCalendar) {
-      atcb_action(config, buttonCalendar);
-    }
-  };
 </script>
 
 <div class="venue-wrapper" transition:fade={{ duration: 200 }}>
@@ -74,41 +30,19 @@
       </span>
 
       <div class="actions">
-        <button
-          type="button"
-          class="action"
-          onclick={openCalendar}
-          bind:this={buttonCalendar}
-        >
-          <img src={calendarImg} class="action-img" alt={labelCalendar} />
+        <div class="action">
           <span class="action-description formal">
             <Text key="venue-calendardescription" />
           </span>
-          <span class="action-call formal">
-            <Text key="venue-calendarcall" />
-          </span>
-        </button>
+        </div>
 
-        <a href={locationURL} target="_blank" class="action">
-          <img src={locationImg} alt="maps" class="action-img" />
+        <div class="action">
           <span class="action-description formal">
             <Text key="venue-locationdescription" />
           </span>
-          <span class="action-call formal">
-            <Text key="venue-locationcall" />
-          </span>
-        </a>
-
-        <a href={dressingURL} target="_blank" class="action">
-          <img src={dressingImg} alt="dressing" class="action-img" />
-          <span class="action-description formal">
-            <Text key="venue-dressingdescription" />
-          </span>
-          <span class="action-call formal">
-            <Text key="venue-dressingcall" />
-          </span>
-        </a>
+        </div>
       </div>
+
       <div class="footer">
         <div class="footer-line"></div>
         <p class="footer-text formal">
@@ -244,25 +178,18 @@
 
     display: flex;
     flex-flow: column nowrap;
-    justify-content: start;
     align-items: center;
 
     border: 1px solid transparent;
     border-radius: 1rem;
   }
 
-  button,
-  a {
+  button {
     cursor: pointer;
   }
 
-  button:hover,
-  a:hover {
+  button:hover {
     border: 1px solid #dedacdff;
-  }
-
-  .action-call {
-    font-style: italic;
   }
 
   .footer {
@@ -289,7 +216,7 @@
   @media only screen and (max-width: 768px) {
     .parents {
       height: 5rem;
-      font-size: 0.9rem;
+      font-size: 1.3rem;
       gap: 0.5rem;
     }
     .parents-side {
@@ -311,37 +238,31 @@
       align-items: center;
     }
     .action {
-      width: 400px;
+      width: 100%;
       padding: 1rem;
       flex-flow: row nowrap;
-      justify-content: flex-start;
-      gap: 2rem;
-    }
-    .action-call {
-      font-size: 0.8rem;
-    }
-    .action-img {
-      height: 2.5rem;
+      justify-content: center;
+      gap: 1.5rem;
     }
     .action-description {
-      font-size: 1rem;
+      font-size: 1.5rem;
     }
     .footer {
-      margin-top: 1.5rem;
+      margin-top: 1.2rem;
     }
     .footer-line {
       width: 3rem;
       height: 0.5rem;
     }
     .footer-text {
-      font-size: 1rem;
+      font-size: 1.3rem;
     }
   }
 
   @media only screen and (min-width: 768px) {
     .parents {
       height: 4rem;
-      font-size: 1.1rem;
+      font-size: 1.5rem;
     }
     .name {
       font-size: 6rem;
@@ -361,15 +282,8 @@
       width: 30%;
       padding: 1rem;
     }
-    .action-call {
-      font-size: 0.8rem;
-    }
-    .action-img {
-      height: 2rem;
-      margin-bottom: 0.3rem;
-    }
     .action-description {
-      font-size: 1.2rem;
+      font-size: 1.5rem;
     }
     .footer {
       margin-top: 3rem;
@@ -379,7 +293,7 @@
       height: 0.5rem;
     }
     .footer-text {
-      font-size: 1rem;
+      font-size: 1.4rem;
     }
   }
 </style>

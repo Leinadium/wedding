@@ -83,7 +83,7 @@
 
 <div class="invite-wrapper" transition:fade={{ duration: 300 }}>
   <div class="invite" transition:fly={{ duration: 300, y: +150 }}>
-    <span class="title cursive"><Text key="invite-title" /></span>
+    <span class="title formal"><Text key="invite-title" /></span>
     <div class="input formal">
       <span><Text key="invite-input" /></span>
       <input
@@ -176,7 +176,7 @@
   }
 
   .input span {
-    font-size: 1.2rem;
+    font-size: 1.4rem;
     color: #dedacd;
     font-weight: bold;
   }

@@ -13,6 +13,7 @@
     z-index: 1;
     text-align: center;
     margin-bottom: 2rem;
+    padding-top: 2rem;
 
     display: flex;
     flex-flow: column nowrap;

@@ -1,6 +1,5 @@
 <script lang="ts">
   import l1 from "../../assets/landing/l1.png";
-  import l1b from "../../assets/landing/l1b.png";
   import l2 from "../../assets/landing/l2.png";
   import l3 from "../../assets/landing/l3.png";
   import l3b from "../../assets/landing/l3b.png";
@@ -19,6 +18,7 @@
   import Venue from "../Venue.svelte";
   import { getTextDefault } from "../text/text";
   import { Page } from "../common";
+  import Header from "./Header.svelte";
 
   let {
     setState,
@@ -43,14 +43,18 @@
   }
 </script>
 
+<Header />
+
 <div id="landing">
   <div id="l1" class="image-container">
     <Image src={l1} alt="card" delay={150} y={100} duration={1000} />
   </div>
 
-  <div id="l2" class="image-container">
-    <Image src={l2} alt="invite" delay={250} y={120} duration={1100} />
-  </div>
+  <button id="l2" onclick={toggleVenue}>
+    <div class="inside">
+      <Image src={l2} alt="invite" delay={250} y={120} duration={1100} />
+    </div>
+  </button>
 
   <div id="l3" class="image-container">
     <Image src={l3} alt="couple" delay={500} y={80} duration={1200} />
@@ -88,7 +92,7 @@
     <Image src={l8b} alt="photo8b" delay={1400} y={60} duration={600} />
   </div>
 
-  <button id="l9" onclick={toggleVenue}>
+  <button id="l9" onclick={() => setState(Page.Info)}>
     <div class="inside">
       <Image src={l9} alt="letter" delay={1350} y={50} duration={600} />
     </div>
@@ -131,8 +135,8 @@
   }
 
   #l2 {
-    right: -2%;
-    top: 12%;
+    right: 0%;
+    top: 15%;
     width: 60%;
     z-index: 2;
   }
@@ -204,15 +208,15 @@
   #l9 {
     left: 2%;
     width: 60%;
-    top: 60%;
-    transform: rotate(1deg);
+    top: 64%;
+    transform: rotate(-2deg);
     z-index: 9;
   }
 
   #l10 {
-    right: 5%;
+    left: 17%;
     width: 50%;
-    top: 78%;
+    top: 76%;
     transform: rotate(7deg);
     z-index: 11;
   }

@@ -37,3 +37,4 @@ db/
 .zed/
 
 .admin
+**/*.backup

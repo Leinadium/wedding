@@ -1,13 +1,13 @@
 <script lang="ts">
-  import Header from "./lib/landing/Header.svelte";
   import Footer from "./lib/landing/Footer.svelte";
   import Landing from "./lib/landing/Landing.svelte";
   import Callback from "./lib/Callback.svelte";
   import { onMount } from "svelte";
   import { getText } from "./lib/text/text";
   import { Page } from "./lib/common";
-  import Story from "./lib/Story.svelte";
+  import Story from "./lib/pages/Story.svelte";
   import Backoffice from "./lib/backoffice/Backoffice.svelte";
+  import Info from "./lib/pages/Info.svelte";
 
   let backoffice = $state(true);
   let showContent = $state(true);
@@ -32,11 +32,12 @@
   <Backoffice />
 {:else if showContent}
   <main>
-    <Header />
-    {#if page === Page.Landing}
-      <Landing {setState} />
-    {:else}
+    {#if page === Page.Story}
       <Story {setState} />
+    {:else if page === Page.Info}
+      <Info {setState} />
+    {:else}
+      <Landing {setState} />
     {/if}
     <Footer />
   </main>
@@ -73,7 +74,6 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding: 2rem 1rem;
     padding-bottom: 0;
     overflow-x: hidden;
   }

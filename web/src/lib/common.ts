@@ -8,6 +8,7 @@ export function formatPrice(price: number): string {
 export const enum Page {
   Landing = "landing",
   Story = "story",
+  Info = "info",
 }
 
 export function timeAgo(dateInput: string) {
