@@ -19,7 +19,6 @@
   let status: boolean | null = $derived(attendee.confirmed);
 
   function handle() {
-    console.log("handle");
     switch (selected) {
       case "confirmed":
         updateStatus(index, true);
