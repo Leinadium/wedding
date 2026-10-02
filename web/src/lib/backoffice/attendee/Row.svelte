@@ -4,12 +4,19 @@
 
   let {
     at,
+    template,
   }: {
     at: Attendee;
+    template: string;
   } = $props();
 
   async function copyToClipboard(text: string) {
     await navigator.clipboard.writeText(text);
+  }
+  async function copyTemplate(code: string, name: string) {
+    await navigator.clipboard.writeText(
+      template.replace("[CODE]", code).replace("[NAME]", name),
+    );
   }
 </script>
 
@@ -46,6 +53,16 @@
         <i class="p-icon--copy"></i>
       </button>
     </div>
+  </td>
+
+  <td>
+    <button
+      class="copy-btn"
+      aria-label="Copy template to clipboard"
+      onclick={() => copyTemplate(at.inviteId, at.name)}
+    >
+      <i class="p-icon--copy"></i>
+    </button>
   </td>
 </tr>
 

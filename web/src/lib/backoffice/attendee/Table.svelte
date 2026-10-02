@@ -8,6 +8,14 @@
     content: Attendee[];
   } = $props();
 
+  let template: string = $state<string>("");
+  let templateSuccess: boolean = $derived(
+    template !== "" &&
+      template.includes("[CODE]") &&
+      template.includes("[NAME]"),
+  );
+  let templateInvalid: boolean = $derived(template !== "" && !templateSuccess);
+
   // Explicitly define only the keys you want to be sortable
   type SortKey = "name" | "confirmed" | "updatedAt";
   type SortDirection = "none" | "ascending" | "descending";
@@ -51,6 +59,30 @@
   });
 </script>
 
+<form>
+  <div
+    class="p-form-validation"
+    class:is-error={templateInvalid}
+    class:is-success={templateSuccess}
+  >
+    <label for="exampleTextInputError">Email address</label>
+    <textarea
+      class="p-form-validation__input"
+      id="template"
+      placeholder=""
+      name="template"
+      aria-invalid={templateInvalid}
+      aria-describedby="templateInvalid"
+      bind:value={template}
+    ></textarea>
+    {#if templateInvalid}
+      <p class="p-form-validation__message" id="templateInvalid">
+        Use [CODE] and [NAME] in the template.
+      </p>
+    {/if}
+  </div>
+</form>
+
 <table aria-label="Attendees table">
   <thead>
     <tr>
@@ -76,11 +108,12 @@
         </button>
       </th>
       <th>Invite ID</th>
+      <th>Template</th>
     </tr>
   </thead>
   <tbody>
     {#each sortedContent as at}
-      <Row {at} />
+      <Row {at} {template} />
     {/each}
   </tbody>
 </table>
