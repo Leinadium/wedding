@@ -22,6 +22,7 @@
 
   let isSuccess: boolean = $state(false);
   let isSaving: boolean = $state(false);
+  let isDisabled: boolean = $state(true);
 
   onMount(() => {
     let invite = loadStoredInvite();
@@ -54,6 +55,7 @@
   function updateAttendee(i: number, status: boolean | null) {
     invite!.attendees[i].confirmed = status;
     isSuccess = false;
+    isDisabled = false;
   }
 
   async function saveInvite() {
@@ -70,8 +72,9 @@
         // hardcodding as adult
         attendee.isChild = false;
         await api.saveAttendee(attendee);
-        isSuccess = true;
       }
+      isSuccess = true;
+      isDisabled = true;
     } catch (e) {
       console.log(e);
       isSuccess = false;
@@ -116,7 +119,12 @@
         bind:value={currentNote}
       ></textarea>
       <div class="confirm" transition:fly={{ duration: 300, y: +100 }}>
-        <Submit success={isSuccess} loading={isLoading} onClick={saveInvite} />
+        <Submit
+          success={isSuccess}
+          loading={isLoading || isSaving}
+          {isDisabled}
+          onClick={saveInvite}
+        />
       </div>
     {/if}
     <button class="close" onclick={closeCb}>&times;</button>
@@ -230,6 +238,7 @@
 
   .confirm {
     display: flex;
+    flex-flow: column;
     justify-content: flex-end;
   }
 
