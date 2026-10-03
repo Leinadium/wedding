@@ -198,7 +198,13 @@ func (s *Service) UpsertAttendee(ctx context.Context, attendeeID uuid.UUID, isCh
 		}
 	}
 
-	defer s.store.NewLog(ctx, log(attendee.Name, "confirmation", fmt.Sprintf("value=%v", confirmed)))
+	defer func() {
+		text := "value=nil"
+		if confirmed != nil {
+			text = fmt.Sprintf("value=%t", *confirmed)
+		}
+		s.store.NewLog(ctx, log(attendee.Name, "confirmation", text))
+	}()
 
 	return nil
 }
