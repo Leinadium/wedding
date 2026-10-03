@@ -65,7 +65,7 @@
     class:is-error={templateInvalid}
     class:is-success={templateSuccess}
   >
-    <label for="exampleTextInputError">Email address</label>
+    <label for="exampleTextInputError">Template</label>
     <textarea
       class="p-form-validation__input"
       id="template"

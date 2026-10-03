@@ -41,11 +41,16 @@ func NewPGStore(p Params) Store {
 		_ = db.AutoMigrate(&Attendee{})
 		_ = db.AutoMigrate(&Product{})
 		_ = db.AutoMigrate(&Purchase{})
+		_ = db.AutoMigrate(&Log{})
 	}
 
 	return &PGStore{
 		db: db,
 	}
+}
+
+func (p *PGStore) NewLog(ctx context.Context, log Log) error {
+	return gorm.G[Log](p.db).Create(ctx, &log)
 }
 
 func (p *PGStore) Products(ctx context.Context) ([]Product, error) {
@@ -119,9 +124,9 @@ func (p *PGStore) DeleteInvite(ctx context.Context, inviteID InviteID) error {
 	return err
 }
 
-func (s *PGStore) NewAttendee(ctx context.Context, inviteID InviteID, attendee Attendee) error {
+func (p *PGStore) NewAttendee(ctx context.Context, inviteID InviteID, attendee Attendee) error {
 	attendee.InviteID = inviteID
-	return gorm.G[Attendee](s.db).Create(ctx, &attendee)
+	return gorm.G[Attendee](p.db).Create(ctx, &attendee)
 }
 
 func (p *PGStore) Attendee(ctx context.Context, attendeeID uuid.UUID) (Attendee, error) {

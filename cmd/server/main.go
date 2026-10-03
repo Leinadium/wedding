@@ -21,15 +21,10 @@ func main() {
 
 	// creating services
 	// store
-	var storeService store.Store
-	if p.UseStaticStore {
-		storeService = store.NewStaticStore()
-	} else {
-		storeService = store.NewPGStore(store.Params{
-			DSN:         p.DatabaseDSN,
-			AutoMigrate: p.DatabaseAutomigrate,
-		})
-	}
+	storeService := store.NewPGStore(store.Params{
+		DSN:         p.DatabaseDSN,
+		AutoMigrate: p.DatabaseAutomigrate,
+	})
 	// payment
 	paymentService := payment.New(payment.Params{
 		Domain:        p.FrontURL,

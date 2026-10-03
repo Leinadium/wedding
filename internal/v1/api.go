@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"strings"
+	"time"
 
 	"github.com/google/uuid"
 	"github.com/guregu/null/v6"
@@ -128,6 +129,8 @@ func (s *Service) NewInvite(ctx context.Context, invite store.Invite) (store.Inv
 	if err != nil {
 		return "", fmt.Errorf("could not create invite: %v", err)
 	}
+
+	defer s.store.NewLog(ctx, log("admin", "new-invite", string(inviteID)))
 	return inviteID, nil
 }
 
@@ -155,6 +158,8 @@ func (s *Service) DeleteInvite(ctx context.Context, inviteID store.InviteID) err
 	if err := s.store.DeleteInvite(ctx, inviteID); err != nil {
 		return fmt.Errorf("could not delete invite: %v", err)
 	}
+
+	defer s.store.NewLog(ctx, log("admin", "remove-invite", string(inviteID)))
 	return nil
 }
 
@@ -193,6 +198,8 @@ func (s *Service) UpsertAttendee(ctx context.Context, attendeeID uuid.UUID, isCh
 		}
 	}
 
+	defer s.store.NewLog(ctx, log(attendee.Name, "confirmation", fmt.Sprintf("value=%v", confirmed)))
+
 	return nil
 }
 
@@ -200,7 +207,17 @@ func (s *Service) DeleteAttendee(ctx context.Context, attendeeID uuid.UUID) erro
 	if err := s.store.DeleteAttendee(ctx, attendeeID); err != nil {
 		return fmt.Errorf("could not delete attendee: %v", err)
 	}
+	defer s.store.NewLog(ctx, log("admin", "remove-attendee", attendeeID.String()))
 	return nil
+}
+
+func log(author, action, content string) store.Log {
+	return store.Log{
+		Timestamp: time.Now(),
+		Author:    author,
+		Action:    action,
+		Content:   content,
+	}
 }
 
 func createAttendeeNotification(a *store.Attendee) string {

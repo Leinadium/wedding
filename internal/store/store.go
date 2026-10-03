@@ -26,4 +26,6 @@ type Store interface {
 	Attendee(ctx context.Context, attendeeID uuid.UUID) (Attendee, error)
 	UpsertAttendee(ctx context.Context, attendee Attendee) error
 	DeleteAttendee(ctx context.Context, attendeeID uuid.UUID) error
+
+	NewLog(ctx context.Context, log Log) error
 }

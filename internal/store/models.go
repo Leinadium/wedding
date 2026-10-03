@@ -7,6 +7,13 @@ import (
 	"github.com/guregu/null/v6"
 )
 
+type Log struct {
+	Timestamp time.Time
+	Author    string
+	Action    string
+	Content   string
+}
+
 type InviteID string
 type Invite struct {
 	ID        InviteID   `gorm:"primary_key" json:"id"`
